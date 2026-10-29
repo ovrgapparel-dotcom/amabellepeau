@@ -49,3 +49,15 @@ assets/images/90DAYHUB*
 assets/images/8-Joy*
 assets/images/*Melodic*
 assets/images/AQP*
+
+# Next.js scaffold (do not build in static deployment)
+.next/
+src/
+public/
+package.json
+package-lock.json
+tsconfig.json
+next.config.ts
+next-env.d.ts
+eslint.config.mjs
+AGENTS.md

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
@@ -6,7 +6,7 @@
   <title>Savon Karité & Vanille — AMABELLEPEAU Savons Naturels</title>
   <meta name="description" content="Savon artisanal au beurre de karité et vanille naturelle. Fabriqué avec amour en Côte d'Ivoire."/>
   <link rel="manifest" href="manifest.json"/>
-  <link rel="icon" href="assets/icons/logo.png"/>
+  <link rel="icon" href="assets/icons/brand-logo.png"/>
   <link rel="stylesheet" href="css/main.css"/>
   <style>
     .product-page { padding: var(--space-8) 0 var(--space-16); }
@@ -80,7 +80,7 @@
 <nav class="navbar">
   <div class="container flex-between">
     <a href="index.html" class="navbar-brand">
-      <img src="assets/icons/logo.png" alt="AMABELLEPEAU" class="navbar-logo"/>
+      <img src="assets/icons/brand-logo.png" alt="AMABELLEPEAU" class="navbar-logo"/>
       <span class="navbar-brand-text">AMABELLE<span>PEAU</span></span>
     </a>
     <div class="navbar-nav">
@@ -290,6 +290,69 @@
   </div>
 </main>
 
+<!-- FOOTER -->
+<footer class="footer" style="background:#0D1A0D;color:#F5F0E8;padding:var(--space-12) 0 var(--space-6);margin-top:var(--space-16);border-top:1px solid rgba(201,168,76,0.25);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--space-8);margin-bottom:var(--space-10);">
+      <div>
+        <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4);">
+          <img src="assets/icons/brand-logo.png" onerror="this.src='assets/icons/logo.png'" alt="AMABELLEPEAU" style="width:48px;height:48px;object-fit:contain;border-radius:var(--radius-md);filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));">
+          <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;letter-spacing:1px;color:#fff;">AMABELLE<span style="color:var(--color-gold,#C9A84C);">PEAU</span></div>
+        </div>
+        <p style="font-size:var(--text-xs);color:rgba(245,240,232,0.7);line-height:1.7;margin-bottom:var(--space-4);">
+          La première marketplace haut de gamme dédiée aux savons artisanaux et cosmétiques 100% naturels en Côte d'Ivoire.
+        </p>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
+          <a href="https://www.instagram.com/produitsamabellepeau" target="_blank" rel="noopener noreferrer" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,168,76,0.35);background:rgba(255,255,255,0.04);color:#F5F0E8;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" title="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </a>
+          <a href="https://www.facebook.com/amabellepeau/" target="_blank" rel="noopener noreferrer" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,168,76,0.35);background:rgba(255,255,255,0.04);color:#F5F0E8;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" title="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </a>
+          <a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(37,211,102,0.45);background:rgba(255,255,255,0.04);color:#25D366;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" title="Catalogue WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.34C9.36 7.34 9.08 7.41 8.84 7.67C8.6 7.94 7.92 8.58 7.92 9.87C7.92 11.17 8.87 12.42 9 12.6C9.13 12.78 10.87 15.44 13.53 16.59C14.16 16.86 14.66 17.03 15.05 17.15C15.68 17.35 16.26 17.32 16.71 17.25C17.22 17.18 18.27 16.61 18.49 16C18.7 15.39 18.7 14.87 18.64 14.76C18.57 14.65 18.41 14.59 18.17 14.47C17.92 14.35 16.71 13.76 16.48 13.68C16.26 13.59 16.1 13.55 15.93 13.8C15.77 14.05 15.29 14.61 15.15 14.78C15 14.95 14.86 14.97 14.62 14.85C14.37 14.73 13.58 14.47 12.65 13.64C11.92 12.99 11.43 12.18 11.29 11.93C11.14 11.69 11.27 11.55 11.4 11.43C11.51 11.32 11.65 11.14 11.77 11C11.9 10.86 11.94 10.76 12.02 10.6C12.1 10.43 12.06 10.29 12 10.17C11.94 10.05 11.46 8.86 11.25 8.37C11.06 7.89 10.86 7.96 10.71 7.95C10.56 7.95 10.39 7.94 10.22 7.94C10.05 7.94 9.77 8 9.53 8.24C9.53 8.24 9.53 7.34 9.53 7.34Z"/></svg>
+          </a>
+          <a href="mailto:amabellepeau@gmail.com" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,168,76,0.35);background:rgba(255,255,255,0.04);color:#F5F0E8;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" title="Email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </a>
+          <a href="tel:+2250799108108" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,168,76,0.35);background:rgba(255,255,255,0.04);color:#F5F0E8;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" title="Téléphone">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--color-gold,#C9A84C);text-transform:uppercase;letter-spacing:0.08em;font-size:var(--text-xs);margin-bottom:var(--space-3);">Navigation</div>
+        <ul style="list-style:none;padding:0;margin:0;line-height:2.2;font-size:var(--text-sm);">
+          <li><a href="index.html" style="color:rgba(245,240,232,0.75);text-decoration:none;">Accueil</a></li>
+          <li><a href="catalogue.html" style="color:rgba(245,240,232,0.75);text-decoration:none;">Catalogue</a></li>
+          <li><a href="index.html#marchands" style="color:rgba(245,240,232,0.75);text-decoration:none;">Marchands</a></li>
+          <li><a href="panier.html" style="color:rgba(245,240,232,0.75);text-decoration:none;">Panier</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--color-gold,#C9A84C);text-transform:uppercase;letter-spacing:0.08em;font-size:var(--text-xs);margin-bottom:var(--space-3);">Contact Abidjan</div>
+        <p style="font-size:var(--text-xs);color:rgba(245,240,232,0.75);line-height:1.8;">
+          📍 Abidjan, Côte d'Ivoire<br>
+          📞 +225 07 99 10 81 08<br>
+          ✉️ amabellepeau@gmail.com
+        </p>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(201,168,76,0.15);padding-top:var(--space-4);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;font-size:var(--text-xs);color:rgba(245,240,232,0.5);">
+      <div style="display:flex;align-items:center;">
+        <span>&copy; 2026 AMABELLEPEAU — Tous droits réservés.</span>
+        <button id="adminDiscreteBtn" title="Espace Administrateur (Double-clic)" aria-label="Administration" style="background:transparent;border:none;color:rgba(245,240,232,0.22);cursor:pointer;padding:2px 6px;margin-left:8px;display:inline-flex;align-items:center;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </button>
+      </div>
+      <div>Paiements Wave & Orange Money sécurisés</div>
+    </div>
+  </div>
+</footer>
+
 <!-- WhatsApp FAB -->
 <a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:24px;right:24px;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.5);z-index:9995;animation:waPulse 2.5s infinite;">
   <svg viewBox="0 0 32 32" width="26" height="26" fill="white"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.827.737 5.479 2.027 7.785L0 32l8.454-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.262 13.262 0 01-6.771-1.853l-.485-.287-5.017 1.193 1.222-4.87-.316-.499A13.264 13.264 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.357-1.163-2.722-1.295-.365-.133-.631-.199-.897.199-.266.398-1.031 1.295-1.264 1.562-.233.266-.465.299-.863.1-.398-.2-1.681-.619-3.202-1.974-1.183-1.054-1.982-2.356-2.215-2.754-.233-.398-.025-.613.175-.811.18-.178.398-.465.597-.698.2-.233.266-.398.398-.664.133-.266.066-.498-.033-.698-.1-.199-.897-2.162-1.23-2.96-.323-.776-.652-.671-.897-.683l-.764-.013c-.266 0-.698.1-1.064.498-.365.398-1.396 1.363-1.396 3.325 0 1.962 1.43 3.858 1.629 4.124.199.265 2.814 4.297 6.82 6.025.953.411 1.697.656 2.278.84.957.304 1.828.261 2.517.158.767-.114 2.357-.963 2.689-1.894.332-.931.332-1.73.233-1.895-.1-.165-.365-.265-.763-.464z"/></svg>
@@ -371,6 +434,14 @@
   // Init cart count
   if (typeof Cart !== 'undefined') {
     document.getElementById('cartCount').textContent = Cart.count();
+  }
+  // Discrete Admin Access Double-Click Handler
+  var adminBtn = document.getElementById('adminDiscreteBtn');
+  if (adminBtn) {
+    adminBtn.addEventListener('dblclick', function(e) {
+      e.preventDefault();
+      window.location.href = 'admin/index.html';
+    });
   }
 </script>
 </body>
