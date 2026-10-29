@@ -414,6 +414,22 @@ const ProductStore = {
     return products;
   },
 
+  formatPrice: function(amount) {
+    return new Intl.NumberFormat('fr-FR').format(amount) + ' XOF';
+  },
+
+  search: function(query) {
+    const q = (query || '').toLowerCase().trim();
+    if (!q) return this.getAll();
+    return this.getAll().filter(p =>
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.brand || '').toLowerCase().includes(q) ||
+      (p.vertus || '').toLowerCase().includes(q) ||
+      (p.composition || '').toLowerCase().includes(q) ||
+      (p.categoryName || '').toLowerCase().includes(q)
+    );
+  },
+
   resetDefaults: function() {
     this.save(DEFAULT_PRODUCTS);
     return DEFAULT_PRODUCTS;
