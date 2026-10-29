@@ -426,6 +426,16 @@
   // Try to enrich merchant items from ProductStore
   function enrichItems(items) {
     if (typeof ProductStore === 'undefined') return items;
+    if (slug === 'ets-marie-andrea') {
+      var etsItems = ProductStore.getAll().filter(function(p) { return p.merchant === 'ETS Marie Andrea'; });
+      if (etsItems.length > 0) return etsItems;
+    } else if (slug === 'amabellebarbe') {
+      var barbeItems = ProductStore.getAll().filter(function(p) { return p.brand === 'AMABELLEBARBE'; });
+      if (barbeItems.length > 0) return barbeItems;
+    } else if (slug === 'amafleurdepeau') {
+      var fleurItems = ProductStore.getAll().filter(function(p) { return p.brand === 'AMAFLEURDEPEAU'; });
+      if (fleurItems.length > 0) return fleurItems;
+    }
     return items.map(function(item) {
       var storeProduct = ProductStore.getById(item.id);
       if (storeProduct) {

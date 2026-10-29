@@ -1,6 +1,7 @@
 /**
  * AMABELLEPEAU - Master Catalog Store
  * Real product data curated from ETS Marie Andrea, AMABELLEBARBE & AMAFLEURDEPEAU
+ * Equipped with high-definition official studio product photography
  */
 
 const DEFAULT_PRODUCTS = [
@@ -23,7 +24,7 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Acides de fruits naturels (AHA), Parfum.',
     vertus: 'Clarifiant Suprême, Nettoyant en profondeur, Éclat du teint, Anti-rides, Régénérant cellulaire.',
     skinType: 'Teint noir, teint métis — Uniformisation & éclat instantané.',
-    image: 'assets/images/products/barbe-2.png',
+    image: 'assets/images/products/savon-clarylex.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
@@ -46,7 +47,7 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Henné pur, Curcuma en poudre, Parfum.',
     vertus: 'Exfoliant doux, Gommant naturel, Clarifiant, Nettoyant séborégulateur.',
     skinType: 'Teint noir & marron — Anti-taches et éclat naturel.',
-    image: 'assets/images/products/cat-3.png',
+    image: 'assets/images/products/savon-henne-curcuma.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
@@ -69,7 +70,7 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Gel d’aloès vera frais, Parfum.',
     vertus: 'Clarifiant, Exfoliant délicat, Anti-acné, Raffermissant, Tonique vivifiant.',
     skinType: 'Peaux mixtes à grasses, peaux sensibles à imperfections.',
-    image: 'assets/images/products/cat-5.png',
+    image: 'assets/images/products/savon-gel-aloes.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
@@ -92,13 +93,13 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Huile pure de Carapa, Parfum.',
     vertus: 'Exfoliant, Clarifiant, Anti-acné puissant, Antiseptique, Nettoyant apaisant.',
     skinType: 'Peaux à problèmes, dermatoses, démangeaisons, boutons.',
-    image: 'assets/images/products/cat-6.png',
+    image: 'assets/images/products/savon-carapa.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
   {
     id: 'prod-tetrapleura-200g',
-    name: 'Savon au Tétrapleura (200 g)',
+    name: 'Savon au Tétrapéla (200 g)',
     brand: 'AMABELLEPEAU',
     merchant: 'ETS Marie Andrea',
     category: 'savons',
@@ -115,7 +116,7 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Poudre de Tétrapleura (4 côtés), Parfum.',
     vertus: 'Exfoliant, Nettoyant doux, Anti-taches pigmentaires, Resserre les pores.',
     skinType: 'Tous types de peau — Uniformisation du grain de peau.',
-    image: 'assets/images/products/cat-7.png',
+    image: 'assets/images/products/savon-tetrapela.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
@@ -138,13 +139,13 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Poudre de carotte, Curcuma, Acides de fruits, Parfum.',
     vertus: 'Clarifiant, Nettoyant doux, Éclat du teint, Éclaircissant naturel velouté.',
     skinType: 'Teint terne, peaux noires & métisses, uniformisation éclatante.',
-    image: 'assets/images/products/cat-9.png',
+    image: 'assets/images/products/savon-carotte.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
   {
     id: 'prod-karite-brut-200g',
-    name: 'Savon Beurre de Karité Brut (200 g)',
+    name: 'Savon Beurre de Karité (200 g)',
     brand: 'AMABELLEPEAU',
     merchant: 'ETS Marie Andrea',
     category: 'savons',
@@ -161,13 +162,13 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Pur beurre de karité bio de Korhogo, Parfum délicat.',
     vertus: 'Hydratant suprême, Nettoyant surgras, Émollient, Barrière protectrice cutanée.',
     skinType: 'Peaux sèches, très sèches & abîmées. Convient aux bébés et peaux sensibles.',
-    image: 'assets/images/products/cat-10.png',
+    image: 'assets/images/products/savon-beurre-karite.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
   {
     id: 'prod-miel-pur-200g',
-    name: 'Savon au Miel Pur (200 g)',
+    name: 'Savon au Miel (200 g)',
     brand: 'AMABELLEPEAU',
     merchant: 'ETS Marie Andrea',
     category: 'savons',
@@ -184,7 +185,99 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Miel naturel des savanes, Parfum.',
     vertus: 'Hydratant profond, Nettoyant cicatrisant, Éclat du teint, Anti-taches et antifongique.',
     skinType: 'Peaux déshydratées, sensibles ou réactives.',
-    image: 'assets/images/products/cat-4.png',
+    image: 'assets/images/products/savon-miel.jpg',
+    fallbackImage: 'assets/images/products/fiche-produits.png',
+    featured: true
+  },
+  {
+    id: 'prod-cacao-200g',
+    name: 'Savon au Beurre de Cacao (200 g)',
+    brand: 'AMABELLEPEAU',
+    merchant: 'ETS Marie Andrea',
+    category: 'savons',
+    categoryName: 'Savons Artisanaux',
+    price: 3500,
+    oldPrice: null,
+    badge: 'Anti-Vergetures',
+    badgeClass: 'badge-new',
+    rating: 4.8,
+    reviews: 31,
+    stock: 65,
+    status: 'in_stock',
+    weight: '200 g',
+    composition: 'Palmiste, Pur beurre de cacao brut d’Afrique de l’Ouest, Parfum.',
+    vertus: 'Hydratant profond, nettoyant élastifiant, prévention des vergetures, anti-âge.',
+    skinType: 'Peaux sèches & abîmées, femmes enceintes, peaux matures.',
+    image: 'assets/images/products/savon-beurre-cacao.jpg',
+    fallbackImage: 'assets/images/products/fiche-produits.png',
+    featured: true
+  },
+  {
+    id: 'prod-huile-carapa-100ml',
+    name: 'Huile de Carapa Pure (100 ml)',
+    brand: 'AMABELLEPEAU',
+    merchant: 'ETS Marie Andrea',
+    category: 'huiles-naturelles',
+    categoryName: 'Huiles Végétales & Sérums',
+    price: 6500,
+    oldPrice: 8000,
+    badge: 'Soin Précieux',
+    badgeClass: 'badge-new',
+    rating: 4.9,
+    reviews: 54,
+    stock: 70,
+    status: 'in_stock',
+    weight: '100 ml',
+    composition: 'Huile vierge pure de Carapa procera obtenue par première pression à froid.',
+    vertus: 'Anti-inflammatoire, cicatrisante, antiseptique puissant, soulage les rhumatismes et dermatoses, anti-moustiques naturel.',
+    skinType: 'Peaux à problèmes, eczéma, psoriasis, démangeaisons, douleurs musculaires.',
+    image: 'assets/images/products/huile-carapa.jpg',
+    fallbackImage: 'assets/images/products/fiche-produits.png',
+    featured: true
+  },
+  {
+    id: 'prod-huile-safou-100ml',
+    name: 'Huile de Safou (100 ml)',
+    brand: 'AMABELLEPEAU',
+    merchant: 'ETS Marie Andrea',
+    category: 'huiles-naturelles',
+    categoryName: 'Huiles Végétales & Sérums',
+    price: 8500,
+    oldPrice: 10000,
+    badge: 'Élixir Régénérant',
+    badgeClass: 'badge-bestseller',
+    rating: 5.0,
+    reviews: 68,
+    stock: 60,
+    status: 'in_stock',
+    weight: '100 ml',
+    composition: 'Huile extra-vierge de Safou (Dacryodes edulis) riche en acides gras essentiels, vitamines C et E.',
+    vertus: 'Régénérante cellulaire, antioxydante d\'exception, anti-âge, nourrit intensément et redonne souplesse à l\'épiderme.',
+    skinType: 'Peaux matures, peaux déshydratées, cheveux secs et dévitalisés.',
+    image: 'assets/images/products/huile-safou.jpg',
+    fallbackImage: 'assets/images/products/fiche-produits.png',
+    featured: true
+  },
+  {
+    id: 'prod-huile-baobab-100ml',
+    name: 'Huile Précieuse de Baobab (100 ml)',
+    brand: 'AMABELLEPEAU',
+    merchant: 'ETS Marie Andrea',
+    category: 'huiles-naturelles',
+    categoryName: 'Huiles Végétales & Sérums',
+    price: 9500,
+    oldPrice: 12000,
+    badge: 'Arbre de Vie',
+    badgeClass: 'badge-bestseller',
+    rating: 5.0,
+    reviews: 82,
+    stock: 55,
+    status: 'in_stock',
+    weight: '100 ml',
+    composition: '100% pure huile vierge de graines de Baobab sauvage d\'Afrique de l\'Ouest (Adansonia digitata).',
+    vertus: 'Cicatrisante, assouplissante, régénératrice des tissus, anti-vergetures, protège la barrière lipidique.',
+    skinType: 'Peaux très sèches, irritées, cicatrices, vergetures et pointes capillaires abîmées.',
+    image: 'assets/images/products/huile-baobab.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: true
   },
@@ -230,9 +323,9 @@ const DEFAULT_PRODUCTS = [
     composition: 'Beurre de karité liquide, huile de ricin, macérât de miel et aloès, essences rares.',
     vertus: 'Stimule la croissance des poils, offre brillance et vigueur sans graisser.',
     skinType: 'Barbes courtes, moyennes ou drues.',
-    image: 'assets/images/products/barbe-3.png',
+    image: 'assets/images/products/amabellebarbe-homme.jpg',
     fallbackImage: 'assets/images/products/fiche-produits.png',
-    featured: false
+    featured: true
   },
   {
     id: 'prod-amafleurdepeau-coffret',
@@ -299,7 +392,7 @@ const DEFAULT_PRODUCTS = [
     composition: 'Palmiste, Karité, Nicotinamide pure (B3), Parfum.',
     vertus: 'Éclat du teint, antifongique et antiseptique, réduit les boutons avec pus et les taches rebelles.',
     skinType: 'Acné sévère, taches pigmentaires du visage.',
-    image: 'assets/images/products/cat-11.png',
+    image: 'assets/images/products/fiche-produits.png',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: false
   },
@@ -325,38 +418,22 @@ const DEFAULT_PRODUCTS = [
     image: 'assets/images/products/fiche-produits.png',
     fallbackImage: 'assets/images/products/fiche-produits.png',
     featured: false
-  },
-  {
-    id: 'prod-cacao-200g',
-    name: 'Savon au Beurre de Cacao (200 g)',
-    brand: 'AMABELLEPEAU',
-    merchant: 'ETS Marie Andrea',
-    category: 'savons',
-    categoryName: 'Savons Artisanaux',
-    price: 3500,
-    oldPrice: null,
-    badge: 'Anti-Vergetures',
-    badgeClass: 'badge-new',
-    rating: 4.8,
-    reviews: 31,
-    stock: 65,
-    status: 'in_stock',
-    weight: '200 g',
-    composition: 'Palmiste, Pur beurre de cacao brut d’Afrique de l’Ouest.',
-    vertus: 'Hydratant profond, nettoyant élastifiant, prévention des vergetures, anti-âge.',
-    skinType: 'Peaux sèches & abîmées, femmes enceintes, peaux matures.',
-    image: 'assets/images/products/cat-8.png',
-    fallbackImage: 'assets/images/products/fiche-produits.png',
-    featured: false
   }
 ];
 
 // Product Store with LocalStorage Persistence
 const ProductStore = {
-  STORAGE_KEY: 'abp_products_catalog',
+  STORAGE_VERSION: 'v3.0',
+  STORAGE_KEY: 'abp_products_catalog_v3',
 
   getAll: function() {
     try {
+      const storedVer = localStorage.getItem('abp_catalog_version');
+      if (storedVer !== this.STORAGE_VERSION) {
+        localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
+        this.save(DEFAULT_PRODUCTS);
+        return DEFAULT_PRODUCTS;
+      }
       const stored = localStorage.getItem(this.STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
@@ -365,7 +442,6 @@ const ProductStore = {
     } catch(e) {
       console.warn('Could not read product storage, using defaults', e);
     }
-    // Initialize with defaults if empty
     this.save(DEFAULT_PRODUCTS);
     return DEFAULT_PRODUCTS;
   },
