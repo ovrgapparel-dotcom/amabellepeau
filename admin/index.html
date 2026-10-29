@@ -1,15 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Administration | AMABELLEPEAU - Superviseur Marketplace</title>
+  <title>Administration | AMABELLEPEAU - Back-Office Marketplace</title>
   <meta name="description" content="Panneau d'administration global de la marketplace AMABELLEPEAU. Gestion des marchands, modération des cosmétiques, dispatch livraison et suivi des commissions en Côte d'Ivoire.">
   <link rel="icon" type="image/png" href="../assets/icons/brand-logo.png">
   <link rel="stylesheet" href="../css/main.css">
 
   <style>
-    /* ── Styles Spécifiques Administration Globale ── */
     :root {
       --admin-sidebar-bg: #0D1A0D;
       --admin-gold: #C9A84C;
@@ -20,14 +19,13 @@
       background-color: var(--color-bg);
     }
 
-    /* Layout */
     .app-layout {
       display: flex;
       min-height: calc(100vh - var(--nav-height));
       position: relative;
     }
 
-    /* Admin Sidebar */
+    /* Sidebar */
     .sidebar {
       width: 280px;
       background: var(--admin-sidebar-bg);
@@ -40,7 +38,7 @@
       height: calc(100vh - var(--nav-height));
       overflow-y: auto;
       z-index: 100;
-      transition: transform var(--transition-base);
+      flex-shrink: 0;
     }
 
     .admin-profile-badge {
@@ -60,56 +58,55 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: var(--font-display);
       font-weight: 700;
-      font-size: 1.1rem;
-      border: 1px solid var(--color-gold);
+      font-size: var(--text-base);
+      border: 1px solid rgba(201, 168, 76, 0.4);
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .admin-meta {
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .admin-name {
       color: var(--color-cream);
-      font-size: var(--text-sm);
+      font-family: var(--font-display);
       font-weight: 700;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      font-size: var(--text-sm);
     }
 
     .admin-status-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
       font-size: 11px;
-      color: var(--color-gold-light);
-      letter-spacing: 0.03em;
+      color: var(--color-gold);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .status-indicator-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: var(--color-success);
+      background-color: var(--color-success);
       box-shadow: 0 0 6px var(--color-success);
     }
 
     .sidebar-nav {
-      padding: var(--space-3) 0;
-      flex: 1;
+      padding: var(--space-4) var(--space-3);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .sidebar-section-title {
-      padding: var(--space-4) var(--space-5) var(--space-2);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      color: rgba(201, 168, 76, 0.6);
       text-transform: uppercase;
-      color: rgba(201, 168, 76, 0.65);
+      letter-spacing: 0.1em;
+      padding: var(--space-3) var(--space-3) var(--space-1);
     }
 
     .sidebar-item-btn {
@@ -117,28 +114,29 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px var(--space-5);
-      background: none;
-      border: none;
-      border-left: 3px solid transparent;
-      color: rgba(245, 240, 232, 0.72);
+      padding: var(--space-3) var(--space-3);
+      border-radius: var(--radius-md);
+      color: rgba(245, 240, 232, 0.75);
+      background: transparent;
+      border: 1px solid transparent;
       font-size: var(--text-sm);
+      font-weight: 500;
       cursor: pointer;
+      transition: all var(--transition-fast);
       text-align: left;
-      transition: var(--transition-fast);
-      text-decoration: none;
     }
 
     .sidebar-item-btn:hover {
-      background: rgba(201, 168, 76, 0.08);
-      color: var(--color-gold);
+      background: rgba(201, 168, 76, 0.12);
+      color: var(--color-cream);
+      border-color: rgba(201, 168, 76, 0.2);
     }
 
     .sidebar-item-btn.active {
-      background: linear-gradient(90deg, rgba(201, 168, 76, 0.18) 0%, rgba(201, 168, 76, 0.02) 100%);
-      color: var(--color-gold);
-      border-left-color: var(--color-gold);
-      font-weight: 700;
+      background: linear-gradient(90deg, rgba(201, 168, 76, 0.22) 0%, rgba(201, 168, 76, 0.08) 100%);
+      color: #FFFFFF;
+      font-weight: 600;
+      border-left: 3px solid var(--color-gold);
     }
 
     .sidebar-item-content {
@@ -150,128 +148,113 @@
     .sidebar-icon {
       width: 18px;
       height: 18px;
-      opacity: 0.85;
-      stroke-width: 2;
       flex-shrink: 0;
+      color: var(--color-gold);
     }
 
     .sidebar-badge {
-      background: var(--color-gold);
-      color: var(--color-black);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       padding: 2px 7px;
       border-radius: var(--radius-full);
-      line-height: 1;
+      background: rgba(201, 168, 76, 0.2);
+      color: var(--color-gold);
     }
 
     .sidebar-badge.alert {
-      background: var(--color-warning);
-      color: white;
-    }
-
-    .sidebar-badge.purple {
-      background: #8E44AD;
-      color: white;
+      background: rgba(231, 76, 60, 0.2);
+      color: #E74C3C;
     }
 
     .sidebar-footer {
-      padding: var(--space-4) var(--space-5);
+      padding: var(--space-4);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.2);
     }
 
     .server-status-pill {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
       font-size: 11px;
-      color: rgba(245, 240, 232, 0.7);
+      color: rgba(245, 240, 232, 0.6);
     }
 
-    /* Main Content Top Header */
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: var(--space-8) var(--space-10);
+      overflow-y: auto;
+      max-width: 1400px;
+    }
+
     .admin-main-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: var(--space-8);
-      gap: var(--space-4);
       flex-wrap: wrap;
+      gap: var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: var(--space-6);
     }
 
     .admin-main-title h1 {
+      font-family: var(--font-display);
       font-size: var(--text-3xl);
       color: var(--color-black);
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
+      margin-bottom: var(--space-1);
     }
 
     .admin-main-title p {
       font-size: var(--text-sm);
       color: var(--color-text-muted);
-      margin-top: 4px;
     }
 
-    .admin-header-actions {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
+    /* View Panels */
+    .admin-view-panel {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .admin-view-panel.active {
+      display: block;
     }
 
-    /* 6 Stat Cards Grid */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Stats Grid */
     .stats-grid-6 {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: var(--space-4);
       margin-bottom: var(--space-8);
     }
 
     .stat-card-admin {
-      background: var(--color-surface);
+      background: white;
       border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4) var(--space-5);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
       position: relative;
       overflow: hidden;
       box-shadow: var(--shadow-sm);
-      transition: var(--transition-base);
-    }
-
-    .stat-card-admin::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--gradient-gold);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     }
 
     .stat-card-admin:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       box-shadow: var(--shadow-md);
-      border-color: rgba(201, 168, 76, 0.4);
-    }
-
-    .stat-card-admin.warning-card::before {
-      background: var(--color-warning);
-    }
-
-    .stat-card-admin.info-card::before {
-      background: #2980B9;
     }
 
     .stat-admin-label {
       font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
+      letter-spacing: 0.08em;
       color: var(--color-text-muted);
+      font-weight: 700;
       margin-bottom: var(--space-2);
       display: flex;
       align-items: center;
@@ -280,1513 +263,1388 @@
 
     .stat-admin-value {
       font-family: var(--font-display);
-      font-size: var(--text-xl);
+      font-size: var(--text-2xl);
       font-weight: 700;
       color: var(--color-black);
       line-height: 1.2;
-      margin-bottom: var(--space-1);
     }
 
     .stat-admin-sub {
       font-size: 11px;
-      font-weight: 700;
+      margin-top: var(--space-2);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
-
     .stat-admin-sub.green { color: var(--color-success); }
-    .stat-admin-sub.orange { color: var(--color-warning); }
     .stat-admin-sub.blue { color: #2980B9; }
+    .stat-admin-sub.orange { color: #E67E22; }
 
-    /* Commission Realtime Simulator Widget */
-    .commission-calc-card {
-      background: linear-gradient(135deg, #0D1A0D 0%, #152A15 100%);
-      border: 1px solid rgba(201, 168, 76, 0.35);
+    /* Tables & Card Wrappers */
+    .admin-card {
+      background: white;
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-xl);
       padding: var(--space-6);
-      color: var(--color-cream);
-      box-shadow: var(--shadow-lg);
       margin-bottom: var(--space-8);
-      position: relative;
-      overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }
 
-    .commission-calc-card::after {
-      content: '';
-      position: absolute;
-      top: -50px;
-      right: -50px;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .commission-top-bar {
+    .admin-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--space-6);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-5);
       flex-wrap: wrap;
       gap: var(--space-3);
     }
 
-    .calc-title {
+    .admin-card-title {
       font-family: var(--font-display);
       font-size: var(--text-xl);
-      color: var(--color-gold-light);
+      font-weight: 700;
+      color: var(--color-black);
       display: flex;
       align-items: center;
       gap: var(--space-2);
     }
 
-    .commission-metrics-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-6);
-      align-items: center;
-    }
-
-    .calc-metric-box {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius-md);
-      padding: var(--space-4);
-      backdrop-filter: blur(4px);
-    }
-
-    .calc-metric-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(245, 240, 232, 0.6);
-      margin-bottom: 4px;
-    }
-
-    .calc-metric-val {
-      font-family: var(--font-display);
-      font-size: var(--text-2xl);
-      font-weight: 700;
-      color: var(--color-cream);
-    }
-
-    .calc-metric-val.highlight {
-      color: var(--color-gold-light);
-    }
-
-    .slider-wrap {
-      margin-top: var(--space-4);
-      display: flex;
-      align-items: center;
-      gap: var(--space-4);
-      background: rgba(0, 0, 0, 0.3);
-      padding: var(--space-3) var(--space-5);
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(201, 168, 76, 0.2);
-    }
-
-    .slider-wrap input[type=range] {
-      flex: 1;
-      accent-color: var(--color-gold);
-      cursor: pointer;
-    }
-
-    /* Layout Grids */
-    .admin-grid-two {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-      margin-bottom: var(--space-8);
-      align-items: start;
-    }
-
-    /* CSS Bar Chart for Admin */
-    .admin-chart-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
       border-radius: var(--radius-lg);
-      padding: var(--space-6);
-      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
     }
 
-    .admin-chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: var(--space-5);
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+      text-align: left;
     }
 
-    .admin-css-chart {
-      display: flex;
-      align-items: flex-end;
-      gap: var(--space-3);
-      height: 180px;
-      padding-top: var(--space-4);
-      border-bottom: 2px solid var(--color-border);
-      position: relative;
-    }
-
-    .chart-dual-bar-group {
-      flex: 1;
-      display: flex;
-      gap: 4px;
-      align-items: flex-end;
-      justify-content: center;
-      height: 100%;
-      position: relative;
-    }
-
-    .bar-volume {
-      width: 14px;
-      background: var(--color-green);
-      border-radius: 3px 3px 0 0;
-      transition: height 0.5s ease;
-      position: relative;
-    }
-
-    .bar-commission {
-      width: 14px;
-      background: var(--color-gold);
-      border-radius: 3px 3px 0 0;
-      transition: height 0.5s ease;
-      position: relative;
-    }
-
-    .dual-tooltip {
-      position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--color-black);
-      color: white;
-      font-size: 10px;
-      padding: 3px 6px;
-      border-radius: 4px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-      z-index: 10;
-    }
-
-    .chart-dual-bar-group:hover .dual-tooltip {
-      opacity: 1;
-    }
-
-    .chart-legend {
-      display: flex;
-      gap: var(--space-4);
+    .admin-table th {
+      background: var(--color-surface-alt);
+      color: var(--color-text-muted);
       font-size: 11px;
-      margin-top: var(--space-3);
-      justify-content: center;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
     }
 
-    .legend-item {
-      display: flex;
+    .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: middle;
+      color: var(--color-text);
+    }
+
+    .admin-table tr:hover td {
+      background: rgba(27, 77, 30, 0.02);
+    }
+
+    .prod-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .status-badge {
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .legend-color-box {
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-    }
-
-    /* Section Styling */
-    .admin-section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--space-4);
-    }
-
-    .admin-section-title {
-      font-size: var(--text-xl);
-      color: var(--color-black);
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-
-    /* Approval buttons */
-    .btn-approve-merchant {
-      background: var(--gradient-gold);
-      color: var(--color-black);
-      border: none;
-      font-weight: 700;
-      font-size: var(--text-xs);
-      padding: 6px 12px;
+      padding: 4px 10px;
       border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .status-badge.in_stock { background: rgba(39, 174, 96, 0.12); color: #27AE60; }
+    .status-badge.low_stock { background: rgba(230, 126, 34, 0.12); color: #E67E22; }
+    .status-badge.out_of_stock { background: rgba(231, 76, 60, 0.12); color: #E74C3C; }
+    .status-badge.approved { background: rgba(39, 174, 96, 0.12); color: #27AE60; }
+    .status-badge.pending { background: rgba(243, 156, 18, 0.15); color: #D35400; }
+    .status-badge.suspended { background: rgba(149, 165, 166, 0.2); color: #7F8C8D; }
+
+    .btn-action {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: var(--transition-fast);
+      transition: all var(--transition-fast);
       display: inline-flex;
       align-items: center;
       gap: 4px;
-    }
-
-    .btn-approve-merchant:hover {
-      box-shadow: 0 4px 12px rgba(201, 168, 76, 0.4);
-      transform: translateY(-1px);
-    }
-
-    .btn-reject-merchant {
-      background: rgba(192, 57, 43, 0.1);
-      color: var(--color-error);
-      border: 1px solid rgba(192, 57, 43, 0.25);
-      font-weight: 700;
-      font-size: var(--text-xs);
-      padding: 6px 12px;
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      transition: var(--transition-fast);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .btn-reject-merchant:hover {
-      background: var(--color-error);
-      color: #FFFFFF;
-      border-color: var(--color-error);
-    }
-
-    /* Dispatch Card / Item */
-    .dispatch-card {
-      background: var(--color-surface);
       border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-5);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-4);
-      margin-bottom: var(--space-3);
-      transition: var(--transition-fast);
-    }
-
-    .dispatch-card:hover {
-      border-color: rgba(201, 168, 76, 0.4);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .dispatch-route {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-    }
-
-    .route-node {
-      font-size: var(--text-xs);
-      font-weight: 700;
+      background: white;
       color: var(--color-black);
     }
-
-    .route-arrow {
-      color: var(--color-gold);
-      font-weight: bold;
+    .btn-action:hover {
+      background: var(--color-surface-alt);
+      border-color: var(--color-gold);
+    }
+    .btn-action.btn-action-primary {
+      background: var(--color-green);
+      color: white;
+      border-color: var(--color-green);
+    }
+    .btn-action.btn-action-primary:hover {
+      background: #2D6B32;
+    }
+    .btn-action.btn-action-danger {
+      color: #E74C3C;
+      border-color: rgba(231, 76, 60, 0.3);
+    }
+    .btn-action.btn-action-danger:hover {
+      background: rgba(231, 76, 60, 0.08);
     }
 
-    /* Modal Assignation */
-    .modal-overlay {
+    /* Modal Styling */
+    .admin-modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(10, 10, 10, 0.7);
-      backdrop-filter: blur(5px);
-      z-index: 2000;
+      background: rgba(13, 26, 13, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
       padding: var(--space-4);
     }
-
-    .modal-overlay.active {
+    .admin-modal-overlay.active {
       display: flex;
     }
 
-    .modal-box {
-      background: var(--color-surface);
-      border-radius: var(--radius-xl);
-      max-width: 540px;
+    .admin-modal {
+      background: white;
+      border-radius: var(--radius-2xl);
       width: 100%;
-      box-shadow: var(--shadow-xl);
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(201, 168, 76, 0.3);
-      animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: modalScaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .modal-head {
-      padding: var(--space-5) var(--space-6);
+    @keyframes modalScaleIn {
+      from { opacity: 0; transform: scale(0.92) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .admin-modal-header {
+      padding: var(--space-6);
       border-bottom: 1px solid var(--color-border);
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+    }
+    .admin-modal-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--color-black);
+    }
+    .admin-modal-close {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--color-text-muted);
     }
 
-    .modal-body {
+    .admin-modal-body {
       padding: var(--space-6);
     }
 
-    /* Responsive */
-    @media (max-width: 1200px) {
-      .stats-grid-6 {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .commission-metrics-row {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .admin-grid-two {
-        grid-template-columns: 1fr;
-      }
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+    .form-label {
+      display: block;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
+      background: white;
+      color: var(--color-black);
+      font-family: inherit;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-green);
+      box-shadow: 0 0 0 3px rgba(27, 77, 30, 0.15);
     }
 
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed;
-        left: 0;
-        top: var(--nav-height);
-        bottom: 0;
-        transform: translateX(-100%);
-      }
-      .sidebar.mobile-open {
-        transform: translateX(0);
-      }
-      .stats-grid-6 {
-        grid-template-columns: 1fr 1fr;
-      }
-      .commission-metrics-row {
-        grid-template-columns: 1fr;
-      }
-      .admin-main-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    /* Toast */
+    .admin-toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .admin-toast {
+      background: #0D1A0D;
+      color: white;
+      padding: 14px 20px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(201, 168, 76, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @media (max-width: 900px) {
+      .app-layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; }
+      .main-content { padding: var(--space-4); }
     }
   </style>
 </head>
 <body>
 
-  <!-- =====================================================
-       NAVBAR (All French with role indicator 'Administrateur')
-       ===================================================== -->
-  <header class="navbar">
-    <div class="container">
-      <a href="../index.html" class="navbar-brand">
-        <img src="../assets/icons/brand-logo.png" alt="AMABELLEPEAU Logo" class="navbar-logo">
-        <div class="navbar-brand-text">
-          AMABELLE<span>PEAU</span>
-        </div>
-      </a>
-
-      <nav class="navbar-nav">
-        <a href="../index.html" class="navbar-link">Accueil</a>
-        <a href="../catalogue.html" class="navbar-link">Catalogue</a>
-        <a href="../marques.html" class="navbar-link">Marques</a>
-        <a href="../marchand/index.html" class="navbar-link">Portail Marchand</a>
-        <a href="index.html" class="navbar-link active">Administration</a>
-      </nav>
-
-      <div class="navbar-actions">
-        <!-- Role Indicator Badge -->
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="tag tag-gold" style="font-weight: 700; border: 1px solid rgba(201,168,76,0.5); background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(27,77,30,0.3));">
-            👑 SUPERVISEUR ADMIN
-          </span>
-        </div>
-
-        <!-- Sidebar mobile toggle -->
-        <button class="btn btn-sm btn-outline" id="adminSidebarToggleBtn" style="display: none; padding: 6px 10px;" aria-label="Menu Admin">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
-        </button>
-
-        <a href="../panier.html" class="cart-badge" title="Panier">
-          <button class="btn btn-icon btn-ghost" aria-label="Panier">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <path d="M16 10a4 4 0 0 1-8 0"></path>
-            </svg>
-          </button>
-        </a>
-
-        <!-- Mobile hamburger menu for main links -->
-        <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Menu Mobile">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+  <!-- Top Navbar -->
+  <header class="navbar" id="adminNavbar">
+    <div class="container flex-between">
+      <div style="display: flex; align-items: center; gap: var(--space-3);">
+        <img src="../assets/icons/brand-logo.png" alt="AMABELLEPEAU" class="navbar-logo" style="width: 38px; height: 38px; object-fit: contain;">
+        <span class="navbar-brand-text">AMABELLE<span>PEAU</span> · <small style="font-size: 13px; color: var(--color-gold); font-weight: 600;">Back-Office</small></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--space-4);">
+        <a href="../index.html" class="btn btn-ghost btn-sm" target="_blank">🌐 Voir la boutique</a>
+        <a href="../marchand/index.html" class="btn btn-ghost btn-sm">🏪 Espace Marchand</a>
       </div>
     </div>
   </header>
 
-  <!-- Mobile Drawer for Navbar Links -->
-  <div class="mobile-nav" id="mobileNav">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
-      <div class="navbar-brand-text" style="color: white;">AMABELLE<span style="color: var(--color-gold);">PEAU</span></div>
-      <button id="closeMobileNav" style="background: none; border: none; color: white; font-size: 28px; cursor: pointer;">&times;</button>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: var(--space-4);">
-      <a href="../index.html" class="navbar-link" style="font-size: var(--text-lg);">Accueil Marketplace</a>
-      <a href="../catalogue.html" class="navbar-link" style="font-size: var(--text-lg);">Catalogue Produits</a>
-      <a href="../marchand/index.html" class="navbar-link" style="font-size: var(--text-lg);">Espace Marchand</a>
-      <a href="index.html" class="navbar-link active" style="font-size: var(--text-lg); color: var(--color-gold);">Administration</a>
-      <a href="../compte.html" class="navbar-link" style="font-size: var(--text-lg);">Mon Compte</a>
-    </div>
-  </div>
-
-  <!-- =====================================================
-       APP LAYOUT: SIDEBAR + MAIN CONTENT
-       ===================================================== -->
   <div class="app-layout">
-
-    <!-- ── SIDEBAR NAVIGATION (Dark #0D1A0D with gold accents) ── -->
-    <aside class="sidebar" id="adminSidebar">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
       <div>
-        <!-- Admin Profile Header -->
         <div class="admin-profile-badge">
           <div class="admin-avatar">AP</div>
           <div class="admin-meta">
-            <div class="admin-name">Direction Générale</div>
+            <div class="admin-name">Superviseur Général</div>
             <div class="admin-status-tag">
               <span class="status-indicator-dot"></span>
-              Super-Administrateur CI
+              Marketplace Abidjan CI
             </div>
           </div>
         </div>
 
-        <!-- Sidebar Navigation Sections -->
         <nav class="sidebar-nav">
-          
-          <!-- TABLEAU DE BORD -->
-          <div class="sidebar-section-title">TABLEAU DE BORD</div>
-          <button class="sidebar-item-btn active" data-tab="tab-admin-overview">
+          <div class="sidebar-section-title">PILOTAGE</div>
+          <button class="sidebar-item-btn active" data-view="view-overview" onclick="switchAdminTab('view-overview')">
             <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-              </svg>
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
               <span>Vue d'ensemble</span>
             </div>
           </button>
 
-          <!-- MARCHANDS -->
-          <div class="sidebar-section-title">MARCHANDS</div>
-          <button class="sidebar-item-btn" data-tab="tab-admin-merchants" onclick="scrollToSection('section-approvals')">
+          <div class="sidebar-section-title">CATALOGUE & STOCK</div>
+          <button class="sidebar-item-btn" data-view="view-products" onclick="switchAdminTab('view-products')">
             <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-              <span>Liste des Marchands</span>
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              <span>Gestion des Produits</span>
             </div>
-            <span class="sidebar-badge" style="background: rgba(255,255,255,0.15); color: #fff;">12</span>
-          </button>
-          <button class="sidebar-item-btn" data-tab="tab-admin-approvals" onclick="scrollToSection('section-approvals')">
-            <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="8.5" cy="7" r="4"></circle>
-                <line x1="20" y1="8" x2="20" y2="14"></line>
-                <line x1="23" y1="11" x2="17" y2="11"></line>
-              </svg>
-              <span>Demandes d'approbation</span>
-            </div>
-            <span class="sidebar-badge alert" id="adminSidebarApprovalBadge">3</span>
+            <span class="sidebar-badge" id="badgeProdCount">15</span>
           </button>
 
-          <!-- CATALOGUE -->
-          <div class="sidebar-section-title">CATALOGUE</div>
-          <button class="sidebar-item-btn" data-tab="tab-admin-products" onclick="showToast('Chargement des 184 produits de la marketplace', 'success')">
+          <div class="sidebar-section-title">MARCHANDS & AGRÉMENTS</div>
+          <button class="sidebar-item-btn" data-view="view-merchants" onclick="switchAdminTab('view-merchants')">
             <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-              </svg>
-              <span>Tous les Produits</span>
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <span>Marchands Agréés</span>
             </div>
-            <span class="sidebar-badge" style="background: rgba(255,255,255,0.15); color: #fff;">184</span>
-          </button>
-          <button class="sidebar-item-btn" data-tab="tab-admin-moderation" onclick="showToast('Tous les produits sont conformes à la charte cosmétique', 'success')">
-            <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-              <span>Modération</span>
-            </div>
-            <span class="tag tag-gold" style="font-size: 9px; padding: 1px 6px;">0 alerte</span>
+            <span class="sidebar-badge alert" id="badgePendingMerch">2</span>
           </button>
 
-          <!-- COMMANDES -->
-          <div class="sidebar-section-title">COMMANDES</div>
-          <button class="sidebar-item-btn" data-tab="tab-admin-orders" onclick="scrollToSection('section-orders')">
+          <div class="sidebar-section-title">COMMISSIONS & VENTES</div>
+          <button class="sidebar-item-btn" data-view="view-commissions" onclick="switchAdminTab('view-commissions')">
             <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-              </svg>
-              <span>Toutes les Commandes</span>
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span>Réseau & Commissions</span>
             </div>
-            <span class="sidebar-badge" style="background: var(--color-green); color: white;">147</span>
-          </button>
-          <button class="sidebar-item-btn" data-tab="tab-admin-dispatch" onclick="scrollToSection('section-dispatch')">
-            <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <rect x="1" y="3" width="15" height="13"></rect>
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                <circle cx="18.5" cy="18.5" r="2.5"></circle>
-              </svg>
-              <span>Dispatch livraison</span>
-            </div>
-            <span class="sidebar-badge purple" id="adminSidebarDispatchBadge">8</span>
+            <span class="sidebar-badge">15%</span>
           </button>
 
-          <!-- FINANCES -->
-          <div class="sidebar-section-title">FINANCES</div>
-          <button class="sidebar-item-btn" data-tab="tab-admin-commissions" onclick="scrollToSection('section-calculator')">
+          <div class="sidebar-section-title">MARKETING & AFFILIATION</div>
+          <button class="sidebar-item-btn" data-view="view-influencers" onclick="switchAdminTab('view-influencers')">
             <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <line x1="12" y1="1" x2="12" y2="23"></line>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-              </svg>
-              <span>Commissions</span>
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>Codes Influenceurs</span>
             </div>
-          </button>
-          <button class="sidebar-item-btn" data-tab="tab-admin-balances" onclick="showToast('Affichage des soldes des 12 marchands', 'success')">
-            <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
-              </svg>
-              <span>Soldes marchands</span>
-            </div>
-          </button>
-          <button class="sidebar-item-btn" data-tab="tab-admin-refunds" onclick="showToast('Aucun litige ou remboursement en cours', 'success')">
-            <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-              </svg>
-              <span>Remboursements</span>
-            </div>
+            <span class="sidebar-badge" id="badgeInfCount">4</span>
           </button>
 
-          <!-- RAPPORTS -->
-          <div class="sidebar-section-title">RAPPORTS</div>
-          <button class="sidebar-item-btn" data-tab="tab-admin-sales" onclick="showToast('Génération du rapport financier mensuel', 'success')">
+          <div class="sidebar-section-title">COMMANDES & DISPATCH</div>
+          <button class="sidebar-item-btn" data-view="view-orders" onclick="switchAdminTab('view-orders')">
             <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-              </svg>
-              <span>Ventes</span>
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              <span>Suivi des Commandes</span>
             </div>
+            <span class="sidebar-badge" id="badgeOrderCount" style="background:var(--color-green);color:#fff;">5</span>
           </button>
-          <button class="sidebar-item-btn" data-tab="tab-admin-perf" onclick="showToast('Indicateurs de conversion et fidélité calculés', 'success')">
-            <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-              </svg>
-              <span>Performance</span>
-            </div>
-          </button>
-
-          <!-- PARAMÈTRES -->
-          <div class="sidebar-section-title">PARAMÈTRES</div>
-          <button class="sidebar-item-btn" data-tab="tab-admin-config" onclick="showToast('Accès à la configuration passerelles Wave / OM et barèmes', 'success')">
-            <div class="sidebar-item-content">
-              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>Configuration</span>
-            </div>
-          </button>
-
         </nav>
       </div>
 
-      <!-- Server & Gateway Health Status -->
       <div class="sidebar-footer">
         <div class="server-status-pill">
-          <span>Wave / OM Gateway</span>
-          <span style="color: var(--color-success); font-weight: 700;">● Opérationnel</span>
+          <span>Passerelles Wave & OM</span>
+          <span style="color:var(--color-success);font-weight:700;">● En ligne</span>
         </div>
       </div>
     </aside>
 
-    <!-- ── MAIN CONTENT AREA ── -->
+    <!-- MAIN CONTENT VIEW PANELS -->
     <main class="main-content">
       
-      <!-- Top Title Bar -->
-      <div class="admin-main-header">
-        <div class="admin-main-title">
-          <h1>Administration AMABELLEPEAU</h1>
-          <p>Supervision de la marketplace de cosmétiques naturels · Abidjan, Côte d'Ivoire · <span id="adminDate">Lundi 26 Octobre 2026</span></p>
-        </div>
-        <div class="admin-header-actions">
-          <button class="btn btn-outline btn-sm" onclick="exportGlobalReport()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Exporter Relevé Général
-          </button>
-          <a href="../marchand/index.html" class="btn btn-primary btn-sm">
-            Espace Marchand →
-          </a>
-        </div>
-      </div>
-
-      <!-- 6 Stat Cards Grid -->
-      <div class="stats-grid-6">
-        <!-- 1: CA Total Mois -->
-        <div class="stat-card-admin">
-          <div class="stat-admin-label">
-            <span>CA Total Mois</span>
-            <span style="color: var(--color-green);">💰</span>
+      <!-- VIEW 1: OVERVIEW -->
+      <div id="view-overview" class="admin-view-panel active">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Tableau de Bord & Supervision</h1>
+            <p>Vue consolidée des ventes, commissions (15%), marchands et flux logistiques à Abidjan.</p>
           </div>
-          <div class="stat-admin-value" id="statVolumeBrut">1 847 500 XOF</div>
-          <div class="stat-admin-sub green">↑ 18.4% vs Sept.</div>
-        </div>
-
-        <!-- 2: Commissions (15%) -->
-        <div class="stat-card-admin">
-          <div class="stat-admin-label">
-            <span>Commissions</span>
-            <span style="color: var(--color-gold);">💎</span>
-          </div>
-          <div class="stat-admin-value" id="statCommissionsDisplay" style="color: var(--color-gold-dark);">277 125 XOF</div>
-          <div class="stat-admin-sub green" id="statCommissionRateLabel">15% plateforme</div>
-        </div>
-
-        <!-- 3: Commandes -->
-        <div class="stat-card-admin">
-          <div class="stat-admin-label">
-            <span>Commandes</span>
-            <span>📦</span>
-          </div>
-          <div class="stat-admin-value">147</div>
-          <div class="stat-admin-sub blue">Ce mois à Abidjan</div>
-        </div>
-
-        <!-- 4: Marchands actifs -->
-        <div class="stat-card-admin">
-          <div class="stat-admin-label">
-            <span>Marchands</span>
-            <span>🏪</span>
-          </div>
-          <div class="stat-admin-value" id="statActiveMerchantsCount">12</div>
-          <div class="stat-admin-sub green">Boutiques certifiées</div>
-        </div>
-
-        <!-- 5: En attente d'approbation -->
-        <div class="stat-card-admin warning-card">
-          <div class="stat-admin-label">
-            <span>En attente</span>
-            <span style="color: var(--color-warning);">⏳</span>
-          </div>
-          <div class="stat-admin-value" id="statPendingApprovalsCount" style="color: var(--color-warning);">3</div>
-          <div class="stat-admin-sub orange">Dossiers à vérifier</div>
-        </div>
-
-        <!-- 6: Livraisons en cours -->
-        <div class="stat-card-admin info-card">
-          <div class="stat-admin-label">
-            <span>Livraisons</span>
-            <span>🛵</span>
-          </div>
-          <div class="stat-admin-value" id="statActiveDispatchCount" style="color: #2980B9;">8</div>
-          <div class="stat-admin-sub blue">En cours d'acheminement</div>
-        </div>
-      </div>
-
-      <!-- Real-time Commission Calculation Display -->
-      <section class="commission-calc-card" id="section-calculator">
-        <div class="commission-top-bar">
-          <div>
-            <h2 class="calc-title">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              Calcul des Commissions en Temps Réel
-            </h2>
-            <p style="font-size: var(--text-xs); color: rgba(245, 240, 232, 0.7); margin-top: 3px;">
-              Moteur dynamique de répartition des revenus entre marchands et la marketplace AMABELLEPEAU.
-            </p>
-          </div>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span class="tag tag-gold" style="font-size: 11px;">Taux Actuel : <span id="currentRateBadge">15%</span></span>
-          </div>
-        </div>
-
-        <div class="commission-metrics-row">
-          <div class="calc-metric-box">
-            <div class="calc-metric-label">Volume d'Affaires Brut</div>
-            <div class="calc-metric-val" id="calcGrossVolume">1 847 500 XOF</div>
-          </div>
-
-          <div class="calc-metric-box">
-            <div class="calc-metric-label">Commission Marketplace</div>
-            <div class="calc-metric-val highlight" id="calcCommissionTotal">277 125 XOF</div>
-          </div>
-
-          <div class="calc-metric-box">
-            <div class="calc-metric-label">Reversé aux Marchands</div>
-            <div class="calc-metric-val" id="calcMerchantPayout">1 570 375 XOF</div>
-          </div>
-
-          <div class="calc-metric-box">
-            <div class="calc-metric-label">Passerelle Mobile (Wave/OM ~1.2%)</div>
-            <div class="calc-metric-val" id="calcGatewayFees">22 170 XOF</div>
-          </div>
-        </div>
-
-        <div class="slider-wrap">
-          <span style="font-size: 12px; font-weight: 700; white-space: nowrap; color: var(--color-gold-light);">Simulateur de Barème Commission :</span>
-          <input type="range" id="commissionRateSlider" min="5" max="25" step="1" value="15" oninput="updateCommissionSimulation(this.value)">
-          <span style="font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--color-gold-light); min-width: 45px;" id="sliderValDisplay">15%</span>
-        </div>
-      </section>
-
-      <!-- Dual Column: Sales Chart & Revenue Stream Breakdown -->
-      <div class="admin-grid-two">
-        <!-- Sales & Commission Chart -->
-        <div class="admin-chart-card">
-          <div class="admin-chart-header">
-            <div>
-              <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--color-black);">Ventes & Commissions Mensuelles</h3>
-              <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Comparaison Volume Total vs Commission Perçue (XOF)</div>
-            </div>
-            <span class="tag tag-dark">Année 2026</span>
-          </div>
-
-          <div class="admin-css-chart">
-            <!-- Mai -->
-            <div class="chart-dual-bar-group">
-              <div class="bar-volume" style="height: 48%;"></div>
-              <div class="bar-commission" style="height: 20%;"></div>
-              <div class="dual-tooltip">Mai: 920k / 138k XOF</div>
-            </div>
-            <!-- Juin -->
-            <div class="chart-dual-bar-group">
-              <div class="bar-volume" style="height: 60%;"></div>
-              <div class="bar-commission" style="height: 25%;"></div>
-              <div class="dual-tooltip">Juin: 1.15M / 172k XOF</div>
-            </div>
-            <!-- Juil -->
-            <div class="chart-dual-bar-group">
-              <div class="bar-volume" style="height: 72%;"></div>
-              <div class="bar-commission" style="height: 30%;"></div>
-              <div class="dual-tooltip">Juil: 1.38M / 207k XOF</div>
-            </div>
-            <!-- Août -->
-            <div class="chart-dual-bar-group">
-              <div class="bar-volume" style="height: 68%;"></div>
-              <div class="bar-commission" style="height: 28%;"></div>
-              <div class="dual-tooltip">Août: 1.30M / 195k XOF</div>
-            </div>
-            <!-- Sept -->
-            <div class="chart-dual-bar-group">
-              <div class="bar-volume" style="height: 82%;"></div>
-              <div class="bar-commission" style="height: 35%;"></div>
-              <div class="dual-tooltip">Sept: 1.56M / 234k XOF</div>
-            </div>
-            <!-- Oct (Current) -->
-            <div class="chart-dual-bar-group">
-              <div class="bar-volume" style="height: 100%;"></div>
-              <div class="bar-commission" style="height: 42%;"></div>
-              <div class="dual-tooltip">Oct: 1.84M / 277k XOF</div>
-            </div>
-          </div>
-
-          <div class="chart-legend">
-            <div class="legend-item">
-              <div class="legend-color-box" style="background: var(--color-green);"></div>
-              <span>Volume Ventes Total</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color-box" style="background: var(--color-gold);"></div>
-              <span>Commissions Plateforme (15%)</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Payment Breakdown & Key Indicators -->
-        <div class="admin-chart-card">
-          <div class="admin-chart-header">
-            <div>
-              <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--color-black);">Répartition des Paiements CI</h3>
-              <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Méthodes d'encaissement à Abidjan</div>
-            </div>
-            <span class="tag tag-gold">Direct Mobile</span>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-2);">
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: var(--text-sm); font-weight: 700; margin-bottom: 6px;">
-                <span style="color: #1BA4E8;">Wave Côte d'Ivoire (68%)</span>
-                <span>1 256 300 XOF</span>
-              </div>
-              <div style="height: 8px; background: var(--color-border); border-radius: var(--radius-full); overflow: hidden;">
-                <div style="width: 68%; height: 100%; background: #1BA4E8;"></div>
-              </div>
-            </div>
-
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: var(--text-sm); font-weight: 700; margin-bottom: 6px;">
-                <span style="color: #FF7900;">Orange Money CI (24%)</span>
-                <span>443 400 XOF</span>
-              </div>
-              <div style="height: 8px; background: var(--color-border); border-radius: var(--radius-full); overflow: hidden;">
-                <div style="width: 24%; height: 100%; background: #FF7900;"></div>
-              </div>
-            </div>
-
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: var(--text-sm); font-weight: 700; margin-bottom: 6px;">
-                <span style="color: var(--color-text-muted);">Paiement à la livraison (8%)</span>
-                <span>147 800 XOF</span>
-              </div>
-              <div style="height: 8px; background: var(--color-border); border-radius: var(--radius-full); overflow: hidden;">
-                <div style="width: 8%; height: 100%; background: var(--color-earth);"></div>
-              </div>
-            </div>
-
-            <div style="margin-top: var(--space-2); background: var(--color-surface-alt); padding: var(--space-3); border-radius: var(--radius-md); border-left: 3px solid var(--color-success); font-size: var(--text-xs);">
-              🛡️ <strong>Sécurité des fonds :</strong> 92% des règlements sont réglés instantanément par Mobile Money sans risque d'impayé.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 'Marchands en attente d'approbation' Table -->
-      <section style="margin-bottom: var(--space-10);" id="section-approvals">
-        <div class="admin-section-header">
-          <h2 class="admin-section-title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-            Marchands en attente d'approbation
-            <span class="tag tag-rose" id="pendingApprovalsBadge" style="color: var(--color-warning);">3 demandes</span>
-          </h2>
-          <span style="font-size: var(--text-xs); color: var(--color-text-muted);">Vérification de conformité et des labels bio</span>
-        </div>
-
-        <div class="table-container">
-          <table class="table" id="approvalTable">
-            <thead>
-              <tr>
-                <th>Nom du Candidat</th>
-                <th>Nom de l'Entreprise / Marque</th>
-                <th>Date de Demande</th>
-                <th>Pièces Justificatives Fournies</th>
-                <th style="text-align: right;">Décision Superviseur</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Candidate 1 -->
-              <tr id="merchant-row-1">
-                <td>
-                  <strong>Aïcha Koné</strong>
-                  <div style="font-size: 11px; color: var(--color-text-muted);">📞 +225 07 11 22 33</div>
-                </td>
-                <td>
-                  <strong style="color: var(--color-green-deep);">Karité d'Or de Korhogo</strong>
-                  <div style="font-size: 11px; color: var(--color-text-muted);">Savonnerie traditionnelle & baumes purs</div>
-                </td>
-                <td>24 Octobre 2026</td>
-                <td>
-                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <span class="tag tag-dark" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('Registre du Commerce RCCM Korhogo')">📄 RCCM</span>
-                    <span class="tag tag-green" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('Certificat Biologique Ecocert')">🌿 Certif. Bio</span>
-                    <span class="tag tag-gold" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('CNI Aïcha Koné')">🪪 Pièce CNI</span>
-                  </div>
-                </td>
-                <td style="text-align: right;">
-                  <div style="display: flex; gap: var(--space-2); justify-content: flex-end;" id="decision-cell-1">
-                    <button class="btn-approve-merchant" onclick="approveMerchant('1', 'Karité d'Or de Korhogo', 'Aïcha Koné')">
-                      ✓ Approuver
-                    </button>
-                    <button class="btn-reject-merchant" onclick="rejectMerchant('1', 'Karité d'Or de Korhogo')">
-                      ✕ Rejeter
-                    </button>
-                  </div>
-                </td>
-              </tr>
-
-              <!-- Candidate 2 -->
-              <tr id="merchant-row-2">
-                <td>
-                  <strong>Drissa Sanogo</strong>
-                  <div style="font-size: 11px; color: var(--color-text-muted);">📞 +225 05 44 88 12</div>
-                </td>
-                <td>
-                  <strong style="color: var(--color-green-deep);">Savonnerie Botanique de Man</strong>
-                  <div style="font-size: 11px; color: var(--color-text-muted);">Extraits de café vert & beurre de cacao</div>
-                </td>
-                <td>23 Octobre 2026</td>
-                <td>
-                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <span class="tag tag-dark" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('Déclaration Fiscale DGI')">📄 Déclaration DGI</span>
-                    <span class="tag tag-rose" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('Analyses INHP Côte d'Ivoire')">🔬 Test INHP</span>
-                    <span class="tag tag-gold" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('CNI Drissa Sanogo')">🪪 Pièce CNI</span>
-                  </div>
-                </td>
-                <td style="text-align: right;">
-                  <div style="display: flex; gap: var(--space-2); justify-content: flex-end;" id="decision-cell-2">
-                    <button class="btn-approve-merchant" onclick="approveMerchant('2', 'Savonnerie Botanique de Man', 'Drissa Sanogo')">
-                      ✓ Approuver
-                    </button>
-                    <button class="btn-reject-merchant" onclick="rejectMerchant('2', 'Savonnerie Botanique de Man')">
-                      ✕ Rejeter
-                    </button>
-                  </div>
-                </td>
-              </tr>
-
-              <!-- Candidate 3 -->
-              <tr id="merchant-row-3">
-                <td>
-                  <strong>Sylvie Kouassi</strong>
-                  <div style="font-size: 11px; color: var(--color-text-muted);">📞 +225 07 99 33 00</div>
-                </td>
-                <td>
-                  <strong style="color: var(--color-green-deep);">Ébène & Miel Cosmétiques</strong>
-                  <div style="font-size: 11px; color: var(--color-text-muted);">Gommages artisanaux au sucre roux d'Afrique</div>
-                </td>
-                <td>21 Octobre 2026</td>
-                <td>
-                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <span class="tag tag-dark" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('Registre RCCM Abidjan')">📄 RCCM Abidjan</span>
-                    <span class="tag tag-gold" style="font-size: 10px; cursor: pointer;" onclick="viewDocument('Passeport Sylvie Kouassi')">🪪 Passeport</span>
-                  </div>
-                </td>
-                <td style="text-align: right;">
-                  <div style="display: flex; gap: var(--space-2); justify-content: flex-end;" id="decision-cell-3">
-                    <button class="btn-approve-merchant" onclick="approveMerchant('3', 'Ébène & Miel Cosmétiques', 'Sylvie Kouassi')">
-                      ✓ Approuver
-                    </button>
-                    <button class="btn-reject-merchant" onclick="rejectMerchant('3', 'Ébène & Miel Cosmétiques')">
-                      ✕ Rejeter
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- 'Dernières commandes' Full Table -->
-      <section style="margin-bottom: var(--space-10);" id="section-orders">
-        <div class="admin-section-header">
-          <h2 class="admin-section-title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            Dernières Commandes Plateforme
-          </h2>
           <div style="display: flex; gap: var(--space-2);">
-            <select class="form-select" style="padding: 4px 10px; font-size: 12px; width: auto;" onchange="filterAdminOrders(this.value)">
-              <option value="all">Tous les statuts</option>
-              <option value="pending">En attente</option>
-              <option value="preparing">En préparation</option>
-              <option value="delivered">Livrées</option>
-            </select>
+            <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Nouveau Produit</button>
+            <button class="btn btn-outline btn-sm" onclick="switchAdminTab('view-commissions')">Calculateur 15%</button>
           </div>
         </div>
 
-        <div class="table-container">
-          <table class="table" id="adminOrdersTable">
-            <thead>
-              <tr>
-                <th>N° Commande</th>
-                <th>Client</th>
-                <th>Marchand Vendeur</th>
-                <th>Articles</th>
-                <th>Total (XOF)</th>
-                <th>Règlement</th>
-                <th>Statut</th>
-                <th style="text-align: right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Row 1 -->
-              <tr data-status="pending">
-                <td><strong>#CMD-0841</strong></td>
-                <td>Kouamé Affoué</td>
-                <td><span class="tag tag-gold">Atelier Nanan</span></td>
-                <td>2x Savon Moringa Brut</td>
-                <td><strong>7 000 XOF</strong></td>
-                <td><span class="payment-badge" style="background: rgba(27,164,232,0.15); border-color:#1BA4E8; color:#0b7bb5; font-weight:700;">Wave</span></td>
-                <td><span class="status status-pending">En attente</span></td>
-                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Détails de commande #CMD-0841 affichés', 'success')">Inspecter</button></td>
-              </tr>
-              <!-- Row 2 -->
-              <tr data-status="preparing">
-                <td><strong>#CMD-0840</strong></td>
-                <td>Patrick N'Da</td>
-                <td><span class="tag tag-dark">Pureté d'Assinie</span></td>
-                <td>1x Huile Sérum Macadamia</td>
-                <td><strong>12 500 XOF</strong></td>
-                <td><span class="payment-badge" style="background: rgba(255,121,0,0.15); border-color:#FF7900; color:#c45d00; font-weight:700;">Orange Money</span></td>
-                <td><span class="status status-preparing">En préparation</span></td>
-                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Détails de commande #CMD-0840 affichés', 'success')">Inspecter</button></td>
-              </tr>
-              <!-- Row 3 -->
-              <tr data-status="pending">
-                <td><strong>#CMD-0839</strong></td>
-                <td>Diop Mamadou</td>
-                <td><span class="tag tag-gold">Atelier Nanan</span></td>
-                <td>1x Sérum Baobab + 1x Savon Cacao</td>
-                <td><strong>13 000 XOF</strong></td>
-                <td><span class="payment-badge" style="background: rgba(255,121,0,0.15); border-color:#FF7900; color:#c45d00; font-weight:700;">Orange Money</span></td>
-                <td><span class="status status-pending">En attente</span></td>
-                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Détails de commande #CMD-0839 affichés', 'success')">Inspecter</button></td>
-              </tr>
-              <!-- Row 4 -->
-              <tr data-status="delivered">
-                <td><strong>#CMD-0838</strong></td>
-                <td>Grace Koffi</td>
-                <td><span class="tag tag-green">BioSavons Ivoire</span></td>
-                <td>3x Savon Noir Cacao Pur</td>
-                <td><strong>9 000 XOF</strong></td>
-                <td><span class="payment-badge" style="background: rgba(27,164,232,0.15); border-color:#1BA4E8; color:#0b7bb5; font-weight:700;">Wave</span></td>
-                <td><span class="status status-delivered">Livré</span></td>
-                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Commande #CMD-0838 archivée', 'success')">Inspecter</button></td>
-              </tr>
-              <!-- Row 5 -->
-              <tr data-status="delivered">
-                <td><strong>#CMD-0837</strong></td>
-                <td>Serge Yao</td>
-                <td><span class="tag tag-rose">Karité Suprême</span></td>
-                <td>1x Baume Karité Mangue 250g</td>
-                <td><strong>5 500 XOF</strong></td>
-                <td><span class="payment-badge" style="background: rgba(27,164,232,0.15); border-color:#1BA4E8; color:#0b7bb5; font-weight:700;">Wave</span></td>
-                <td><span class="status status-delivered">Livré</span></td>
-                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Commande #CMD-0837 archivée', 'success')">Inspecter</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- 'Dispatch livraison' Section -->
-      <section style="margin-bottom: var(--space-8);" id="section-dispatch">
-        <div class="admin-section-header">
-          <h2 class="admin-section-title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-            Dispatch & Logistique Livraison Abidjan
-            <span class="tag tag-gold" id="dispatchTotalBadge">3 prêts à expédier</span>
-          </h2>
-          <span style="font-size: var(--text-xs); color: var(--color-text-muted);">Attribution des courses aux partenaires logistiques</span>
-        </div>
-
-        <!-- Dispatch Item 1 -->
-        <div class="dispatch-card" id="dispatch-item-1">
-          <div>
-            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: 6px;">
-              <strong>Colis #DSP-401</strong>
-              <span class="tag tag-dark">CMD-0835</span>
-              <span class="tag tag-green">Prêt au ramassage</span>
-            </div>
-            <div class="dispatch-route">
-              <span class="route-node">📍 Atelier Nanan (Cocody Vallons)</span>
-              <span class="route-arrow">➔</span>
-              <span class="route-node">📍 Destinataire : Bamba Mariam (Plateau Bd République)</span>
-            </div>
-            <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 4px;">
-              Colis : 3x Savons Douceur · Valeur : 11 400 XOF · Payé Wave
-            </div>
+        <div class="stats-grid-6">
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Ventes Globales</span><span>💰</span></div>
+            <div class="stat-admin-value" id="statOverviewSales">11 850 000 XOF</div>
+            <div class="stat-admin-sub green">↑ 18.4% ce mois</div>
           </div>
-          <div style="text-align: right;" id="dispatch-action-cell-1">
-            <button class="btn btn-primary btn-sm" onclick="openAssignModal('DSP-401', 'Atelier Nanan', 'Plateau')">
-              🛵 Assigner livraison
-            </button>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Commissions (15%)</span><span>💎</span></div>
+            <div class="stat-admin-value" style="color:var(--color-gold);" id="statOverviewComm">1 777 500 XOF</div>
+            <div class="stat-admin-sub green">Revenu net plateforme</div>
+          </div>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Commandes</span><span>📦</span></div>
+            <div class="stat-admin-value" id="statOverviewOrders">147</div>
+            <div class="stat-admin-sub blue">En Côte d'Ivoire</div>
+          </div>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Marchands Actifs</span><span>🏪</span></div>
+            <div class="stat-admin-value" id="statOverviewMerchants">6</div>
+            <div class="stat-admin-sub green">Boutiques certifiées</div>
+          </div>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>En Attente KYC</span><span>⏳</span></div>
+            <div class="stat-admin-value" style="color:#E67E22;" id="statOverviewPending">2</div>
+            <div class="stat-admin-sub orange">Dossiers à agréer</div>
+          </div>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Produits Actifs</span><span>🌿</span></div>
+            <div class="stat-admin-value" id="statOverviewProds">15</div>
+            <div class="stat-admin-sub green">Savonnerie & Soins</div>
           </div>
         </div>
 
-        <!-- Dispatch Item 2 -->
-        <div class="dispatch-card" id="dispatch-item-2">
-          <div>
-            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: 6px;">
-              <strong>Colis #DSP-402</strong>
-              <span class="tag tag-dark">CMD-0828</span>
-              <span class="tag tag-rose" style="color: #2980B9;">En transit</span>
-            </div>
-            <div class="dispatch-route">
-              <span class="route-node">📍 Savons d'Ivoire (Marcory Zone 4)</span>
-              <span class="route-arrow">➔</span>
-              <span class="route-node">📍 Destinataire : Yao Estelle (Yopougon Niangon)</span>
-            </div>
-            <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 4px;">
-              Colis : 2x Coffret Rituel · Livreur : <strong>Flash Express (Koffi Boris)</strong> · Départ 10:45
-            </div>
+        <!-- Commission Calculator Widget -->
+        <div class="admin-card" style="background:linear-gradient(135deg, #0D1A0D 0%, #153B18 100%); color:white;">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title" style="color:var(--color-gold);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              Calculateur Automatique de Répartition (15% Commission)
+            </h2>
+            <span style="font-size:12px;color:rgba(255,255,255,0.7);">Règle commerciale MVP validée</span>
           </div>
-          <div style="text-align: right;">
-            <span class="status status-preparing">Course en cours</span>
-          </div>
-        </div>
-
-        <!-- Dispatch Item 3 -->
-        <div class="dispatch-card" id="dispatch-item-3">
-          <div>
-            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: 6px;">
-              <strong>Colis #DSP-403</strong>
-              <span class="tag tag-dark">CMD-0830</span>
-              <span class="tag tag-green">Prêt au ramassage</span>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4);align-items:center;">
+            <div>
+              <label class="form-label" style="color:rgba(255,255,255,0.8);">Volume de Vente à Simuler (XOF)</label>
+              <input type="number" id="calcInputVolume" class="form-input" value="1000000" step="50000" oninput="calculateCommissionBreakdown()" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(201,168,76,0.5);">
             </div>
-            <div class="dispatch-route">
-              <span class="route-node">📍 BioSavons Ivoire (Yopougon)</span>
-              <span class="route-arrow">➔</span>
-              <span class="route-node">📍 Destinataire : Konan Jean-Yves (Deux-Plateaux)</span>
+            <div style="background:rgba(0,0,0,0.3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);border:1px solid rgba(201,168,76,0.3);">
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;">Commission AMABELLEPEAU (15%)</div>
+              <div style="font-family:var(--font-display);font-size:var(--text-xl);font-weight:700;color:var(--color-gold);" id="calcResultCommission">150 000 XOF</div>
             </div>
-            <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 4px;">
-              Colis : 1x Beurre Cacao + 1x Savon · Valeur : 8 000 XOF · Encaissement espèces prévu
+            <div style="background:rgba(0,0,0,0.3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);border:1px solid rgba(255,255,255,0.2);">
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;">Reversement Marchand (85%)</div>
+              <div style="font-family:var(--font-display);font-size:var(--text-xl);font-weight:700;color:#27AE60;" id="calcResultPayout">850 000 XOF</div>
             </div>
-          </div>
-          <div style="text-align: right;" id="dispatch-action-cell-3">
-            <button class="btn btn-primary btn-sm" onclick="openAssignModal('DSP-403', 'BioSavons Ivoire', 'Deux-Plateaux')">
-              🛵 Assigner livraison
-            </button>
           </div>
         </div>
 
-      </section>
+        <!-- Recent Activity Quick Tables -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">📦 Dernières Commandes Traitées</h2>
+            <button class="btn-action" onclick="switchAdminTab('view-orders')">Voir toutes les commandes →</button>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>N° Commande</th>
+                  <th>Client</th>
+                  <th>Commune</th>
+                  <th>Produits</th>
+                  <th>Montant</th>
+                  <th>Paiement</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody id="overviewRecentOrdersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: PRODUCTS -->
+      <div id="view-products" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Catalogue & Maintenance Produits</h1>
+            <p>Gérez les stocks, prix, compositions et visuels officiels (ETS Marie Andrea, AMABELLEBARBE, AMAFLEURDEPEAU).</p>
+          </div>
+          <div style="display:flex;gap:var(--space-2);">
+            <button class="btn btn-outline btn-sm" onclick="resetProductDefaults()">🔄 Réinitialiser Données Initiales</button>
+            <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Ajouter un Produit</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;flex:1;">
+              <input type="text" id="prodSearchInput" class="form-input" placeholder="🔍 Rechercher un produit, ingrédient..." style="max-width:320px;" oninput="filterAdminProducts()">
+              <select id="prodCategoryFilter" class="form-select" style="max-width:240px;" onchange="filterAdminProducts()">
+                <option value="all">Toutes les catégories</option>
+                <option value="savons">Savons Artisanaux</option>
+                <option value="soins-specifiques">Soins Spécifiques & Teint</option>
+                <option value="soins-dermatologiques">Soins Dermatologiques</option>
+                <option value="barbe-homme">Soins Barbe & Homme</option>
+                <option value="coffrets-cadeaux">Coffrets Cadeaux & Rituels</option>
+                <option value="soins-capillaires">Soins Capillaires</option>
+              </select>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--color-text-muted);">
+              Total : <strong id="prodTableCount" style="color:var(--color-black);">15</strong> produits
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Visuel</th>
+                  <th>Désignation & Poids</th>
+                  <th>Marque & Gamme</th>
+                  <th>Catégorie</th>
+                  <th>Prix (XOF)</th>
+                  <th>Stock & Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminProductsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: MERCHANTS -->
+      <div id="view-merchants" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Marchands Agréés & Demandes d'Intégration</h1>
+            <p>Contrôle des boutiques partenaires, validation KYC, comptes de reversement Wave/Orange Money et commission 15%.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddMerchantModal()">+ Nouveau Marchand</button>
+        </div>
+
+        <div class="admin-card" style="border-left:4px solid #E67E22;">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title" style="color:#D35400;">
+              ⏳ Demandes d'Agréments en Attente (KYC)
+            </h2>
+            <span class="status-badge pending" id="pendingMerchantCountBadge">2 dossiers</span>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Établissement</th>
+                  <th>Responsable</th>
+                  <th>Commune / Ville</th>
+                  <th>Téléphone / WhatsApp</th>
+                  <th>Compte Wave / OM</th>
+                  <th>Date Inscription</th>
+                  <th>Décision</th>
+                </tr>
+              </thead>
+              <tbody id="pendingMerchantsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">🏪 Marchands Agréés Actifs</h2>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Boutique</th>
+                  <th>Responsable</th>
+                  <th>Catégorie Principale</th>
+                  <th>Localisation</th>
+                  <th>Volume Ventes</th>
+                  <th>Commission</th>
+                  <th>Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="activeMerchantsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: COMMISSIONS -->
+      <div id="view-commissions" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Réseau Commercial & Suivi des Commissions</h1>
+            <p>Gestion des représentants par commune, ventilation du chiffre d'affaires et reversements Wave / Orange Money.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddRepModal()">+ Nouveau Représentant</button>
+        </div>
+
+        <div class="stats-grid-6">
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Ventes Réseau</span><span>📈</span></div>
+            <div class="stat-admin-value" id="statRepTotalSales">8 700 000 XOF</div>
+            <div class="stat-admin-sub green">Par les représentants</div>
+          </div>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Commissions Dues</span><span>💎</span></div>
+            <div class="stat-admin-value" style="color:var(--color-gold);" id="statRepTotalDue">1 305 000 XOF</div>
+            <div class="stat-admin-sub green">Barème 15%</div>
+          </div>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Montants Versés</span><span>✅</span></div>
+            <div class="stat-admin-value" style="color:#27AE60;" id="statRepTotalPaid">1 000 000 XOF</div>
+            <div class="stat-admin-sub green">Via Wave & OM</div>
+          </div>
+          <div class="stat-card-admin">
+            <div class="stat-admin-label"><span>Solde à Décaisser</span><span>⏳</span></div>
+            <div class="stat-admin-value" style="color:#E74C3C;" id="statRepTotalPending">305 000 XOF</div>
+            <div class="stat-admin-sub orange">En attente de paiement</div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">👥 Réseau des Représentants & Mandataires</h2>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Nom du Représentant</th>
+                  <th>Zone / Commune</th>
+                  <th>Téléphone</th>
+                  <th>Nb Ventes</th>
+                  <th>Volume Ventes</th>
+                  <th>Commission Due (15%)</th>
+                  <th>Déjà Versé</th>
+                  <th>Solde Dû</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="representativesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 5: INFLUENCERS -->
+      <div id="view-influencers" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Ambassadeurs, Influenceurs & Codes Promo</h1>
+            <p>Créez et suivez l'efficacité des codes promotionnels et des commissions d'affiliation.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddInfluencerModal()">+ Créer un Code Promo</button>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">🌟 Codes Promo & Tracking Affiliation</h2>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Code Promo</th>
+                  <th>Influenceur / Créateur</th>
+                  <th>Réseaux Sociaux</th>
+                  <th>Remise Client</th>
+                  <th>Commission</th>
+                  <th>Utilisations</th>
+                  <th>Ventes Générées</th>
+                  <th>Gains Cumulés</th>
+                  <th>Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="influencersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 6: ORDERS -->
+      <div id="view-orders" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Gestion des Commandes & Ventes</h1>
+            <p>Suivi en direct des règlements Wave, Orange Money et dispatch de livraison sur Abidjan.</p>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">📋 Toutes les Commandes Récents</h2>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>N° Commande</th>
+                  <th>Date & Heure</th>
+                  <th>Client</th>
+                  <th>Commune / Adresse</th>
+                  <th>Détail Articles</th>
+                  <th>Total TTC</th>
+                  <th>Règlement</th>
+                  <th>Statut Commande</th>
+                  <th>Dispatch</th>
+                </tr>
+              </thead>
+              <tbody id="ordersFullTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
     </main>
   </div>
 
-  <!-- =====================================================
-       MODAL: ASSIGNER LIVRAISON
-       ===================================================== -->
-  <div class="modal-overlay" id="assignModal">
-    <div class="modal-box">
-      <div class="modal-head">
-        <h3 style="font-family: var(--font-display); font-size: var(--text-xl); color: var(--color-black);">
-          🛵 Assigner un Livreur Partenaire
-        </h3>
-        <button class="modal-close-btn" onclick="closeAssignModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+  <!-- MODALS -->
+
+  <!-- Modal Product -->
+  <div class="admin-modal-overlay" id="modalProductOverlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalProductTitle">Ajouter un Produit</h3>
+        <button class="admin-modal-close" onclick="closeProductModal()">&times;</button>
       </div>
-      <div class="modal-body">
-        <div style="background: var(--color-surface-alt); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4);">
-          <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Colis sélectionné :</div>
-          <strong id="modalColisRef" style="font-size: var(--text-base); color: var(--color-black);">Colis #DSP-401</strong>
-          <div id="modalColisRoute" style="font-size: var(--text-xs); color: var(--color-gold-dark); margin-top: 2px;">Cocody ➔ Plateau</div>
+      <form id="productForm" onsubmit="handleProductFormSubmit(event)">
+        <div class="admin-modal-body">
+          <input type="hidden" id="editProdId">
+          <div class="form-group">
+            <label class="form-label">Désignation du Produit *</label>
+            <input type="text" id="prodInputName" class="form-input" placeholder="ex: Savon CLARYLEX (200 g)" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Marque / Gamme *</label>
+              <select id="prodInputBrand" class="form-select" required>
+                <option value="AMABELLEPEAU">AMABELLEPEAU (ETS Marie Andrea)</option>
+                <option value="AMABELLEBARBE">AMABELLEBARBE (Homme)</option>
+                <option value="AMAFLEURDEPEAU">AMAFLEURDEPEAU (Rituels)</option>
+                <option value="Maison Botanique">Maison Botanique</option>
+                <option value="Ivoire Naturals">Ivoire Naturals</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Catégorie *</label>
+              <select id="prodInputCategory" class="form-select" required>
+                <option value="savons">Savons Artisanaux</option>
+                <option value="soins-specifiques">Soins Spécifiques & Teint</option>
+                <option value="soins-dermatologiques">Soins Dermatologiques</option>
+                <option value="barbe-homme">Soins Barbe & Homme</option>
+                <option value="coffrets-cadeaux">Coffrets Cadeaux & Rituels</option>
+                <option value="soins-capillaires">Soins Capillaires</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Prix (XOF) *</label>
+              <input type="number" id="prodInputPrice" class="form-input" placeholder="3500" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stock Initial *</label>
+              <input type="number" id="prodInputStock" class="form-input" value="50" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Poids / Format</label>
+              <input type="text" id="prodInputWeight" class="form-input" placeholder="200 g">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Visuel Produit *</label>
+            <select id="prodInputImage" class="form-select">
+              <option value="assets/images/products/barbe-2.png">Savon CLARYLEX (barbe-2.png)</option>
+              <option value="assets/images/products/cat-3.png">Savon Curcuma & Henné (cat-3.png)</option>
+              <option value="assets/images/products/cat-5.png">Savon Aloès (cat-5.png)</option>
+              <option value="assets/images/products/cat-6.png">Savon Carapa (cat-6.png)</option>
+              <option value="assets/images/products/cat-7.png">Savon Tétrapleura (cat-7.png)</option>
+              <option value="assets/images/products/cat-9.png">Savon Carotte (cat-9.png)</option>
+              <option value="assets/images/products/cat-10.png">Savon Karité Brut (cat-10.png)</option>
+              <option value="assets/images/products/cat-4.png">Savon Miel Pur (cat-4.png)</option>
+              <option value="assets/images/products/amabellebarbe-kit.png">Kit Barbe AMABELLEBARBE (kit.png)</option>
+              <option value="assets/images/products/barbe-3.png">Huile Barbe (barbe-3.png)</option>
+              <option value="assets/images/products/amafleurdepeau-coffret.png">Coffret AMAFLEURDEPEAU (coffret.png)</option>
+              <option value="assets/images/products/fiche-produits.png">Fiche Produits Palette Réelle</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Composition & Ingrédients INCI</label>
+            <input type="text" id="prodInputComposition" class="form-input" placeholder="Palmiste, Karité, Miel, Parfum...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vertus & Propriétés Thérapeutiques</label>
+            <textarea id="prodInputVertus" class="form-textarea" rows="2" placeholder="Clarifiant, anti-taches, tonifiant, cicatrisant..."></textarea>
+          </div>
         </div>
+        <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="closeProductModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary btn-sm">Enregistrer le Produit</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-        <form id="assignForm" onsubmit="handleConfirmAssign(event)">
-          <div class="form-group">
-            <label class="form-label">Compagnie de Livraison Partenaire</label>
-            <select class="form-select" id="delivererSelect" required>
-              <option value="Flash Courrier Abidjan (Koffi Boris - 07 45 12 33)">Flash Courrier Abidjan (Koffi Boris)</option>
-              <option value="Moto-Course Pro Express (Ouattara Seydou - 05 99 88 77)">Moto-Course Pro Express (Ouattara Seydou)</option>
-              <option value="Livreurs d'Ivoire Premium (Koné Moussa - 07 10 20 30)">Livreurs d'Ivoire Premium (Koné Moussa)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Heure de Ramassage Estimée</label>
-            <select class="form-select" id="pickupSlotSelect">
-              <option value="Dans les 30 minutes">Immédiat (dans les 30 minutes)</option>
-              <option value="Créneau après-midi (14h - 16h)">Créneau après-midi (14h - 16h)</option>
-              <option value="Créneau fin de journée (16h - 18h)">Créneau fin de journée (16h - 18h)</option>
-            </select>
-          </div>
-
-          <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6);">
-            <button type="button" class="btn btn-ghost" onclick="closeAssignModal()">Annuler</button>
-            <button type="submit" class="btn btn-primary">Confirmer l'assignation</button>
-          </div>
-        </form>
+  <!-- Modal Merchant -->
+  <div class="admin-modal-overlay" id="modalMerchantOverlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title">Ajouter un Marchand</h3>
+        <button class="admin-modal-close" onclick="closeMerchantModal()">&times;</button>
       </div>
+      <form id="merchantForm" onsubmit="handleMerchantFormSubmit(event)">
+        <div class="admin-modal-body">
+          <div class="form-group">
+            <label class="form-label">Nom de la Boutique / Raison Sociale *</label>
+            <input type="text" id="merchInputName" class="form-input" placeholder="ex: Botanica San Pedro" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Nom du Gérant *</label>
+              <input type="text" id="merchInputOwner" class="form-input" placeholder="ex: Amadou Bamba" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Commune / Ville *</label>
+              <input type="text" id="merchInputCommune" class="form-input" placeholder="ex: Cocody Deux-Plateaux" required>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Téléphone / WhatsApp *</label>
+              <input type="text" id="merchInputPhone" class="form-input" placeholder="+225 07..." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Numéro Reversement Wave / OM *</label>
+              <input type="text" id="merchInputWave" class="form-input" placeholder="+225 07..." required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Catégorie Spécialisée</label>
+            <input type="text" id="merchInputCategory" class="form-input" placeholder="ex: Beurres bruts, Savons saponifiés...">
+          </div>
+        </div>
+        <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="closeMerchantModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary btn-sm">Agréer le Marchand</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Payout -->
+  <div class="admin-modal-overlay" id="modalPayoutOverlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title">Enregistrer un Versement de Commission</h3>
+        <button class="admin-modal-close" onclick="closePayoutModal()">&times;</button>
+      </div>
+      <form id="payoutForm" onsubmit="handlePayoutFormSubmit(event)">
+        <div class="admin-modal-body">
+          <input type="hidden" id="payoutRepId">
+          <div class="form-group">
+            <label class="form-label">Bénéficiaire</label>
+            <input type="text" id="payoutRepName" class="form-input" readonly style="background:var(--color-surface-alt);font-weight:700;">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Montant à Verser (XOF) *</label>
+              <input type="number" id="payoutAmountInput" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Passerelle de Paiement *</label>
+              <select id="payoutProviderSelect" class="form-select" required>
+                <option value="wave">Wave CI</option>
+                <option value="orange_money">Orange Money</option>
+                <option value="bank">Virement Bancaire CI</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Référence Transaction / ID Reçu</label>
+            <input type="text" id="payoutRefInput" class="form-input" placeholder="ex: WAVE-CI-998273">
+          </div>
+        </div>
+        <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="closePayoutModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary btn-sm">Valider le Versement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Influencer -->
+  <div class="admin-modal-overlay" id="modalInfluencerOverlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title">Créer un Code Promo Influenceur</h3>
+        <button class="admin-modal-close" onclick="closeInfluencerModal()">&times;</button>
+      </div>
+      <form id="influencerForm" onsubmit="handleInfluencerFormSubmit(event)">
+        <div class="admin-modal-body">
+          <div class="form-group">
+            <label class="form-label">Code Promo Souhaité *</label>
+            <input type="text" id="infInputCode" class="form-input" placeholder="ex: GLOW2026" style="text-transform:uppercase;font-family:monospace;font-weight:700;" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Nom de l'Influenceur / Ambassadeur *</label>
+              <input type="text" id="infInputName" class="form-input" placeholder="ex: Sarah K." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Identifiant Social (Instagram/TikTok)</label>
+              <input type="text" id="infInputHandle" class="form-input" placeholder="@sarah_glow">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Remise Client (%) *</label>
+              <input type="number" id="infInputDiscount" class="form-input" value="10" min="5" max="30" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Commission Influenceur (%) *</label>
+              <input type="number" id="infInputComm" class="form-input" value="5" min="2" max="15" required>
+            </div>
+          </div>
+        </div>
+        <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="closeInfluencerModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary btn-sm">Activer le Code</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- Toast Container -->
-  <div class="toast-container" id="toastContainer"></div>
+  <div class="admin-toast-container" id="adminToastContainer"></div>
 
-  <!-- =====================================================
-       FOOTER (Standard AMABELLEPEAU Footer in French)
-       ===================================================== -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <!-- About AMABELLEPEAU -->
-        <div>
-          <div class="footer-brand-name">
-            AMABELLE<span>PEAU</span>
-          </div>
-          <p class="footer-description">
-            Savons saponifiés à froid et cosmétiques 100% naturels fabriqués avec passion et authenticité. L'alliance subtile du savoir-faire artisanal ivoirien et des bienfaits purs de la terre d'Afrique.
-          </p>
-          <div style="font-size: var(--text-xs); color: rgba(245, 240, 232, 0.5);">
-            Abidjan, Côte d'Ivoire · Direction & Administration Générale
-          </div>
-        </div>
-
-        <!-- Liens utiles -->
-        <div>
-          <div class="footer-heading">Liens Utiles</div>
-          <ul class="footer-links">
-            <li><a href="../index.html" class="footer-link">Accueil Boutique</a></li>
-            <li><a href="../catalogue.html" class="footer-link">Catalogue Produits</a></li>
-            <li><a href="../marques.html" class="footer-link">Marques Partenaires</a></li>
-            <li><a href="../marchand/index.html" class="footer-link">Espace Marchand</a></li>
-            <li><a href="index.html" class="footer-link">Panneau d'Administration</a></li>
-          </ul>
-        </div>
-
-        <!-- Catégories -->
-        <div>
-          <div class="footer-heading">Catégories Marché</div>
-          <ul class="footer-links">
-            <li><a href="../catalogue.html?cat=savons" class="footer-link">Savons Saponifiés à Froid</a></li>
-            <li><a href="../catalogue.html?cat=huiles" class="footer-link">Huiles Pures & Sérums</a></li>
-            <li><a href="../catalogue.html?cat=beurres" class="footer-link">Beurres Végétaux Bruts</a></li>
-            <li><a href="../catalogue.html?cat=soins" class="footer-link">Soins du Visage</a></li>
-            <li><a href="../catalogue.html?cat=coffrets" class="footer-link">Coffrets & Rituels Cadeaux</a></li>
-          </ul>
-        </div>
-
-        <!-- Contact Abidjan -->
-        <div>
-          <div class="footer-heading">Support Direction</div>
-          <ul class="footer-links">
-            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
-              📍 Cocody Deux-Plateaux Vallons, Abidjan
-            </li>
-            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
-              📞 +225 07 88 00 11 22
-            </li>
-            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
-              ✉️ admin@amabellepeau.ci
-            </li>
-            <li style="font-size: var(--text-xs); color: var(--color-gold); margin-top: var(--space-2);">
-              🕒 Supervision continue 7j/7
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Footer Bottom -->
-      <div class="footer-bottom">
-        <div>
-          &copy; 2026 AMABELLEPEAU — Administration Marketplace. Tous droits réservés.
-        </div>
-        <div class="payment-methods">
-          <span style="margin-right: 6px;">Passerelles certifiées :</span>
-          <span class="payment-badge">Wave CI</span>
-          <span class="payment-badge">Orange Money</span>
-          <span class="payment-badge">Dispatch Abidjan</span>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- =====================================================
-       JAVASCRIPT LOGIC
-       ===================================================== -->
+  <!-- Scripts -->
+  <script src="../js/products-data.js"></script>
+  <script src="../js/admin-store.js"></script>
   <script>
-    // -- FIX 3: Admin authentication gate --
+    // Auth Gate
     (function() {
       var ADMIN_PASS = 'amabellepeau2026';
       var SESSION_KEY = 'abp_admin_auth';
       if (sessionStorage.getItem(SESSION_KEY) !== 'granted') {
         var attempt = prompt('AMABELLEPEAU Administration\n\nVeuillez saisir le mot de passe administrateur :');
-        if (attempt === null) {
-          window.location.href = '../index.html';
-          throw new Error('Auth cancelled');
-        }
-        if (attempt !== ADMIN_PASS) {
-          alert('Mot de passe incorrect. Acces refuse.');
+        if (attempt === null || attempt !== ADMIN_PASS) {
+          alert('Mot de passe incorrect. Accès refusé.');
           window.location.href = '../index.html';
           throw new Error('Auth failed');
         }
         sessionStorage.setItem(SESSION_KEY, 'granted');
       }
     })();
-    // State variables
-    let pendingApprovals = 3;
-    let activeMerchants = 12;
-    let activeDispatch = 8;
-    const baseVolume = 1847500;
-    let selectedColisId = '';
 
-    // Toast Notification System
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toastContainer');
+    function showAdminToast(msg, isSuccess = true) {
+      const container = document.getElementById('adminToastContainer');
       const toast = document.createElement('div');
-      toast.className = `toast ${type === 'error' ? 'toast-error' : 'toast-success'}`;
-      
-      const iconSvg = type === 'error'
-        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-error);"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`
-        : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-success);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
-
-      toast.innerHTML = `
-        ${iconSvg}
-        <div style="flex: 1; font-size: 13px; font-weight: 500; color: var(--color-black);">${message}</div>
-      `;
-
+      toast.className = 'admin-toast';
+      toast.innerHTML = `<span>${isSuccess ? '✅' : '⚠️'}</span><span>${msg}</span>`;
       container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.3s forwards';
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
+      setTimeout(() => toast.remove(), 3500);
     }
 
-    // Scroll to section helper
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
+    function switchAdminTab(viewId) {
+      document.querySelectorAll('.admin-view-panel').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(viewId);
+      if (target) target.classList.add('active');
 
-    // Commission Simulation Slider Logic
-    function updateCommissionSimulation(ratePercent) {
-      const rate = parseInt(ratePercent);
-      const commissionTotal = Math.round(baseVolume * (rate / 100));
-      const merchantPayout = baseVolume - commissionTotal;
-      const gatewayFees = Math.round(baseVolume * 0.012);
-
-      document.getElementById('sliderValDisplay').innerText = `${rate}%`;
-      document.getElementById('currentRateBadge').innerText = `${rate}%`;
-      document.getElementById('statCommissionRateLabel').innerText = `${rate}% plateforme`;
-      document.getElementById('calcCommissionTotal').innerText = `${commissionTotal.toLocaleString('fr-FR')} XOF`;
-      document.getElementById('statCommissionsDisplay').innerText = `${commissionTotal.toLocaleString('fr-FR')} XOF`;
-      document.getElementById('calcMerchantPayout').innerText = `${merchantPayout.toLocaleString('fr-FR')} XOF`;
-      document.getElementById('calcGatewayFees').innerText = `${gatewayFees.toLocaleString('fr-FR')} XOF`;
-    }
-
-    // Merchant Approvals Logic
-    function approveMerchant(id, brandName, candidateName) {
-      const decisionCell = document.getElementById(`decision-cell-${id}`);
-      
-      if (decisionCell) {
-        decisionCell.innerHTML = `
-          <span class="status status-delivered" style="font-size: 12px;">Approuvé & Certifié ✓</span>
-        `;
-      }
-
-      if (pendingApprovals > 0) {
-        pendingApprovals--;
-        activeMerchants++;
-        updateApprovalCounters();
-      }
-
-      showToast(`Le marchand "${brandName}" (${candidateName}) a été approuvé avec succès ! Compte activé.`, 'success');
-    }
-
-    function rejectMerchant(id, brandName) {
-      if (!confirm(`Confirmez-vous le rejet du dossier marchand pour "${brandName}" ?`)) {
-        return;
-      }
-
-      const decisionCell = document.getElementById(`decision-cell-${id}`);
-      if (decisionCell) {
-        decisionCell.innerHTML = `
-          <span class="status status-cancelled" style="font-size: 12px;">Dossier rejeté ✕</span>
-        `;
-      }
-
-      if (pendingApprovals > 0) {
-        pendingApprovals--;
-        updateApprovalCounters();
-      }
-
-      showToast(`La demande d'adhésion pour "${brandName}" a été déclinée.`, 'error');
-    }
-
-    function updateApprovalCounters() {
-      document.getElementById('adminSidebarApprovalBadge').innerText = pendingApprovals;
-      document.getElementById('pendingApprovalsBadge').innerText = `${pendingApprovals} demandes`;
-      document.getElementById('statPendingApprovalsCount').innerText = pendingApprovals;
-      document.getElementById('statActiveMerchantsCount').innerText = activeMerchants;
-    }
-
-    // Document Inspector Mock
-    function viewDocument(docTitle) {
-      showToast(`Ouverture sécurisée du document officiel : [${docTitle}]`, 'success');
-    }
-
-    // Orders Filtering
-    function filterAdminOrders(status) {
-      const rows = document.querySelectorAll('#adminOrdersTable tbody tr');
-      rows.forEach(r => {
-        const itemStatus = r.getAttribute('data-status');
-        if (status === 'all' || itemStatus === status) {
-          r.style.display = '';
-        } else {
-          r.style.display = 'none';
+      document.querySelectorAll('.sidebar-item-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-view') === viewId) {
+          btn.classList.add('active');
         }
       });
+
+      if (viewId === 'view-overview') renderOverview();
+      if (viewId === 'view-products') renderAdminProducts();
+      if (viewId === 'view-merchants') renderAdminMerchants();
+      if (viewId === 'view-commissions') renderAdminRepresentatives();
+      if (viewId === 'view-influencers') renderAdminInfluencers();
+      if (viewId === 'view-orders') renderAdminOrders();
+
+      window.location.hash = viewId.replace('view-', '');
     }
 
-    // Modal Dispatch Logic
-    function openAssignModal(colisId, merchantName, dest) {
-      selectedColisId = colisId;
-      document.getElementById('modalColisRef').innerText = `Colis #${colisId}`;
-      document.getElementById('modalColisRoute').innerText = `${merchantName} ➔ ${dest}`;
-      document.getElementById('assignModal').classList.add('active');
+    function renderOverview() {
+      const orders = AdminStore.getOrders();
+      const merchants = AdminStore.getMerchants();
+      const products = ProductStore.getAll();
+
+      const activeMerch = merchants.filter(m => m.status === 'approved').length;
+      const pendingMerch = merchants.filter(m => m.status === 'pending').length;
+
+      document.getElementById('statOverviewMerchants').textContent = activeMerch;
+      document.getElementById('statOverviewPending').textContent = pendingMerch;
+      document.getElementById('statOverviewProds').textContent = products.length;
+
+      document.getElementById('badgeProdCount').textContent = products.length;
+      document.getElementById('badgePendingMerch').textContent = pendingMerch;
+      document.getElementById('badgeOrderCount').textContent = orders.length;
+
+      const recentBody = document.getElementById('overviewRecentOrdersBody');
+      recentBody.innerHTML = orders.slice(0, 4).map(o => `
+        <tr>
+          <td><strong>${o.id}</strong></td>
+          <td>${o.customerName}</td>
+          <td>${o.commune}</td>
+          <td style="font-size:12px;color:var(--color-text-muted);">${o.items}</td>
+          <td><strong>${new Intl.NumberFormat('fr-FR').format(o.total)} XOF</strong></td>
+          <td><span class="status-badge approved">${o.paymentMethod.toUpperCase()}</span></td>
+          <td><span class="status-badge ${o.orderStatus === 'delivered' ? 'approved' : 'pending'}">${o.orderStatus}</span></td>
+        </tr>
+      `).join('');
+
+      calculateCommissionBreakdown();
     }
 
-    function closeAssignModal() {
-      document.getElementById('assignModal').classList.remove('active');
+    function calculateCommissionBreakdown() {
+      const input = document.getElementById('calcInputVolume');
+      const vol = Number(input.value) || 0;
+      const comm = Math.round(vol * 0.15);
+      const payout = vol - comm;
+      document.getElementById('calcResultCommission').textContent = new Intl.NumberFormat('fr-FR').format(comm) + ' XOF';
+      document.getElementById('calcResultPayout').textContent = new Intl.NumberFormat('fr-FR').format(payout) + ' XOF';
     }
 
-    function handleConfirmAssign(e) {
-      e.preventDefault();
-      const deliverer = document.getElementById('delivererSelect').value;
-      const slot = document.getElementById('pickupSlotSelect').value;
+    function renderAdminProducts() {
+      const products = ProductStore.getAll();
+      document.getElementById('badgeProdCount').textContent = products.length;
+      document.getElementById('prodTableCount').textContent = products.length;
 
-      // Update UI for the assigned item
-      if (selectedColisId === 'DSP-401') {
-        const cell = document.getElementById('dispatch-action-cell-1');
-        if (cell) cell.innerHTML = `<span class="status status-preparing">Assigné : ${deliverer.split('(')[0]}</span>`;
-      } else if (selectedColisId === 'DSP-403') {
-        const cell = document.getElementById('dispatch-action-cell-3');
-        if (cell) cell.innerHTML = `<span class="status status-preparing">Assigné : ${deliverer.split('(')[0]}</span>`;
-      }
+      const query = (document.getElementById('prodSearchInput')?.value || '').toLowerCase();
+      const cat = document.getElementById('prodCategoryFilter')?.value || 'all';
 
-      closeAssignModal();
-      showToast(`Colis #${selectedColisId} assigné avec succès à ${deliverer.split('(')[0]} ! Passage : ${slot}.`, 'success');
-    }
-
-    function exportGlobalReport() {
-      showToast('Génération de l\'export comptable AMABELLEPEAU en cours (XOF)...', 'success');
-    }
-
-    // Responsive Mobile Toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileNav = document.getElementById('mobileNav');
-    const closeMobileNav = document.getElementById('closeMobileNav');
-    const adminSidebarToggleBtn = document.getElementById('adminSidebarToggleBtn');
-    const adminSidebar = document.getElementById('adminSidebar');
-
-    if (mobileMenuBtn && mobileNav) {
-      mobileMenuBtn.addEventListener('click', () => mobileNav.classList.add('active'));
-    }
-    if (closeMobileNav && mobileNav) {
-      closeMobileNav.addEventListener('click', () => mobileNav.classList.remove('active'));
-    }
-
-    function checkResponsive() {
-      if (window.innerWidth <= 768) {
-        adminSidebarToggleBtn.style.display = 'inline-flex';
-      } else {
-        adminSidebarToggleBtn.style.display = 'none';
-        adminSidebar.classList.remove('mobile-open');
-      }
-    }
-
-    if (adminSidebarToggleBtn) {
-      adminSidebarToggleBtn.addEventListener('click', () => {
-        adminSidebar.classList.toggle('mobile-open');
+      const filtered = products.filter(p => {
+        const matchesQuery = !query || p.name.toLowerCase().includes(query) || (p.composition && p.composition.toLowerCase().includes(query));
+        const matchesCat = cat === 'all' || p.category === cat;
+        return matchesQuery && matchesCat;
       });
+
+      const body = document.getElementById('adminProductsTableBody');
+      body.innerHTML = filtered.map(p => `
+        <tr>
+          <td>
+            <img src="../${p.image}" onerror="this.src='../assets/icons/brand-logo.png'" class="prod-thumb" alt="${p.name}">
+          </td>
+          <td>
+            <strong style="color:var(--color-black);">${p.name}</strong>
+            <div style="font-size:11px;color:var(--color-text-muted);">${p.weight || '200 g'}</div>
+          </td>
+          <td>
+            <span style="font-weight:600;color:var(--color-forest);">${p.brand}</span>
+            <div style="font-size:11px;color:var(--color-text-muted);">${p.merchant}</div>
+          </td>
+          <td>${p.categoryName || p.category}</td>
+          <td><strong style="color:var(--color-green);">${new Intl.NumberFormat('fr-FR').format(p.price)} XOF</strong></td>
+          <td>
+            <span class="status-badge ${p.stock > 10 ? 'in_stock' : (p.stock > 0 ? 'low_stock' : 'out_of_stock')}">
+              ${p.stock > 0 ? p.stock + ' en stock' : 'Rupture'}
+            </span>
+          </td>
+          <td>
+            <div style="display:flex;gap:4px;">
+              <button class="btn-action" onclick="editProduct('${p.id}')">✏️</button>
+              <button class="btn-action btn-action-danger" onclick="deleteProduct('${p.id}')">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
     }
 
-    window.addEventListener('resize', checkResponsive);
-    checkResponsive();
+    function filterAdminProducts() {
+      renderAdminProducts();
+    }
+
+    function openAddProductModal() {
+      document.getElementById('modalProductTitle').textContent = 'Ajouter un Produit';
+      document.getElementById('productForm').reset();
+      document.getElementById('editProdId').value = '';
+      document.getElementById('modalProductOverlay').classList.add('active');
+    }
+
+    function editProduct(id) {
+      const p = ProductStore.getById(id);
+      if (!p) return;
+      document.getElementById('modalProductTitle').textContent = 'Modifier le Produit';
+      document.getElementById('editProdId').value = p.id;
+      document.getElementById('prodInputName').value = p.name;
+      document.getElementById('prodInputBrand').value = p.brand;
+      document.getElementById('prodInputCategory').value = p.category;
+      document.getElementById('prodInputPrice').value = p.price;
+      document.getElementById('prodInputStock').value = p.stock || 50;
+      document.getElementById('prodInputWeight').value = p.weight || '200 g';
+      document.getElementById('prodInputImage').value = p.image;
+      document.getElementById('prodInputComposition').value = p.composition || '';
+      document.getElementById('prodInputVertus').value = p.vertus || '';
+      document.getElementById('modalProductOverlay').classList.add('active');
+    }
+
+    function closeProductModal() {
+      document.getElementById('modalProductOverlay').classList.remove('active');
+    }
+
+    function handleProductFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editProdId').value;
+      const data = {
+        name: document.getElementById('prodInputName').value,
+        brand: document.getElementById('prodInputBrand').value,
+        merchant: document.getElementById('prodInputBrand').value === 'AMABELLEBARBE' ? 'AMABELLEBARBE Homme' : 'ETS Marie Andrea',
+        category: document.getElementById('prodInputCategory').value,
+        categoryName: document.getElementById('prodInputCategory').selectedOptions[0].text,
+        price: Number(document.getElementById('prodInputPrice').value),
+        stock: Number(document.getElementById('prodInputStock').value),
+        weight: document.getElementById('prodInputWeight').value || '200 g',
+        image: document.getElementById('prodInputImage').value,
+        composition: document.getElementById('prodInputComposition').value,
+        vertus: document.getElementById('prodInputVertus').value,
+        status: 'in_stock'
+      };
+
+      if (editId) {
+        ProductStore.update(editId, data);
+        showAdminToast('Produit mis à jour avec succès');
+      } else {
+        ProductStore.add(data);
+        showAdminToast('Nouveau produit ajouté au catalogue');
+      }
+
+      closeProductModal();
+      renderAdminProducts();
+      renderOverview();
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Voulez-vous vraiment supprimer ce produit de la marketplace ?')) {
+        ProductStore.remove(id);
+        showAdminToast('Produit supprimé', false);
+        renderAdminProducts();
+        renderOverview();
+      }
+    }
+
+    function resetProductDefaults() {
+      if (confirm('Réinitialiser le catalogue avec les 15 produits officiels ETS Marie Andrea & AMABELLEBARBE ?')) {
+        ProductStore.resetDefaults();
+        showAdminToast('Catalogue officiel réinitialisé');
+        renderAdminProducts();
+        renderOverview();
+      }
+    }
+
+    function renderAdminMerchants() {
+      const merchants = AdminStore.getMerchants();
+      const active = merchants.filter(m => m.status === 'approved');
+      const pending = merchants.filter(m => m.status === 'pending');
+
+      document.getElementById('pendingMerchantCountBadge').textContent = pending.length + ' dossiers';
+      document.getElementById('badgePendingMerch').textContent = pending.length;
+
+      const pendingBody = document.getElementById('pendingMerchantsTableBody');
+      if (pending.length === 0) {
+        pendingBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:24px;">Aucun dossier en attente d'agrément.</td></tr>`;
+      } else {
+        pendingBody.innerHTML = pending.map(m => `
+          <tr>
+            <td><strong>${m.name}</strong></td>
+            <td>${m.owner}</td>
+            <td>${m.commune}</td>
+            <td>${m.phone}</td>
+            <td><strong style="color:var(--color-gold);">${m.waveNumber}</strong></td>
+            <td>${m.joinedDate}</td>
+            <td>
+              <div style="display:flex;gap:6px;">
+                <button class="btn-action btn-action-primary" onclick="approveMerchant('${m.id}')">✓ Agréer</button>
+                <button class="btn-action btn-action-danger" onclick="rejectMerchant('${m.id}')">✕ Refuser</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      const activeBody = document.getElementById('activeMerchantsTableBody');
+      activeBody.innerHTML = active.map(m => `
+        <tr>
+          <td>
+            <strong>${m.name}</strong>
+            ${m.isOfficial ? '<span class="status-badge approved" style="margin-left:6px;font-size:9px;">Boutique Officielle</span>' : ''}
+          </td>
+          <td>${m.owner}</td>
+          <td>${m.category}</td>
+          <td>${m.commune}</td>
+          <td><strong>${new Intl.NumberFormat('fr-FR').format(m.salesVolume)} XOF</strong></td>
+          <td><span class="status-badge approved">15% plateforme</span></td>
+          <td><span class="status-badge approved">Actif</span></td>
+          <td>
+            <button class="btn-action btn-action-danger" onclick="suspendMerchant('${m.id}')">Suspendre</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function approveMerchant(id) {
+      AdminStore.updateMerchantStatus(id, 'approved');
+      showAdminToast('Marchand agréé avec succès !');
+      renderAdminMerchants();
+      renderOverview();
+    }
+
+    function rejectMerchant(id) {
+      if (confirm('Rejeter la demande de ce marchand ?')) {
+        AdminStore.deleteMerchant(id);
+        showAdminToast('Demande rejetée', false);
+        renderAdminMerchants();
+        renderOverview();
+      }
+    }
+
+    function suspendMerchant(id) {
+      if (confirm('Voulez-vous suspendre ce marchand ?')) {
+        AdminStore.updateMerchantStatus(id, 'suspended');
+        showAdminToast('Marchand suspendu', false);
+        renderAdminMerchants();
+        renderOverview();
+      }
+    }
+
+    function openAddMerchantModal() {
+      document.getElementById('merchantForm').reset();
+      document.getElementById('modalMerchantOverlay').classList.add('active');
+    }
+    function closeMerchantModal() {
+      document.getElementById('modalMerchantOverlay').classList.remove('active');
+    }
+    function handleMerchantFormSubmit(e) {
+      e.preventDefault();
+      const m = {
+        name: document.getElementById('merchInputName').value,
+        owner: document.getElementById('merchInputOwner').value,
+        commune: document.getElementById('merchInputCommune').value,
+        phone: document.getElementById('merchInputPhone').value,
+        waveNumber: document.getElementById('merchInputWave').value,
+        category: document.getElementById('merchInputCategory').value || 'Cosmétiques & Soins',
+        commissionRate: 15,
+        status: 'approved',
+        salesVolume: 0
+      };
+      AdminStore.addMerchant(m);
+      showAdminToast('Nouveau marchand agréé avec succès');
+      closeMerchantModal();
+      renderAdminMerchants();
+      renderOverview();
+    }
+
+    function renderAdminRepresentatives() {
+      const reps = AdminStore.getRepresentatives();
+      const totalSales = reps.reduce((a, r) => a + (r.salesVolume || 0), 0);
+      const totalDue = reps.reduce((a, r) => a + (r.commissionDue || 0), 0);
+      const totalPaid = reps.reduce((a, r) => a + (r.paidAmount || 0), 0);
+      const totalPending = reps.reduce((a, r) => a + (r.pendingBalance || 0), 0);
+
+      document.getElementById('statRepTotalSales').textContent = new Intl.NumberFormat('fr-FR').format(totalSales) + ' XOF';
+      document.getElementById('statRepTotalDue').textContent = new Intl.NumberFormat('fr-FR').format(totalDue) + ' XOF';
+      document.getElementById('statRepTotalPaid').textContent = new Intl.NumberFormat('fr-FR').format(totalPaid) + ' XOF';
+      document.getElementById('statRepTotalPending').textContent = new Intl.NumberFormat('fr-FR').format(totalPending) + ' XOF';
+
+      const body = document.getElementById('representativesTableBody');
+      body.innerHTML = reps.map(r => `
+        <tr>
+          <td><strong>${r.name}</strong></td>
+          <td>${r.zone}</td>
+          <td>${r.phone}</td>
+          <td>${r.salesCount} ventes</td>
+          <td><strong>${new Intl.NumberFormat('fr-FR').format(r.salesVolume)} XOF</strong></td>
+          <td><span class="status-badge approved">${r.rate}%</span></td>
+          <td style="color:#27AE60;font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.paidAmount)} XOF</td>
+          <td style="color:${r.pendingBalance > 0 ? '#E74C3C' : '#27AE60'};font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.pendingBalance)} XOF</td>
+          <td>
+            <button class="btn-action btn-action-primary" onclick="openPayoutModal('${r.id}', '${r.name}', ${r.pendingBalance})">💳 Verser</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openPayoutModal(id, name, due) {
+      document.getElementById('payoutRepId').value = id;
+      document.getElementById('payoutRepName').value = name + ' (Solde dû: ' + new Intl.NumberFormat('fr-FR').format(due) + ' XOF)';
+      document.getElementById('payoutAmountInput').value = due > 0 ? due : 50000;
+      document.getElementById('modalPayoutOverlay').classList.add('active');
+    }
+    function closePayoutModal() {
+      document.getElementById('modalPayoutOverlay').classList.remove('active');
+    }
+    function handlePayoutFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('payoutRepId').value;
+      const amt = document.getElementById('payoutAmountInput').value;
+      AdminStore.recordPayout(id, amt);
+      showAdminToast('Versement de ' + new Intl.NumberFormat('fr-FR').format(amt) + ' XOF enregistré !');
+      closePayoutModal();
+      renderAdminRepresentatives();
+    }
+
+    function renderAdminInfluencers() {
+      const influencers = AdminStore.getInfluencers();
+      document.getElementById('badgeInfCount').textContent = influencers.length;
+
+      const body = document.getElementById('influencersTableBody');
+      body.innerHTML = influencers.map(inf => `
+        <tr>
+          <td>
+            <span style="font-family:monospace;font-weight:700;background:rgba(201,168,76,0.15);padding:4px 8px;border-radius:4px;border:1px dashed var(--color-gold);color:var(--color-gold);">${inf.code}</span>
+          </td>
+          <td><strong>${inf.name}</strong></td>
+          <td><span style="color:var(--color-forest);">${inf.handle}</span></td>
+          <td><span class="status-badge approved">-${inf.discountPercent}%</span></td>
+          <td><span class="status-badge approved">${inf.commissionPercent}%</span></td>
+          <td><strong>${inf.usesCount}</strong> utilisations</td>
+          <td>${new Intl.NumberFormat('fr-FR').format(inf.salesGenerated)} XOF</td>
+          <td style="color:var(--color-gold);font-weight:700;">${new Intl.NumberFormat('fr-FR').format(inf.commissionEarned)} XOF</td>
+          <td><span class="status-badge approved">${inf.status}</span></td>
+          <td>
+            <button class="btn-action btn-action-danger" onclick="deleteInfluencer('${inf.id}')">✕ Retirer</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openAddInfluencerModal() {
+      document.getElementById('influencerForm').reset();
+      document.getElementById('modalInfluencerOverlay').classList.add('active');
+    }
+    function closeInfluencerModal() {
+      document.getElementById('modalInfluencerOverlay').classList.remove('active');
+    }
+    function handleInfluencerFormSubmit(e) {
+      e.preventDefault();
+      const inf = {
+        code: document.getElementById('infInputCode').value.toUpperCase(),
+        name: document.getElementById('infInputName').value,
+        handle: document.getElementById('infInputHandle').value || '@abidjan',
+        discountPercent: Number(document.getElementById('infInputDiscount').value),
+        commissionPercent: Number(document.getElementById('infInputComm').value)
+      };
+      AdminStore.addInfluencer(inf);
+      showAdminToast('Code promo ' + inf.code + ' activé avec succès');
+      closeInfluencerModal();
+      renderAdminInfluencers();
+    }
+    function deleteInfluencer(id) {
+      if (confirm('Voulez-vous supprimer ce code promo ?')) {
+        AdminStore.deleteInfluencer(id);
+        showAdminToast('Code supprimé');
+        renderAdminInfluencers();
+      }
+    }
+
+    function renderAdminOrders() {
+      const orders = AdminStore.getOrders();
+      const body = document.getElementById('ordersFullTableBody');
+      body.innerHTML = orders.map(o => `
+        <tr>
+          <td><strong>${o.id}</strong></td>
+          <td style="font-size:12px;color:var(--color-text-muted);">${o.date}</td>
+          <td>
+            <strong>${o.customerName}</strong>
+            <div style="font-size:11px;color:var(--color-text-muted);">${o.phone}</div>
+          </td>
+          <td>${o.commune}</td>
+          <td style="font-size:12px;max-width:240px;">${o.items}</td>
+          <td><strong style="color:var(--color-green);">${new Intl.NumberFormat('fr-FR').format(o.total)} XOF</strong></td>
+          <td><span class="status-badge approved">${o.paymentMethod.toUpperCase()} (${o.paymentStatus})</span></td>
+          <td>
+            <select class="form-select" style="font-size:12px;padding:4px 8px;" onchange="updateOrderStatus('${o.id}', this.value)">
+              <option value="pending_payment" ${o.orderStatus==='pending_payment'?'selected':''}>En attente</option>
+              <option value="preparing" ${o.orderStatus==='preparing'?'selected':''}>En préparation</option>
+              <option value="out_for_delivery" ${o.orderStatus==='out_for_delivery'?'selected':''}>En livraison</option>
+              <option value="delivered" ${o.orderStatus==='delivered'?'selected':''}>Livré</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn-action" onclick="showAdminToast('Colis ${o.id} assigné au coursier Yango Abidjan')">🛵 Dispatch</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateOrderStatus(id, status) {
+      AdminStore.updateOrderStatus(id, status);
+      showAdminToast('Statut de la commande ' + id + ' mis à jour');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById('view-' + hash)) {
+        switchAdminTab('view-' + hash);
+      } else {
+        renderOverview();
+      }
+    });
   </script>
 </body>
 </html>

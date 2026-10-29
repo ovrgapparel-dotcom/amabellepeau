@@ -1,52 +1,158 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Savon Karité & Vanille — AMABELLEPEAU Savons Naturels</title>
-  <meta name="description" content="Savon artisanal au beurre de karité et vanille naturelle. Fabriqué avec amour en Côte d'Ivoire."/>
+  <title>Détails du Produit — AMABELLEPEAU Savons Naturels</title>
+  <meta name="description" content="Savon artisanal naturel et cosmétique d'exception. Fabriqué avec amour en Côte d'Ivoire."/>
   <link rel="manifest" href="manifest.json"/>
   <link rel="icon" href="assets/icons/brand-logo.png"/>
   <link rel="stylesheet" href="css/main.css"/>
   <style>
     .product-page { padding: var(--space-8) 0 var(--space-16); }
     .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); align-items: start; }
+    
     /* Gallery */
     .gallery { position: sticky; top: calc(var(--nav-height) + var(--space-4)); }
-    .gallery-main { width: 100%; aspect-ratio: 1; border-radius: var(--radius-2xl); overflow: hidden; margin-bottom: var(--space-4); position: relative; }
-    .gallery-main-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 6rem; transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
-    .gallery-main:hover .gallery-main-img { transform: scale(1.05); }
+    .gallery-main {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      margin-bottom: var(--space-4);
+      position: relative;
+      background: #111e13;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-main img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .gallery-main:hover img { transform: scale(1.05); }
     .gallery-badge { position: absolute; top: var(--space-4); left: var(--space-4); z-index: 2; }
-    .badge-new { background: var(--color-gold); color: var(--color-black); padding: 4px 14px; border-radius: var(--radius-full); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .badge-tag {
+      background: var(--color-gold, #C9A84C);
+      color: #0D1A0D;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
     .gallery-thumbs { display: flex; gap: var(--space-3); }
-    .gallery-thumb { width: 80px; height: 80px; border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: var(--transition-fast); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-    .gallery-thumb.active, .gallery-thumb:hover { border-color: var(--color-gold); }
+    .gallery-thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition-fast);
+      background: #1b351e;
+      position: relative;
+    }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-thumb.active, .gallery-thumb:hover { border-color: var(--color-gold, #C9A84C); }
+
     /* Info */
-    .product-brand { font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-gold); margin-bottom: var(--space-2); }
-    .product-title { font-family: var(--font-display); font-size: var(--text-4xl); font-weight: 700; color: var(--color-black); line-height: 1.15; margin-bottom: var(--space-3); }
-    .product-rating { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); font-size: var(--text-sm); }
-    .stars { color: var(--color-gold); letter-spacing: 2px; }
-    .product-price-box { background: linear-gradient(135deg, rgba(27,77,30,0.06), rgba(201,168,76,0.06)); border: 1px solid rgba(27,77,30,0.15); border-radius: var(--radius-xl); padding: var(--space-5) var(--space-6); margin-bottom: var(--space-6); }
-    .product-price { font-family: var(--font-display); font-size: var(--text-4xl); font-weight: 700; color: var(--color-green); }
+    .product-brand-link {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-gold, #C9A84C);
+      margin-bottom: var(--space-2);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .product-brand-link:hover { text-decoration: underline; }
+    .product-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 700;
+      color: var(--color-black, #0D1A0D);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .product-meta-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      font-size: var(--text-sm);
+      flex-wrap: wrap;
+    }
+    .stars { color: var(--color-gold, #C9A84C); letter-spacing: 2px; }
+    .product-price-box {
+      background: linear-gradient(135deg, rgba(27,77,30,0.06), rgba(201,168,76,0.08));
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5) var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    .product-price {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: 800;
+      color: var(--color-green, #1B4D1E);
+    }
     .product-price-sub { font-size: var(--text-sm); color: var(--color-text-muted); margin-top: var(--space-1); }
     .product-desc { font-size: var(--text-base); color: var(--color-text); line-height: 1.8; margin-bottom: var(--space-6); }
+    
+    /* Vertus highlight card */
+    .vertus-card {
+      background: rgba(27,77,30,0.04);
+      border-left: 3px solid var(--color-gold, #C9A84C);
+      padding: 12px 16px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-bottom: var(--space-6);
+      font-size: var(--text-sm);
+    }
+    .vertus-card strong { color: var(--color-green, #1B4D1E); }
+
     /* Variants */
     .variant-section { margin-bottom: var(--space-6); }
     .variant-label { font-size: var(--text-sm); font-weight: 700; margin-bottom: var(--space-3); }
     .variant-options { display: flex; gap: var(--space-2); flex-wrap: wrap; }
-    .variant-btn { padding: 8px 20px; border: 2px solid var(--color-border); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600; cursor: pointer; transition: var(--transition-fast); background: white; }
-    .variant-btn:hover { border-color: var(--color-green); }
-    .variant-btn.active { border-color: var(--color-green); background: rgba(27,77,30,0.08); color: var(--color-green); }
+    .variant-btn {
+      padding: 8px 20px;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      background: white;
+    }
+    .variant-btn:hover { border-color: var(--color-green, #1B4D1E); }
+    .variant-btn.active {
+      border-color: var(--color-green, #1B4D1E);
+      background: rgba(27,77,30,0.08);
+      color: var(--color-green, #1B4D1E);
+    }
+
     /* Qty + Add to cart */
-    .add-section { display: flex; gap: var(--space-4); align-items: center; margin-bottom: var(--space-6); }
-    .qty-control { display: flex; align-items: center; border: 2px solid var(--color-border); border-radius: var(--radius-full); overflow: hidden; }
+    .add-section { display: flex; gap: var(--space-4); align-items: center; margin-bottom: var(--space-6); flex-wrap: wrap; }
+    .qty-control { display: flex; align-items: center; border: 2px solid var(--color-border); border-radius: var(--radius-full); overflow: hidden; background: white; }
     .qty-btn { width: 44px; height: 44px; border: none; background: transparent; cursor: pointer; font-size: 20px; font-weight: 700; color: var(--color-green); transition: var(--transition-fast); display: flex; align-items: center; justify-content: center; }
     .qty-btn:hover { background: var(--color-green); color: white; }
-    .qty-val { width: 50px; text-align: center; font-weight: 700; font-size: var(--text-base); border: none; border-left: 2px solid var(--color-border); border-right: 2px solid var(--color-border); height: 44px; }
+    .qty-val { width: 50px; text-align: center; font-weight: 700; font-size: var(--text-base); border: none; border-left: 2px solid var(--color-border); border-right: 2px solid var(--color-border); height: 44px; line-height: 44px; }
+    
     /* Features */
     .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-bottom: var(--space-6); }
-    .feature-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: var(--color-surface-alt); border-radius: var(--radius-md); font-size: var(--text-sm); }
+    .feature-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: var(--color-surface-alt, #faf7f2); border-radius: var(--radius-md); font-size: var(--text-sm); }
     .feature-icon { font-size: 1.2rem; }
+
     /* Tabs */
     .tabs { border-bottom: 2px solid var(--color-border); display: flex; gap: 0; margin-bottom: var(--space-6); margin-top: var(--space-10); }
     .tab-btn { padding: var(--space-4) var(--space-6); border: none; background: none; font-weight: 700; font-size: var(--text-sm); color: var(--color-text-muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: var(--transition-fast); }
@@ -54,24 +160,40 @@
     .tab-panel { display: none; animation: fadeIn 0.3s ease; }
     .tab-panel.active { display: block; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);} }
+    
     /* Ingredients list */
     .ingredients-list { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-    .ingredient-tag { background: rgba(27,77,30,0.08); color: var(--color-green); padding: 4px 14px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 600; }
-    /* Reviews */
-    .review-card { border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-4); }
-    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); }
-    .review-author { font-weight: 700; }
-    .review-date { font-size: var(--text-xs); color: var(--color-text-muted); }
-    .review-text { font-size: var(--text-sm); color: var(--color-text); line-height: 1.7; }
+    .ingredient-tag { background: rgba(27,77,30,0.08); color: var(--color-green); padding: 6px 14px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 600; }
+
     /* Related */
     .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
-    .related-card { border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; transition: var(--transition-base); cursor: pointer; }
+    .related-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: var(--transition-base);
+      cursor: pointer;
+      background: white;
+    }
     .related-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
-    .related-img { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+    .related-img {
+      aspect-ratio: 1;
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #111e13;
+    }
+    .related-img img { width: 100%; height: 100%; object-fit: cover; }
     .related-info { padding: var(--space-4); }
-    .related-name { font-family: var(--font-display); font-weight: 600; margin-bottom: var(--space-1); font-size: var(--text-sm); }
-    .related-price { font-weight: 700; color: var(--color-green); }
-    @media(max-width:900px) { .product-layout { grid-template-columns: 1fr; } .gallery { position: static; } .related-grid { grid-template-columns: 1fr 1fr; } .features-grid { grid-template-columns: 1fr; } }
+    .related-name { font-family: var(--font-display); font-weight: 700; margin-bottom: var(--space-1); font-size: var(--text-sm); color: var(--color-black); }
+    .related-price { font-weight: 700; color: var(--color-green); font-size: var(--text-sm); }
+
+    @media(max-width:900px) {
+      .product-layout { grid-template-columns: 1fr; }
+      .gallery { position: static; }
+      .related-grid { grid-template-columns: 1fr 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -86,6 +208,7 @@
     <div class="navbar-nav">
       <a href="index.html" class="navbar-link">Accueil</a>
       <a href="catalogue.html" class="navbar-link">Catalogue</a>
+      <a href="index.html#marchands" class="navbar-link">Marchands</a>
     </div>
     <div class="navbar-actions">
       <a href="panier.html" class="btn btn-ghost btn-sm">🛒 <span id="cartCount">0</span></a>
@@ -100,192 +223,159 @@
     <nav class="breadcrumb" style="margin-bottom:var(--space-6);">
       <a href="index.html">Accueil</a><span class="breadcrumb-sep">›</span>
       <a href="catalogue.html">Catalogue</a><span class="breadcrumb-sep">›</span>
-      <a href="catalogue.html?categorie=savons-artisanaux">Savons Artisanaux</a><span class="breadcrumb-sep">›</span>
-      <span>Savon Karité & Vanille</span>
+      <span id="bcCategory">Savons Artisanaux</span><span class="breadcrumb-sep">›</span>
+      <span id="bcTitle" style="color:var(--color-green);font-weight:600;">Chargement...</span>
     </nav>
 
     <div class="product-layout">
       <!-- GALLERY -->
       <div class="gallery">
-        <div class="gallery-main" id="mainImage">
-          <div class="gallery-badge"><span class="badge-new">Bestseller</span></div>
-          <div class="gallery-main-img" style="background:linear-gradient(135deg,#1B4D1E,#4A8C50);">🌿</div>
+        <div class="gallery-main" id="mainImageContainer">
+          <div class="gallery-badge"><span class="badge-tag" id="productBadgeTag">Bestseller</span></div>
+          <img id="mainProductPhoto" src="assets/images/products/cat-1.png" alt="Produit AMABELLEPEAU" />
         </div>
-        <div class="gallery-thumbs">
-          <div class="gallery-thumb active" style="background:linear-gradient(135deg,#1B4D1E,#4A8C50);" onclick="selectThumb(this,'🌿','#1B4D1E','#4A8C50')">🌿</div>
-          <div class="gallery-thumb" style="background:linear-gradient(135deg,#C9A84C,#E2C67A);" onclick="selectThumb(this,'✨','#C9A84C','#E2C67A')">✨</div>
-          <div class="gallery-thumb" style="background:linear-gradient(135deg,#2D6B32,#6AAB70);" onclick="selectThumb(this,'🧴','#2D6B32','#6AAB70')">🧴</div>
-          <div class="gallery-thumb" style="background:linear-gradient(135deg,#8B7355,#D9D2C0);" onclick="selectThumb(this,'🫧','#8B7355','#D9D2C0')">🫧</div>
+        <div class="gallery-thumbs" id="galleryThumbsContainer">
+          <!-- Dynamically populated -->
         </div>
       </div>
 
       <!-- INFO -->
       <div>
-        <div class="product-brand">AMABELLEPEAU · Savons Artisanaux</div>
-        <h1 class="product-title">Savon Karité & Vanille</h1>
+        <a id="productBrandLink" href="marchand.html?id=ets-marie-andrea" class="product-brand-link">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--color-gold);"></span>
+          <span id="productBrandText">ETS Marie Andrea · Savons Naturels</span>
+        </a>
+        <h1 class="product-title" id="productTitle">Savon CLARYLEX (200 g)</h1>
 
-        <div class="product-rating">
-          <span class="stars">★★★★★</span>
-          <span style="font-weight:700;">4.8</span>
-          <span style="color:var(--color-text-muted);">(124 avis)</span>
-          <span style="margin-left:auto;color:var(--color-success);font-weight:600;font-size:var(--text-xs);">✅ En stock</span>
+        <div class="product-meta-row">
+          <span class="stars" id="productStars">★★★★★</span>
+          <span style="font-weight:700;" id="productRatingNum">4.9</span>
+          <span style="color:var(--color-text-muted);" id="productReviewsNum">(138 avis vérifiés)</span>
+          <span style="margin-left:auto;color:var(--color-success,#15803d);font-weight:700;font-size:var(--text-xs);background:rgba(21,128,61,0.1);padding:3px 10px;border-radius:var(--radius-full);">✅ En stock à Abidjan</span>
         </div>
 
         <div class="product-price-box">
-          <div class="product-price">3 500 XOF</div>
-          <div class="product-price-sub">Soit environ 5,35 € · Livraison dès 1 500 XOF</div>
+          <div class="product-price" id="productPriceDisplay">4 000 XOF</div>
+          <div class="product-price-sub" id="productPriceSub">Format certifié · Livraison rapide Wave & Orange Money disponible</div>
         </div>
 
-        <div class="product-desc">
-          Découvrez notre savon signature au beurre de karité brut et à l'extrait naturel de vanille.
-          Fabriqué artisanalement en Côte d'Ivoire, ce savon nettoie en douceur tout en nourrissant
-          intensément votre peau. Sa mousse crémeuse laisse un voile soyeux et un parfum délicat
-          de vanille qui dure toute la journée.
+        <!-- Vertus & Propriétés from Catalogue -->
+        <div class="vertus-card" id="vertusBox">
+          <strong>🌿 Vertus & Propriétés :</strong> <span id="vertusText">Clarifiant – Nettoyant – Éclat du teint – Anti rides – Régénérant</span>
         </div>
 
-        <!-- Variants -->
+        <div class="product-desc" id="productDesc">
+          Savon artisanal 100% naturel formulé à base de plantes pour le traitement des problèmes dermatologiques et l'embellissement naturel du teint.
+        </div>
+
+        <!-- Format / Variant -->
         <div class="variant-section">
-          <div class="variant-label">Taille</div>
-          <div class="variant-options">
-            <button class="variant-btn" onclick="selectVariant(this, 'taille')">100g</button>
-            <button class="variant-btn active" onclick="selectVariant(this, 'taille')">150g</button>
-            <button class="variant-btn" onclick="selectVariant(this, 'taille')">250g (+1 200 XOF)</button>
+          <div class="variant-label">Format / Conditionnement</div>
+          <div class="variant-options" id="variantOptions">
+            <button class="variant-btn active" id="activeWeightBtn">200 g</button>
           </div>
         </div>
 
         <!-- Quantity + Add to cart -->
         <div class="add-section">
           <div class="qty-control">
-            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
             <span class="qty-val" id="qtyVal">1</span>
-            <button class="qty-btn" onclick="changeQty(1)">+</button>
+            <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
           </div>
-          <button class="btn btn-primary btn-lg" style="flex:1;" onclick="addToCart()">
-            🛒 Ajouter au panier — <span id="totalPrice">3 500 XOF</span>
+          <button type="button" class="btn btn-primary btn-lg" style="flex:1;" onclick="handleAddToCartClick()">
+            🛒 Ajouter au panier — <span id="totalPrice">4 000 XOF</span>
           </button>
         </div>
 
-        <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-6);">
-          <button class="btn btn-ghost" style="flex:1;" onclick="toggleWishlist()">❤️ Ajouter aux favoris</button>
-          <a href="https://wa.me/2250799108108?text=Bonjour%2C+je+suis+intéressé(e)+par+le+Savon+Karité+%26+Vanille+à+3500+XOF" target="_blank" class="btn btn-ghost" style="flex:1;">💬 Commander via WhatsApp</a>
+        <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-6);flex-wrap:wrap;">
+          <button type="button" class="btn btn-ghost" style="flex:1;min-width:180px;" onclick="toggleWishlist(this)">❤️ Favoris</button>
+          <a id="whatsappOrderBtn" href="https://wa.me/2250799108108" target="_blank" class="btn btn-ghost" style="flex:1;min-width:220px;">💬 Commander via WhatsApp</a>
         </div>
 
         <!-- Features -->
         <div class="features-grid">
-          <div class="feature-item"><span class="feature-icon">🌿</span> 100% Ingrédients naturels</div>
-          <div class="feature-item"><span class="feature-icon">🇨🇮</span> Fabriqué en Côte d'Ivoire</div>
-          <div class="feature-item"><span class="feature-icon">💧</span> Convient peaux sensibles</div>
-          <div class="feature-item"><span class="feature-icon">🐰</span> Non testé sur les animaux</div>
-          <div class="feature-item"><span class="feature-icon">🚚</span> Livraison Abidjan 24-48h</div>
-          <div class="feature-item"><span class="feature-icon">💳</span> Paiement Wave & OM</div>
+          <div class="feature-item"><span class="feature-icon">🌿</span> 100% Ingrédients à base de plantes</div>
+          <div class="feature-item"><span class="feature-icon">🇨🇮</span> Maître Savonnier & Fabricant CI</div>
+          <div class="feature-item"><span class="feature-icon">💧</span> Soin testé & approuvé peaux noires et métissées</div>
+          <div class="feature-item"><span class="feature-icon">🛡️</span> Sans hydroquinone · Sans agents agressifs</div>
+          <div class="feature-item"><span class="feature-icon">🚚</span> Livraison Express Abidjan (24h) & Intérieur</div>
+          <div class="feature-item"><span class="feature-icon">💳</span> Paiement sécurisé Wave & Orange Money</div>
         </div>
       </div>
     </div>
 
     <!-- TABS -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('desc')">Description</button>
-      <button class="tab-btn" onclick="showTab('ingredients')">Ingrédients</button>
-      <button class="tab-btn" onclick="showTab('usage')">Utilisation</button>
-      <button class="tab-btn" onclick="showTab('reviews')">Avis (124)</button>
+      <button class="tab-btn active" onclick="showTab(this, 'desc')">Description & Vertus</button>
+      <button class="tab-btn" onclick="showTab(this, 'ingredients')">Composition & Ingrédients</button>
+      <button class="tab-btn" onclick="showTab(this, 'usage')">Type de Peau & Utilisation</button>
+      <button class="tab-btn" onclick="showTab(this, 'reviews')">Avis Clients (<span id="tabReviewsCount">138</span>)</button>
     </div>
 
     <div class="tab-panel active" id="tab-desc">
-      <h3 style="font-family:var(--font-display);margin-bottom:var(--space-4);">Un soin quotidien d'exception</h3>
-      <p style="line-height:1.8;margin-bottom:var(--space-4);">Le Savon Karité & Vanille AMABELLEPEAU est le fruit d'un savoir-faire artisanal transmis de génération en génération. Élaboré à froid pour préserver toutes les propriétés du beurre de karité brut de Côte d'Ivoire, il apporte à votre peau une nutrition profonde tout en la nettoyant avec délicatesse.</p>
-      <p style="line-height:1.8;">L'extrait naturel de vanille, aux propriétés apaisantes et antioxydantes, confère à ce savon un parfum subtil et enveloppant. Idéal pour le visage et le corps, il convient à tous les types de peau, y compris les peaux les plus sensibles.</p>
+      <h3 style="font-family:var(--font-display);margin-bottom:var(--space-4);font-size:var(--text-2xl);">Un soin d'exception issu du savoir-faire artisanal</h3>
+      <p style="line-height:1.8;margin-bottom:var(--space-4);" id="tabDescText">
+        Nos produits sont confectionnés selon les méthodes traditionnelles de savonnerie artisanale, garantissant la conservation active de tous les principes nutritifs des plantes, huiles et beurres précieux de Côte d'Ivoire.
+      </p>
+      <div style="background:rgba(201,168,76,0.08);padding:16px 20px;border-radius:var(--radius-lg);border-left:4px solid var(--color-gold);">
+        <strong>Propriétés dermatologiques reconnues :</strong>
+        <p style="margin-top:6px;margin-bottom:0;" id="tabDescVertusDetail">Traitement doux des taches, de l'acné et uniformisation naturelle sans agression cutanée.</p>
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-ingredients">
-      <h3 style="font-family:var(--font-display);margin-bottom:var(--space-4);">Composition INCI</h3>
-      <div class="ingredients-list">
-        <span class="ingredient-tag">Beurre de Karité (Butyrospermum Parkii)</span>
-        <span class="ingredient-tag">Huile de Coco (Cocos Nucifera)</span>
-        <span class="ingredient-tag">Extrait de Vanille (Vanilla Planifolia)</span>
-        <span class="ingredient-tag">Huile d'Olive (Olea Europaea)</span>
-        <span class="ingredient-tag">Glycérine végétale</span>
-        <span class="ingredient-tag">Miel naturel</span>
-        <span class="ingredient-tag">Vitamine E (Tocopherol)</span>
+      <h3 style="font-family:var(--font-display);margin-bottom:var(--space-4);font-size:var(--text-2xl);">Composition & Actifs Naturels</h3>
+      <div class="ingredients-list" id="tabIngredientsList">
+        <!-- populated dynamically -->
       </div>
-      <p style="margin-top:var(--space-4);font-size:var(--text-sm);color:var(--color-text-muted);">Sans parabènes · Sans sulfates · Sans colorants artificiels · Sans huile de palme</p>
+      <p style="margin-top:var(--space-4);font-size:var(--text-sm);color:var(--color-text-muted);">
+        100% végétal · Sans parabènes · Sans produits décapants · Élaboré à base de karité pur, palmiste et extraits botaniques sélectionnés.
+      </p>
     </div>
 
     <div class="tab-panel" id="tab-usage">
-      <h3 style="font-family:var(--font-display);margin-bottom:var(--space-4);">Mode d'emploi</h3>
-      <ol style="line-height:2;padding-left:var(--space-5);">
-        <li>Mouillez le savon et faites-le mousser entre vos mains</li>
-        <li>Appliquez la mousse sur votre visage et/ou votre corps</li>
-        <li>Massez doucement en mouvements circulaires pendant 30 secondes</li>
-        <li>Rincez abondamment à l'eau tiède</li>
-        <li>Séchez en tapotant délicatement avec une serviette propre</li>
+      <h3 style="font-family:var(--font-display);margin-bottom:var(--space-4);font-size:var(--text-2xl);">Conseils d'Utilisation & Type de Peau</h3>
+      <p><strong>Type de peau recommandé :</strong> <span id="tabSkinTypeText">Teint noir – Teint métis (Clarifiant & Éclaircissant doux)</span></p>
+      <ol style="line-height:2;padding-left:var(--space-5);margin-top:var(--space-4);">
+        <li>Mouillez abondamment le visage ou le corps à l'eau tiède.</li>
+        <li>Faites mousser le produit entre les paumes ou sur un gant doux en fibre naturelle.</li>
+        <li>Appliquez par mouvements circulaires doux en insistant sur les zones à traiter (visage, cou, taches).</li>
+        <li>Laissez agir la mousse nourrissante pendant 1 à 2 minutes pour une pénétration optimale des principes actifs.</li>
+        <li>Rincez délicatement et séchez sans frotter vigoureusement.</li>
       </ol>
-      <p style="margin-top:var(--space-4);padding:var(--space-4);background:rgba(27,77,30,0.06);border-radius:var(--radius-md);font-size:var(--text-sm);">💡 <strong>Conseil:</strong> Pour un soin encore plus nourrissant, laissez la mousse agir 1 minute avant de rincer. Utilisez quotidiennement matin et soir pour des résultats optimaux.</p>
     </div>
 
     <div class="tab-panel" id="tab-reviews">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-6);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-6);flex-wrap:wrap;gap:var(--space-4);">
         <div>
-          <div style="font-family:var(--font-display);font-size:var(--text-4xl);font-weight:700;">4.8<span style="font-size:var(--text-xl);color:var(--color-text-muted);">/5</span></div>
+          <div style="font-family:var(--font-display);font-size:var(--text-4xl);font-weight:700;"><span id="reviewsAverage">4.9</span><span style="font-size:var(--text-xl);color:var(--color-text-muted);">/5</span></div>
           <div class="stars" style="font-size:1.2rem;">★★★★★</div>
-          <div style="font-size:var(--text-sm);color:var(--color-text-muted);">124 avis vérifiés</div>
+          <div style="font-size:var(--text-sm);color:var(--color-text-muted);"><span id="reviewsTotal">138</span> avis vérifiés à Abidjan & Diaspora</div>
         </div>
-        <button class="btn btn-primary">✍️ Écrire un avis</button>
+        <button type="button" class="btn btn-primary" onclick="alert('Merci pour votre intérêt ! Vous pourrez soumettre votre avis après confirmation de votre commande.')">✍️ Écrire un avis</button>
       </div>
 
-      <div class="review-card">
-        <div class="review-header">
-          <div><span class="review-author">Aminata K.</span><span class="stars" style="margin-left:var(--space-2);">★★★★★</span></div>
-          <span class="review-date">22 Oct 2026</span>
+      <div class="review-card" style="border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-4);background:white;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
+          <div><span style="font-weight:700;">Awa K. (Cocody Angré)</span><span class="stars" style="margin-left:var(--space-2);">★★★★★</span></div>
+          <span style="font-size:var(--text-xs);color:var(--color-text-muted);">Il y a 3 jours</span>
         </div>
-        <div class="review-text">Ce savon est une merveille ! Ma peau est tellement douce depuis que je l'utilise. Le parfum de vanille est subtil et pas du tout agressif. Je recommande à 100% !</div>
+        <div style="font-size:var(--text-sm);line-height:1.7;color:var(--color-text);">Savon authentique et d'une efficacité incroyable. Mon teint est clarifié et propre sans aucune sensation de tiraillement. Rien à voir avec les produits industriels !</div>
       </div>
-      <div class="review-card">
-        <div class="review-header">
-          <div><span class="review-author">Fatoumata B.</span><span class="stars" style="margin-left:var(--space-2);">★★★★★</span></div>
-          <span class="review-date">18 Oct 2026</span>
+      <div class="review-card" style="border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-4);background:white;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
+          <div><span style="font-weight:700;">Marc-Alain T. (Marcory)</span><span class="stars" style="margin-left:var(--space-2);">★★★★★</span></div>
+          <span style="font-size:var(--text-xs);color:var(--color-text-muted);">La semaine dernière</span>
         </div>
-        <div class="review-text">J'ai une peau très sensible et c'est le seul savon qui ne me cause aucune irritation. En plus il sent divinement bon. Bravo AMABELLEPEAU !</div>
-      </div>
-      <div class="review-card">
-        <div class="review-header">
-          <div><span class="review-author">Mariame C.</span><span class="stars" style="margin-left:var(--space-2);">★★★★☆</span></div>
-          <span class="review-date">15 Oct 2026</span>
-        </div>
-        <div class="review-text">Très bon produit, mousse généreuse et agréable. J'aurais aimé un format un peu plus grand. Je vais essayer le 250g la prochaine fois.</div>
+        <div style="font-size:var(--text-sm);line-height:1.7;color:var(--color-text);">Qualité irréprochable et livraison très rapide par Wave. Emballage soigné et parfum naturel très agréable.</div>
       </div>
     </div>
 
     <!-- RELATED PRODUCTS -->
-    <h2 style="font-family:var(--font-display);font-size:var(--text-2xl);margin-top:var(--space-16);margin-bottom:var(--space-6);">Vous aimerez aussi 🌿</h2>
-    <div class="related-grid">
-      <div class="related-card" onclick="window.location.href='produit.html'">
-        <div class="related-img" style="background:linear-gradient(135deg,#C9A84C,#E2C67A);">🧴</div>
-        <div class="related-info">
-          <div class="related-name">Huile de Coco Bio Pure</div>
-          <div class="related-price">7 200 XOF</div>
-        </div>
-      </div>
-      <div class="related-card" onclick="window.location.href='produit.html'">
-        <div class="related-img" style="background:linear-gradient(135deg,#2D6B32,#6AAB70);">✨</div>
-        <div class="related-info">
-          <div class="related-name">Sérum Vitamine C</div>
-          <div class="related-price">12 000 XOF</div>
-        </div>
-      </div>
-      <div class="related-card" onclick="window.location.href='produit.html'">
-        <div class="related-img" style="background:linear-gradient(135deg,#8B7355,#D9D2C0);">🫧</div>
-        <div class="related-info">
-          <div class="related-name">Gel Aloe Vera Pur</div>
-          <div class="related-price">4 500 XOF</div>
-        </div>
-      </div>
-      <div class="related-card" onclick="window.location.href='produit.html'">
-        <div class="related-img" style="background:linear-gradient(135deg,#0F2E11,#2D6B32);">🧼</div>
-        <div class="related-info">
-          <div class="related-name">Savon Charbon Actif</div>
-          <div class="related-price">3 200 XOF</div>
-        </div>
-      </div>
+    <h2 style="font-family:var(--font-display);font-size:var(--text-2xl);margin-top:var(--space-16);margin-bottom:var(--space-6);">Produits Similaires du Catalogue 🌿</h2>
+    <div class="related-grid" id="relatedProductsGrid">
+      <!-- Populated dynamically -->
     </div>
   </div>
 </main>
@@ -360,89 +450,262 @@
 <style>@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.5);}50%{box-shadow:0 4px 30px rgba(37,211,102,0.8),0 0 0 8px rgba(37,211,102,0.1);}}</style>
 
 <script src="js/cart.js"></script>
+<script src="js/products-data.js"></script>
 <script>
-  // -- FIX 2: Read product data from URL params --
-  var _params = new URLSearchParams(window.location.search);
-  var _urlTitle = _params.get('title') ? decodeURIComponent(_params.get('title')) : null;
-  var _urlPrice = _params.get('price') ? parseInt(_params.get('price'), 10) : null;
-
-  if (_urlTitle) {
-    var titleEls = document.querySelectorAll('.product-title, h1.product-title');
-    titleEls.forEach(function(el) { el.textContent = _urlTitle; });
-    document.title = _urlTitle + ' — AMABELLEPEAU';
-  }
-
+  let currentProduct = null;
   let qty = 1;
-  let unitPrice = _urlPrice || 3500;
 
-  // Update displayed price to match URL param
-  document.querySelector('.product-price').textContent = new Intl.NumberFormat('fr-FR').format(unitPrice) + ' XOF';
-  document.getElementById('totalPrice').textContent = new Intl.NumberFormat('fr-FR').format(unitPrice) + ' XOF';
+  function initProductPage() {
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get('id');
+    const title = params.get('title');
 
-  function changeQty(d) {
-    qty = Math.max(1, Math.min(10, qty + d));
+    // Retrieve product from ProductStore
+    if (pid && typeof ProductStore !== 'undefined') {
+      currentProduct = ProductStore.getById(pid);
+    }
+
+    if (!currentProduct && title && typeof ProductStore !== 'undefined') {
+      const all = ProductStore.getAll();
+      currentProduct = all.find(p => p.name.toLowerCase().includes(decodeURIComponent(title).toLowerCase()));
+    }
+
+    // Fallback to first authentic product
+    if (!currentProduct && typeof ProductStore !== 'undefined') {
+      currentProduct = ProductStore.getAll()[0];
+    }
+
+    if (!currentProduct) {
+      currentProduct = {
+        id: 'prod-clarylex-200g',
+        name: 'Savon CLARYLEX (200 g)',
+        brand: 'ETS Marie Andrea',
+        category: 'savons',
+        categoryName: 'Savons Artisanaux',
+        price: 4000,
+        weight: '200 g',
+        image: 'assets/images/products/cat-1.png',
+        composition: 'Palmiste – Karité – Acides de fruits naturels – Parfum',
+        vertus: 'Clarifiant – Nettoyant – Éclat du teint – Anti rides – Régénérant',
+        skinType: '^Teint noir – Teint métis – Clarifiant & Éclaircissant doux',
+        rating: 4.9,
+        reviewsCount: 138,
+        description: 'Formulé à base d\'acides de fruits naturels et de beurre de karité pur. Clarifie en douceur et régénère les cellules de l\'épiderme.'
+      };
+    }
+
+    renderProductDetails(currentProduct);
+    renderRelatedProducts(currentProduct);
+    updateCartCount();
+  }
+
+  function renderProductDetails(p) {
+    document.title = `${p.name} — AMABELLEPEAU Savons Naturels`;
+
+    // Breadcrumb
+    document.getElementById('bcCategory').textContent = p.categoryName || 'Savons Artisanaux';
+    document.getElementById('bcTitle').textContent = p.name;
+
+    // Gallery
+    const mainImg = document.getElementById('mainProductPhoto');
+    mainImg.src = p.image || 'assets/images/products/cat-1.png';
+    mainImg.alt = p.name;
+
+    const thumbsContainer = document.getElementById('galleryThumbsContainer');
+    thumbsContainer.innerHTML = '';
+
+    const thumbs = [
+      p.image,
+      'assets/images/products/ets-marie-andrea-catalogue.jpg',
+      'assets/images/products/fiche-produits.png',
+      'assets/images/products/amafleurdepeau-coffret.png'
+    ].filter(Boolean);
+
+    thumbs.forEach((src, idx) => {
+      const thumb = document.createElement('div');
+      thumb.className = `gallery-thumb ${idx === 0 ? 'active' : ''}`;
+      thumb.innerHTML = `<img src="${src}" alt="${p.name} vue ${idx+1}">`;
+      thumb.addEventListener('click', () => {
+        document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        mainImg.src = src;
+      });
+      thumbsContainer.appendChild(thumb);
+    });
+
+    // Badge
+    const badgeEl = document.getElementById('productBadgeTag');
+    if (p.badgeText) {
+      badgeEl.textContent = p.badgeText;
+    } else {
+      badgeEl.textContent = p.category === 'barbe' ? 'Soin Homme' : 'Artisanal 100%';
+    }
+
+    // Brand and Titles
+    const brandLink = document.getElementById('productBrandLink');
+    brandLink.href = `marchand.html?id=${p.merchantId || 'ets-marie-andrea'}`;
+    document.getElementById('productBrandText').textContent = `${p.brand} · ${p.categoryName || 'Cosmétique Bio'}`;
+    document.getElementById('productTitle').textContent = p.name;
+
+    // Rating
+    document.getElementById('productRatingNum').textContent = p.rating || '4.9';
+    document.getElementById('productReviewsNum').textContent = `(${p.reviewsCount || 120} avis vérifiés)`;
+    document.getElementById('reviewsTotal').textContent = p.reviewsCount || 120;
+    document.getElementById('tabReviewsCount').textContent = p.reviewsCount || 120;
+    document.getElementById('reviewsAverage').textContent = p.rating || '4.9';
+
+    // Pricing
+    const formattedPrice = (typeof ProductStore !== 'undefined')
+      ? ProductStore.formatPrice(p.price)
+      : new Intl.NumberFormat('fr-FR').format(p.price) + ' XOF';
+    document.getElementById('productPriceDisplay').textContent = formattedPrice;
+    document.getElementById('totalPrice').textContent = formattedPrice;
+
+    // Vertus & Descriptions
+    document.getElementById('vertusText').textContent = p.vertus || 'Nettoyant purifiant et éclat naturel.';
+    document.getElementById('productDesc').textContent = p.description || 'Soin naturel authentique formulé à froid en Côte d\'Ivoire.';
+
+    // Variant
+    document.getElementById('activeWeightBtn').textContent = p.weight || 'Format standard';
+
+    // WhatsApp link
+    const waText = encodeURIComponent(`Bonjour AMABELLEPEAU, je souhaite commander : ${p.name} (${p.weight || ''}) au prix de ${formattedPrice}.`);
+    document.getElementById('whatsappOrderBtn').href = `https://wa.me/2250799108108?text=${waText}`;
+
+    // Tabs content
+    document.getElementById('tabDescText').textContent = p.description;
+    document.getElementById('tabDescVertusDetail').textContent = p.vertus || 'Purification, hydratation et maintien du confort cutané.';
+
+    // Ingredients
+    const ingContainer = document.getElementById('tabIngredientsList');
+    ingContainer.innerHTML = '';
+    const ingredients = (p.composition || 'Beurre de Karité, Huile végétale de palmiste, Extraits végétaux').split('–');
+    ingredients.forEach(ing => {
+      const tag = document.createElement('span');
+      tag.className = 'ingredient-tag';
+      tag.textContent = ing.trim();
+      ingContainer.appendChild(tag);
+    });
+
+    // Skin type
+    document.getElementById('tabSkinTypeText').textContent = p.skinType || 'Tous types de peaux, particulièrement peaux normales à sensibles.';
+  }
+
+  function renderRelatedProducts(current) {
+    if (typeof ProductStore === 'undefined') return;
+    const all = ProductStore.getAll();
+    const related = all.filter(p => p.id !== current.id).slice(0, 4);
+
+    const grid = document.getElementById('relatedProductsGrid');
+    grid.innerHTML = related.map(p => `
+      <div class="related-card" onclick="window.location.href='produit.html?id=${p.id}'">
+        <div class="related-img">
+          <img src="${p.image}" alt="${p.name}">
+        </div>
+        <div class="related-info">
+          <div style="font-size:11px;color:var(--color-gold);font-weight:700;text-transform:uppercase;">${p.brand}</div>
+          <div class="related-name">${p.name}</div>
+          <div class="related-price">${ProductStore.formatPrice(p.price)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function changeQty(delta) {
+    qty = Math.max(1, Math.min(20, qty + delta));
     document.getElementById('qtyVal').textContent = qty;
-    document.getElementById('totalPrice').textContent = new Intl.NumberFormat('fr-FR').format(unitPrice * qty) + ' XOF';
+    if (currentProduct) {
+      const total = currentProduct.price * qty;
+      const formatted = (typeof ProductStore !== 'undefined')
+        ? ProductStore.formatPrice(total)
+        : new Intl.NumberFormat('fr-FR').format(total) + ' XOF';
+      document.getElementById('totalPrice').textContent = formatted;
+    }
   }
 
-  function selectVariant(btn, group) {
-    btn.parentElement.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+  function handleAddToCartClick() {
+    if (!currentProduct) return;
+    
+    // Add to Cart
+    if (typeof Cart !== 'undefined' && Cart.add) {
+      Cart.add({
+        productId: currentProduct.id,
+        merchantId: currentProduct.merchantId || 'ets-marie-andrea',
+        merchantName: currentProduct.brand,
+        name: currentProduct.name,
+        brand: currentProduct.brand,
+        price: currentProduct.price,
+        image: currentProduct.image,
+        variant: currentProduct.weight || 'Standard',
+        qty: qty
+      });
+    } else {
+      // Direct local storage fallback
+      const cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
+      const idx = cart.findIndex(i => i.productId === currentProduct.id || i.name === currentProduct.name);
+      if (idx > -1) {
+        cart[idx].quantity = (cart[idx].quantity || 1) + qty;
+      } else {
+        cart.push({
+          productId: currentProduct.id,
+          name: currentProduct.name,
+          brand: currentProduct.brand,
+          price: currentProduct.price,
+          image: currentProduct.image,
+          quantity: qty
+        });
+      }
+      localStorage.setItem('abp_cart', JSON.stringify(cart));
+    }
+
+    updateCartCount();
+    showToast(`✅ ${qty}x ${currentProduct.name} ajouté au panier !`);
   }
 
-  function selectThumb(el, emoji, c1, c2) {
-    document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    document.querySelector('.gallery-main-img').style.background = `linear-gradient(135deg,${c1},${c2})`;
-    document.querySelector('.gallery-main-img').textContent = emoji;
+  function updateCartCount() {
+    let count = 0;
+    if (typeof Cart !== 'undefined' && Cart.count) {
+      count = Cart.count();
+    } else {
+      const cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
+      count = cart.reduce((acc, item) => acc + (item.quantity || item.qty || 1), 0);
+    }
+    const badge = document.getElementById('cartCount');
+    if (badge) badge.textContent = count;
   }
 
-  function showTab(name) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`tab-${name}`).classList.add('active');
-    event.currentTarget.classList.add('active');
-  }
-
-  function addToCart() {
-    const variant = document.querySelector('.variant-btn.active')?.textContent || '150g';
-    Cart.add({
-      productId: 'prod-savon-karite-vanille',
-      merchantId: 'merchant-amabellepeau',
-      merchantName: 'AMABELLEPEAU',
-      name: 'Savon Karité & Vanille',
-      brand: 'AMABELLEPEAU',
-      price: unitPrice,
-      image: null,
-      variant: variant,
-      qty: qty
-    });
-    const count = Cart.count();
-    document.getElementById('cartCount').textContent = count;
-    // Toast
+  function showToast(msg) {
     const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed;bottom:96px;right:24px;background:var(--color-green);color:white;padding:16px 24px;border-radius:12px;font-weight:700;z-index:9999;animation:fadeIn 0.3s ease;box-shadow:0 8px 32px rgba(0,0,0,0.2);';
-    toast.textContent = `✅ ${qty}x Savon Karité & Vanille ajouté au panier !`;
+    toast.style.cssText = 'position:fixed;bottom:96px;right:24px;background:#1B4D1E;color:white;padding:16px 24px;border-radius:12px;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.25);animation:fadeIn 0.3s ease;';
+    toast.textContent = msg;
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+    setTimeout(() => toast.remove(), 3200);
   }
 
-  function toggleWishlist() {
-    event.currentTarget.textContent = event.currentTarget.textContent.includes('Ajouter') ? '❤️ Retiré des favoris' : '❤️ Ajouter aux favoris';
+  function showTab(btn, tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`tab-${tabId}`).classList.add('active');
   }
 
-  // Init cart count
-  if (typeof Cart !== 'undefined') {
-    document.getElementById('cartCount').textContent = Cart.count();
+  function toggleWishlist(btn) {
+    btn.textContent = btn.textContent.includes('❤️') ? '💖 Dans vos favoris' : '❤️ Favoris';
   }
-  // Discrete Admin Access Double-Click Handler
-  var adminBtn = document.getElementById('adminDiscreteBtn');
-  if (adminBtn) {
-    adminBtn.addEventListener('dblclick', function(e) {
-      e.preventDefault();
-      window.location.href = 'admin/index.html';
-    });
-  }
+
+  // Init
+  document.addEventListener('DOMContentLoaded', () => {
+    initProductPage();
+
+    // Discrete Admin Access Double-Click Handler
+    const adminBtn = document.getElementById('adminDiscreteBtn');
+    if (adminBtn) {
+      adminBtn.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        window.location.href = 'admin/index.html';
+      });
+    }
+  });
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
@@ -247,9 +247,53 @@
 </a>
 
 <script src="js/cart.js"></script>
+<script src="js/products-data.js"></script>
 <script>
   // ── Merchant data catalogue ──
   var MERCHANTS = {
+    'ets-marie-andrea': {
+      initials: 'MA',
+      gradient: 'linear-gradient(135deg, #1B4D1E, #2D6B32)',
+      name: 'ETS Marie Andrea — Savonnerie Artisanale',
+      category: 'Savonnerie Artisanale · Côte d\'Ivoire',
+      desc: 'Maître savonnier, formateur et consultant. Spécialiste du traitement des problèmes dermatologiques à base de plantes. Fondatrice de la gamme AMABELLEPEAU avec plus de 20 ans d\'expertise en savonnerie artisanale à base de plantes africaines.',
+      contact: '07 09 72 40 96 / 01 53 66 72 98',
+      rating: '★ 5.0', reviews: '214', products: '15',
+      items: [
+        { id: 'prod-clarylex-200g', name: 'Savon CLARYLEX (200 g)', price: 4000, image: 'assets/images/products/cat-1.png' },
+        { id: 'prod-henne-curcuma-200g', name: 'Savon Henné & Curcuma (200 g)', price: 3500, image: 'assets/images/products/cat-2.png' },
+        { id: 'prod-gel-aloes-200g', name: 'Savon Gel Aloès (200 g)', price: 3500, image: 'assets/images/products/cat-3.png' },
+        { id: 'prod-carapa-200g', name: 'Savon au Carapa (200 g)', price: 3500, image: 'assets/images/products/cat-4.png' },
+        { id: 'prod-miel-pur-200g', name: 'Savon au Miel Pur (200 g)', price: 3500, image: 'assets/images/products/cat-5.png' },
+        { id: 'prod-karite-brut-200g', name: 'Savon Beurre de Karité Brut (200 g)', price: 3500, image: 'assets/images/products/cat-6.png' }
+      ]
+    },
+    'amabellebarbe': {
+      initials: 'AB',
+      gradient: 'linear-gradient(135deg, #0D1A0D, #1B4D1E)',
+      name: 'AMABELLEBARBE',
+      category: 'Soins Barbe & Homme · Abidjan',
+      desc: 'Gamme exclusive de soins pour la barbe 100% naturels. L\'huile de barbe AMABELLEBARBE est une révolution dans le monde des cosmétiques masculins — composée exclusivement d\'essences naturelles pour stimuler la croissance, apporter brillance et vigueur. Karité, miel et aloès pour votre barbe.',
+      rating: '★ 4.9', reviews: '87', products: '3',
+      items: [
+        { id: 'prod-kit-barbe-amabellebarbe', name: 'Kit Entretien Barbe AMABELLEBARBE', price: 15000, image: 'assets/images/products/amabellebarbe-kit.png' },
+        { id: 'prod-huile-barbe-50ml', name: 'Huile de Barbe AMABELLEBARBE (50 ml)', price: 7500, image: 'assets/images/products/barbe-1.png' },
+        { id: 'prod-clarylex-200g', name: 'Savon CLARYLEX AMABELLEBARBE', price: 4000, image: 'assets/images/products/cat-1.png' }
+      ]
+    },
+    'amafleurdepeau': {
+      initials: 'AF',
+      gradient: 'linear-gradient(135deg, #2D4A1E, #6A8C52)',
+      name: 'AMAFLEURDEPEAU',
+      category: 'Soins Prestige · Abidjan',
+      desc: 'Plongez dans l\'univers d\'AMAFLEURDEPEAU, où chaque soin a été conçu pour vous envelopper d\'une délicatesse sans pareille. Nos traitements phares issus de la fusion parfaite entre innovation et nature révèlent l\'éclat et la santé de votre peau.',
+      rating: '★ 4.8', reviews: '143', products: '4',
+      items: [
+        { id: 'prod-coffret-signature', name: 'Coffret Signature AMAFLEURDEPEAU', price: 18000, image: 'assets/images/products/amafleurdepeau-coffret.png' },
+        { id: 'prod-serum-chebe-100ml', name: 'Sérum Capillaire au Chébé (100 ml)', price: 6500, image: 'assets/images/products/cat-7.png' },
+        { id: 'prod-charbon-bambou-150g', name: 'Savon Charbon de Bambou de Chine (150 g)', price: 3800, image: 'assets/images/products/cat-8.png' }
+      ]
+    },
     'maison-botanique': {
       initials: 'MB',
       gradient: 'linear-gradient(135deg, #1B4D1E, #2D6B32)',
@@ -354,16 +398,42 @@
   document.getElementById('productsHeading').textContent   = 'Produits de ' + m.name;
   document.title = m.name + ' — AMABELLEPEAU';
 
-  // ── Render product cards ──
+  // ── Render product cards (with real images from ProductStore) ──
   var grid = document.getElementById('productsGrid');
-  grid.innerHTML = m.items.map(function(item) {
+
+  // Try to enrich merchant items from ProductStore
+  function enrichItems(items) {
+    if (typeof ProductStore === 'undefined') return items;
+    return items.map(function(item) {
+      var storeProduct = ProductStore.getById(item.id);
+      if (storeProduct) {
+        return {
+          id: storeProduct.id,
+          name: storeProduct.name,
+          price: storeProduct.price,
+          image: storeProduct.image,
+          vertus: storeProduct.vertus
+        };
+      }
+      return item;
+    });
+  }
+
+  var enrichedItems = enrichItems(m.items);
+
+  grid.innerHTML = enrichedItems.map(function(item) {
+    var imgHtml = item.image
+      ? '<img src="' + item.image + '" alt="' + item.name + '" style="width:100%;height:100%;object-fit:cover;display:block;">'
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;background:#1B4D1E;">🌿</div>';
+    var formattedPrice = new Intl.NumberFormat('fr-FR').format(item.price) + ' XOF';
     return [
-      '<div class="mp-card" onclick="window.location.href=\'produit.html?id=' + item.id + '&title=' + encodeURIComponent(item.name) + '&price=' + item.price + '\'">',
-        '<div class="mp-card-img" style="background:' + item.bg + ';">' + item.emoji + '</div>',
+      '<div class="mp-card" onclick="window.location.href=\'produit.html?id=' + item.id + '\'">',
+        '<div class="mp-card-img" style="padding:0;overflow:hidden;">' + imgHtml + '</div>',
         '<div class="mp-card-body">',
           '<div class="mp-card-name">' + item.name + '</div>',
-          '<div class="mp-card-price">' + new Intl.NumberFormat('fr-FR').format(item.price) + ' XOF</div>',
-          '<button class="mp-card-btn" onclick="event.stopPropagation(); addProductToCart(\'' + item.name + '\',' + item.price + ')">',
+          (item.vertus ? '<div style="font-size:11px;color:#666;line-height:1.4;margin-bottom:6px;">' + item.vertus.substring(0,80) + '…</div>' : ''),
+          '<div class="mp-card-price">' + formattedPrice + '</div>',
+          '<button class="mp-card-btn" onclick="event.stopPropagation(); addProductToCart(\'' + item.name.replace(/'/g, "\\'") + '\',' + item.price + ',\'' + (item.id || '') + '\')">',
             '🛒 Ajouter au panier',
           '</button>',
         '</div>',
@@ -371,19 +441,24 @@
     ].join('');
   }).join('');
 
+  // Show contact info if available
+  if (m.contact) {
+    var contactEl = document.getElementById('merchantContact');
+    if (contactEl) contactEl.textContent = m.contact;
+  }
+
   // ── Cart integration ──
-  function addProductToCart(name, price) {
+  function addProductToCart(name, price, productId) {
     var cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
-    var idx = cart.findIndex(function(i) { return i.name === name; });
+    var idx = cart.findIndex(function(i) { return i.productId === productId || i.name === name; });
     if (idx > -1) {
       cart[idx].quantity = (cart[idx].quantity || 1) + 1;
     } else {
-      cart.push({ name: name, price: price, quantity: 1 });
+      cart.push({ productId: productId || '', name: name, price: price, quantity: 1, merchantName: m.name });
     }
     localStorage.setItem('abp_cart', JSON.stringify(cart));
     var count = cart.reduce(function(a, i) { return a + (i.quantity || 1); }, 0);
     document.getElementById('cartCount').textContent = count;
-    // Toast
     var toast = document.createElement('div');
     toast.style.cssText = 'position:fixed;bottom:96px;right:24px;background:#1B4D1E;color:white;padding:14px 22px;border-radius:12px;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-size:14px;';
     toast.textContent = '✅ ' + name + ' ajouté au panier !';
