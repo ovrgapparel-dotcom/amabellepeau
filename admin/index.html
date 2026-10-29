@@ -1586,6 +1586,24 @@
        JAVASCRIPT LOGIC
        ===================================================== -->
   <script>
+    // -- FIX 3: Admin authentication gate --
+    (function() {
+      var ADMIN_PASS = 'amabellepeau2026';
+      var SESSION_KEY = 'abp_admin_auth';
+      if (sessionStorage.getItem(SESSION_KEY) !== 'granted') {
+        var attempt = prompt('AMABELLEPEAU Administration\n\nVeuillez saisir le mot de passe administrateur :');
+        if (attempt === null) {
+          window.location.href = '../index.html';
+          throw new Error('Auth cancelled');
+        }
+        if (attempt !== ADMIN_PASS) {
+          alert('Mot de passe incorrect. Acces refuse.');
+          window.location.href = '../index.html';
+          throw new Error('Auth failed');
+        }
+        sessionStorage.setItem(SESSION_KEY, 'granted');
+      }
+    })();
     // State variables
     let pendingApprovals = 3;
     let activeMerchants = 12;

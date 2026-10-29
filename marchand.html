@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fiche Marchand — AMABELLEPEAU</title>
+  <meta name="description" content="Découvrez les produits artisanaux de ce marchand certifié sur la marketplace AMABELLEPEAU."/>
+  <link rel="icon" href="assets/icons/logo.png"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <style>
+    /* ── Merchant Page Styles ── */
+    .merchant-hero {
+      background: linear-gradient(135deg, #0D1A0D 0%, #1B4D1E 60%, #2D6B32 100%);
+      color: white;
+      padding: var(--space-16) 0 var(--space-12);
+    }
+    .merchant-hero-inner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      flex-wrap: wrap;
+    }
+    .merchant-avatar-lg {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: white;
+      border: 4px solid rgba(201,168,76,0.7);
+      flex-shrink: 0;
+      letter-spacing: 1px;
+    }
+    .merchant-hero-info { flex: 1; min-width: 240px; }
+    .merchant-hero-name {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      line-height: 1.15;
+    }
+    .merchant-hero-category {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.72);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-4);
+    }
+    .merchant-hero-desc {
+      font-size: var(--text-base);
+      color: rgba(255,255,255,0.85);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+    .merchant-hero-stats {
+      display: flex;
+      gap: var(--space-6);
+      margin-top: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .merchant-stat {
+      text-align: center;
+    }
+    .merchant-stat-value {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--color-gold, #C9A84C);
+    }
+    .merchant-stat-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      background: rgba(201,168,76,0.18);
+      color: var(--color-gold, #C9A84C);
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: var(--radius-full, 9999px);
+      padding: 4px 14px;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-3);
+    }
+
+    /* Products grid */
+    .products-section {
+      padding: var(--space-12) 0 var(--space-16);
+      background: var(--color-bg, #F5F0E8);
+    }
+    .products-section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--color-black, #0D1A0D);
+      margin-bottom: var(--space-8);
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-6);
+    }
+    .mp-card {
+      background: white;
+      border-radius: var(--radius-xl, 16px);
+      border: 1px solid var(--color-border, #E8E0D0);
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .mp-card:hover {
+      box-shadow: 0 12px 40px rgba(27,77,30,0.14);
+      transform: translateY(-4px);
+    }
+    .mp-card-img {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+    }
+    .mp-card-body { padding: var(--space-4) var(--space-5) var(--space-5); }
+    .mp-card-name {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-black, #0D1A0D);
+      margin-bottom: var(--space-1);
+    }
+    .mp-card-price {
+      font-weight: 700;
+      color: var(--color-green, #1B4D1E);
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-4);
+    }
+    .mp-card-btn {
+      width: 100%;
+      padding: 10px;
+      background: var(--color-green, #1B4D1E);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg, 12px);
+      font-weight: 700;
+      font-size: var(--text-sm);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .mp-card-btn:hover { background: #2D6B32; }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: rgba(255,255,255,0.75);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: var(--space-6);
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: white; }
+
+    @media (max-width: 640px) {
+      .merchant-hero-inner { flex-direction: column; text-align: center; }
+      .merchant-hero-stats { justify-content: center; }
+      .back-link { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNavbar">
+  <div class="container flex-between">
+    <a href="index.html" class="navbar-brand">
+      <img src="assets/icons/brand-logo.png" onerror="this.src='assets/icons/logo.png'" alt="AMABELLEPEAU" class="navbar-logo"/>
+      <span class="navbar-brand-text">AMABELLE<span>PEAU</span></span>
+    </a>
+    <div class="navbar-nav">
+      <a href="index.html" class="navbar-link">Accueil</a>
+      <a href="catalogue.html" class="navbar-link">Catalogue</a>
+      <a href="index.html#marchands" class="navbar-link">Marchands</a>
+    </div>
+    <div class="navbar-actions">
+      <a href="panier.html" class="btn btn-ghost btn-sm">🛒 <span id="cartCount">0</span></a>
+      <a href="auth.html" class="btn btn-ghost btn-sm">👤</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MERCHANT HERO -->
+<section class="merchant-hero" id="merchantHero">
+  <div class="container">
+    <a href="index.html#marchands" class="back-link">← Retour aux marchands</a>
+    <div class="merchant-hero-inner">
+      <div class="merchant-avatar-lg" id="merchantAvatar">MB</div>
+      <div class="merchant-hero-info">
+        <div class="verified-badge">✓ Marchand Vérifié AMABELLEPEAU</div>
+        <h1 class="merchant-hero-name" id="merchantName">Maison Botanique</h1>
+        <div class="merchant-hero-category" id="merchantCategory">Savonnerie Artisanale · Cocody</div>
+        <p class="merchant-hero-desc" id="merchantDesc">
+          Spécialiste de la saponification à froid et des huiles essentielles d'Afrique de l'Ouest.
+        </p>
+        <div class="merchant-hero-stats">
+          <div class="merchant-stat">
+            <div class="merchant-stat-value" id="merchantRating">★ 4.9</div>
+            <div class="merchant-stat-label">Note moyenne</div>
+          </div>
+          <div class="merchant-stat">
+            <div class="merchant-stat-value" id="merchantReviews">128</div>
+            <div class="merchant-stat-label">Avis clients</div>
+          </div>
+          <div class="merchant-stat">
+            <div class="merchant-stat-value" id="merchantProducts">34</div>
+            <div class="merchant-stat-label">Produits</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section">
+  <div class="container">
+    <h2 class="products-section-title" id="productsHeading">Produits de Maison Botanique</h2>
+    <div class="products-grid" id="productsGrid">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer"
+   style="position:fixed;bottom:24px;right:24px;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.5);z-index:9995;">
+  <svg viewBox="0 0 32 32" width="26" height="26" fill="white"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.827.737 5.479 2.027 7.785L0 32l8.454-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.262 13.262 0 01-6.771-1.853l-.485-.287-5.017 1.193 1.222-4.87-.316-.499A13.264 13.264 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.357-1.163-2.722-1.295-.365-.133-.631-.199-.897.199-.266.398-1.031 1.295-1.264 1.562-.233.266-.465.299-.863.1-.398-.2-1.681-.619-3.202-1.974-1.183-1.054-1.982-2.356-2.215-2.754-.233-.398-.025-.613.175-.811.18-.178.398-.465.597-.698.2-.233.266-.398.398-.664.133-.266.066-.498-.033-.698-.1-.199-.897-2.162-1.23-2.96-.323-.776-.652-.671-.897-.683l-.764-.013c-.266 0-.698.1-1.064.498-.365.398-1.396 1.363-1.396 3.325 0 1.962 1.43 3.858 1.629 4.124.199.265 2.814 4.297 6.82 6.025.953.411 1.697.656 2.278.84.957.304 1.828.261 2.517.158.767-.114 2.357-.963 2.689-1.894.332-.931.332-1.73.233-1.895-.1-.165-.365-.265-.763-.464z"/></svg>
+</a>
+
+<script src="js/cart.js"></script>
+<script>
+  // ── Merchant data catalogue ──
+  var MERCHANTS = {
+    'maison-botanique': {
+      initials: 'MB',
+      gradient: 'linear-gradient(135deg, #1B4D1E, #2D6B32)',
+      name: 'Maison Botanique',
+      category: 'Savonnerie Artisanale · Cocody',
+      desc: 'Spécialiste de la saponification à froid et des huiles essentielles d\'Afrique de l\'Ouest. Chaque savon est fabriqué à la main en petites séries pour garantir la qualité.',
+      rating: '★ 4.9', reviews: '128', products: '34',
+      items: [
+        { id: 1, name: 'Savon Karité & Vanille',    price: 3500,  emoji: '🌿', bg: 'linear-gradient(135deg,#1B4D1E,#4A8C50)' },
+        { id: 8, name: 'Lotion Corps Hibiscus',     price: 7500,  emoji: '🌸', bg: 'linear-gradient(135deg,#C44569,#E2C67A)' },
+        { id: 9, name: 'Savon Baobab & Miel',       price: 3800,  emoji: '🍯', bg: 'linear-gradient(135deg,#8B5E3C,#C9A84C)' },
+        { id: 10, name: 'Huile Karité Brut',        price: 5500,  emoji: '✨', bg: 'linear-gradient(135deg,#4A8C50,#C9A84C)' }
+      ]
+    },
+    'ivoire-naturals': {
+      initials: 'IN',
+      gradient: 'linear-gradient(135deg, #8B7355, #C9A84C)',
+      name: 'Ivoire Naturals',
+      category: 'Soins Éco-certifiés · Grand-Bassam',
+      desc: 'Huiles pures de première pression à froid et eaux florales distillées sur le littoral. Certifiés agriculture biologique depuis 2022.',
+      rating: '★ 4.8', reviews: '95', products: '28',
+      items: [
+        { id: 2, name: 'Huile de Coco Pure',        price: 4500,  emoji: '🥥', bg: 'linear-gradient(135deg,#C9A84C,#E2C67A)' },
+        { id: 11, name: 'Eau Florale de Rose',      price: 6200,  emoji: '🌹', bg: 'linear-gradient(135deg,#C44569,#F5A0B5)' },
+        { id: 12, name: 'Huile d\'Avocat Bio',      price: 5800,  emoji: '🥑', bg: 'linear-gradient(135deg,#2D6B32,#6AAB70)' },
+        { id: 13, name: 'Beurre de Mangue',         price: 4800,  emoji: '🥭', bg: 'linear-gradient(135deg,#E2C67A,#C9A84C)' }
+      ]
+    },
+    'aura-noire': {
+      initials: 'AN',
+      gradient: 'linear-gradient(135deg, #0D1A0D, #4A8C50)',
+      name: 'Aura Noire',
+      category: 'Beurres Rares · Marcory Zone 4',
+      desc: 'Chantillys fouettées à la main, karité bio de Korhogo et beurres de mangue sauvages. La quintessence du soin africain de luxe.',
+      rating: '★ 5.0', reviews: '210', products: '45',
+      items: [
+        { id: 3, name: 'Crème Beurre de Karité',    price: 6000,  emoji: '🧴', bg: 'linear-gradient(135deg,#0D1A0D,#4A8C50)' },
+        { id: 14, name: 'Chantilly Corps Cacao',    price: 7200,  emoji: '🍫', bg: 'linear-gradient(135deg,#4A2C0A,#8B5E3C)' },
+        { id: 15, name: 'Beurre de Karité Brut',    price: 4900,  emoji: '⭐', bg: 'linear-gradient(135deg,#1B4D1E,#C9A84C)' },
+        { id: 16, name: 'Sérum Nuit Réparateur',    price: 14500, emoji: '🌙', bg: 'linear-gradient(135deg,#0D1A0D,#2D6B32)' }
+      ]
+    },
+    'bioclat-ci': {
+      initials: 'BÉ',
+      gradient: 'linear-gradient(135deg, #2D6B32, #6AAB70)',
+      name: 'BioÉclat CI',
+      category: 'Botanique & Teint · Plateau',
+      desc: 'Formules à haute teneur en aloe vera frais cultivé biologiquement en Côte d\'Ivoire. Spécialiste du soin visage éclaircissant naturel.',
+      rating: '★ 4.7', reviews: '74', products: '19',
+      items: [
+        { id: 4, name: 'Gel Aloe Vera Pur',         price: 5000,  emoji: '🌵', bg: 'linear-gradient(135deg,#2D6B32,#6AAB70)' },
+        { id: 17, name: 'Masque Éclat Hibiscus',    price: 5500,  emoji: '🌺', bg: 'linear-gradient(135deg,#C44569,#E2C67A)' },
+        { id: 18, name: 'Toner Eau d\'Aloe',        price: 3900,  emoji: '💧', bg: 'linear-gradient(135deg,#6AAB70,#C5E8C7)' },
+        { id: 19, name: 'Crème SPF Naturelle',      price: 8500,  emoji: '☀️', bg: 'linear-gradient(135deg,#C9A84C,#F5F0E8)' }
+      ]
+    },
+    'botanica-san-pedro': {
+      initials: 'BS',
+      gradient: 'linear-gradient(135deg, #1A211B, #3D443E)',
+      name: 'Botanica San Pedro',
+      category: 'Soins Détox · San Pedro',
+      desc: 'Savons noirs purifiants au charbon de bambou et gommages minéraux marins. Experts en soins détox et purification cutanée profonde.',
+      rating: '★ 4.9', reviews: '112', products: '22',
+      items: [
+        { id: 5, name: 'Savon Charbon Actif',       price: 3800,  emoji: '🖤', bg: 'linear-gradient(135deg,#0F2E11,#2D6B32)' },
+        { id: 20, name: 'Savon Noir Africain',      price: 3200,  emoji: '🫧', bg: 'linear-gradient(135deg,#1A211B,#4A4A4A)' },
+        { id: 21, name: 'Gommage Sucre de Canne',   price: 6500,  emoji: '🌾', bg: 'linear-gradient(135deg,#8B7355,#C9A84C)' },
+        { id: 22, name: 'Masque Argile Blanche',    price: 4000,  emoji: '⬜', bg: 'linear-gradient(135deg,#D9D2C0,#F5F0E8)' }
+      ]
+    },
+    'elixir-tropical': {
+      initials: 'ÉT',
+      gradient: 'linear-gradient(135deg, #C44569, #C9A84C)',
+      name: 'L\'Élixir Tropical',
+      category: 'Sérums Précieux · II-Plateaux',
+      desc: 'Nectars concentrés de fleurs d\'hibiscus et vitamines naturelles unifiantes. Chaque sérum est élaboré en laboratoire artisanal à partir d\'actifs frais.',
+      rating: '★ 4.8', reviews: '88', products: '16',
+      items: [
+        { id: 6, name: 'Sérum Vitamine C & Hibiscus', price: 12000, emoji: '💛', bg: 'linear-gradient(135deg,#C44569,#C9A84C)' },
+        { id: 23, name: 'Huile Éclat Baobab',       price: 9500,  emoji: '🌟', bg: 'linear-gradient(135deg,#C9A84C,#E2C67A)' },
+        { id: 24, name: 'Sérum Anti-Taches Nuit',   price: 13500, emoji: '🌙', bg: 'linear-gradient(135deg,#C44569,#4A1A2A)' },
+        { id: 25, name: 'Brume Fixatrice Hibiscus', price: 5200,  emoji: '🌸', bg: 'linear-gradient(135deg,#C44569,#F5A0B5)' }
+      ]
+    }
+  };
+
+  // ── Read URL param ──
+  var slug = new URLSearchParams(window.location.search).get('id') || 'maison-botanique';
+  var m = MERCHANTS[slug] || MERCHANTS['maison-botanique'];
+
+  // ── Populate hero ──
+  var avatarEl = document.getElementById('merchantAvatar');
+  avatarEl.textContent = m.initials;
+  avatarEl.style.background = m.gradient;
+
+  document.getElementById('merchantName').textContent      = m.name;
+  document.getElementById('merchantCategory').textContent  = m.category;
+  document.getElementById('merchantDesc').textContent      = m.desc;
+  document.getElementById('merchantRating').textContent    = m.rating;
+  document.getElementById('merchantReviews').textContent   = m.reviews;
+  document.getElementById('merchantProducts').textContent  = m.products;
+  document.getElementById('productsHeading').textContent   = 'Produits de ' + m.name;
+  document.title = m.name + ' — AMABELLEPEAU';
+
+  // ── Render product cards ──
+  var grid = document.getElementById('productsGrid');
+  grid.innerHTML = m.items.map(function(item) {
+    return [
+      '<div class="mp-card" onclick="window.location.href=\'produit.html?id=' + item.id + '&title=' + encodeURIComponent(item.name) + '&price=' + item.price + '\'">',
+        '<div class="mp-card-img" style="background:' + item.bg + ';">' + item.emoji + '</div>',
+        '<div class="mp-card-body">',
+          '<div class="mp-card-name">' + item.name + '</div>',
+          '<div class="mp-card-price">' + new Intl.NumberFormat('fr-FR').format(item.price) + ' XOF</div>',
+          '<button class="mp-card-btn" onclick="event.stopPropagation(); addProductToCart(\'' + item.name + '\',' + item.price + ')">',
+            '🛒 Ajouter au panier',
+          '</button>',
+        '</div>',
+      '</div>'
+    ].join('');
+  }).join('');
+
+  // ── Cart integration ──
+  function addProductToCart(name, price) {
+    var cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
+    var idx = cart.findIndex(function(i) { return i.name === name; });
+    if (idx > -1) {
+      cart[idx].quantity = (cart[idx].quantity || 1) + 1;
+    } else {
+      cart.push({ name: name, price: price, quantity: 1 });
+    }
+    localStorage.setItem('abp_cart', JSON.stringify(cart));
+    var count = cart.reduce(function(a, i) { return a + (i.quantity || 1); }, 0);
+    document.getElementById('cartCount').textContent = count;
+    // Toast
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:96px;right:24px;background:#1B4D1E;color:white;padding:14px 22px;border-radius:12px;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-size:14px;';
+    toast.textContent = '✅ ' + name + ' ajouté au panier !';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+  }
+
+  // ── Sync cart count on load ──
+  (function() {
+    var cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
+    var count = cart.reduce(function(a, i) { return a + (i.quantity || 1); }, 0);
+    document.getElementById('cartCount').textContent = count;
+  })();
+</script>
+</body>
+</html>

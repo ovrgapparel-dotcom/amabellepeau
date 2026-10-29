@@ -1611,7 +1611,7 @@
               </div>
 
               <div class="showcase-soap-art">
-                <img src="assets/icons/logo.png" alt="AMABELLEPEAU Sceau" class="showcase-soap-logo">
+                <img src="assets/icons/brand-logo.png" onerror="this.src='assets/icons/logo.png'" alt="AMABELLEPEAU Emblème" class="showcase-soap-logo">
               </div>
 
               <h2 class="showcase-title">AMABELLEPEAU</h2>
@@ -2557,7 +2557,7 @@
     ];
 
     // State Variables
-    let cart = JSON.parse(localStorage.getItem('amabelle_cart') || '[]');
+    let cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
     let wishlist = JSON.parse(localStorage.getItem('amabelle_wishlist') || '[]');
 
     // DOM Elements
@@ -2575,7 +2575,7 @@
 
     // Sync Counters on Load
     function updateCounters() {
-      const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+      const totalCartItems = cart.reduce((acc, item) => acc + (item.quantity || item.qty || 1), 0);
       cartCountEl.textContent = totalCartItems;
       wishlistCountEl.textContent = wishlist.length;
 
@@ -2614,7 +2614,7 @@
         cart.push({ name: productName, price: price, quantity: 1 });
       }
 
-      localStorage.setItem('amabelle_cart', JSON.stringify(cart));
+      localStorage.setItem('abp_cart', JSON.stringify(cart));
       updateCounters();
       showToast(`${productName} a été ajouté à votre panier avec succès !`, 'Panier Mis à Jour');
     }
@@ -2748,6 +2748,40 @@
       }
     }
 
+
+    // -- FIX 1: Cart nav button navigates to panier.html --
+    document.getElementById('cartNavBtn').addEventListener('click', function() {
+      window.location.href = 'panier.html';
+    });
+
+    // -- FIX 2: Product cards navigate to produit.html with URL params --
+    document.querySelectorAll('.product-card').forEach(function(card) {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.product-card-action-btn') || e.target.closest('.btn-quick-add')) return;
+        var id    = card.dataset.id    || '1';
+        var title = encodeURIComponent(card.dataset.title || '');
+        var price = card.dataset.price || '3500';
+        window.location.href = 'produit.html?id=' + id + '&title=' + title + '&price=' + price;
+      });
+    });
+
+    // -- FIX 5: Merchant cards navigate to marchand.html with slug --
+    var merchantSlugs = [
+      'maison-botanique',
+      'ivoire-naturals',
+      'aura-noire',
+      'bioclat-ci',
+      'botanica-san-pedro',
+      'elixir-tropical'
+    ];
+    document.querySelectorAll('.merchant-card').forEach(function(card, i) {
+      card.style.cursor = 'pointer';
+      var slug = merchantSlugs[i] || ('marchand-' + (i + 1));
+      card.addEventListener('click', function() {
+        window.location.href = 'marchand.html?id=' + slug;
+      });
+    });
     // Initialize
     updateCounters();
   </script>

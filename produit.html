@@ -298,8 +298,23 @@
 
 <script src="js/cart.js"></script>
 <script>
+  // -- FIX 2: Read product data from URL params --
+  var _params = new URLSearchParams(window.location.search);
+  var _urlTitle = _params.get('title') ? decodeURIComponent(_params.get('title')) : null;
+  var _urlPrice = _params.get('price') ? parseInt(_params.get('price'), 10) : null;
+
+  if (_urlTitle) {
+    var titleEls = document.querySelectorAll('.product-title, h1.product-title');
+    titleEls.forEach(function(el) { el.textContent = _urlTitle; });
+    document.title = _urlTitle + ' — AMABELLEPEAU';
+  }
+
   let qty = 1;
-  const unitPrice = 3500;
+  let unitPrice = _urlPrice || 3500;
+
+  // Update displayed price to match URL param
+  document.querySelector('.product-price').textContent = new Intl.NumberFormat('fr-FR').format(unitPrice) + ' XOF';
+  document.getElementById('totalPrice').textContent = new Intl.NumberFormat('fr-FR').format(unitPrice) + ' XOF';
 
   function changeQty(d) {
     qty = Math.max(1, Math.min(10, qty + d));
