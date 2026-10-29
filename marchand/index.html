@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Marchand | AMABELLEPEAU - Savons Naturels & Cosmétiques de Luxe</title>
+  <meta name="description" content="Tableau de bord marchand AMABELLEPEAU. Gestion des commandes, catalogue de cosmétiques naturels et suivi des finances en Côte d'Ivoire.">
+  <link rel="icon" type="image/png" href="../assets/icons/logo.png">
+  <link rel="stylesheet" href="../css/main.css">
+
+  <style>
+    /* ── Styles spécifiques Portail Marchand ── */
+    :root {
+      --merchant-sidebar-bg: #0D1A0D;
+      --merchant-accent: #C9A84C;
+    }
+
+    body {
+      background-color: var(--color-bg);
+    }
+
+    /* Layout override for dashboard */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - var(--nav-height));
+      position: relative;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 280px;
+      background: var(--merchant-sidebar-bg);
+      border-right: 1px solid rgba(201, 168, 76, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: sticky;
+      top: var(--nav-height);
+      height: calc(100vh - var(--nav-height));
+      overflow-y: auto;
+      z-index: 100;
+      transition: transform var(--transition-base);
+    }
+
+    .sidebar-header-badge {
+      padding: var(--space-5) var(--space-5) var(--space-4);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .merchant-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #1B4D1E, #C9A84C);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: 1px solid var(--color-gold);
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .merchant-meta {
+      overflow: hidden;
+    }
+
+    .merchant-name {
+      color: var(--color-cream);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .merchant-status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--color-gold-light);
+      letter-spacing: 0.03em;
+    }
+
+    .status-indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-success);
+      box-shadow: 0 0 6px var(--color-success);
+    }
+
+    .sidebar-nav {
+      padding: var(--space-3) 0;
+      flex: 1;
+    }
+
+    .sidebar-section-title {
+      padding: var(--space-4) var(--space-5) var(--space-2);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(201, 168, 76, 0.65);
+    }
+
+    .sidebar-item-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px var(--space-5);
+      background: none;
+      border: none;
+      border-left: 3px solid transparent;
+      color: rgba(245, 240, 232, 0.72);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      text-align: left;
+      transition: var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .sidebar-item-btn:hover {
+      background: rgba(201, 168, 76, 0.08);
+      color: var(--color-gold);
+    }
+
+    .sidebar-item-btn.active {
+      background: linear-gradient(90deg, rgba(201, 168, 76, 0.15) 0%, rgba(201, 168, 76, 0.02) 100%);
+      color: var(--color-gold);
+      border-left-color: var(--color-gold);
+      font-weight: 700;
+    }
+
+    .sidebar-item-content {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .sidebar-icon {
+      width: 18px;
+      height: 18px;
+      opacity: 0.85;
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
+
+    .sidebar-badge {
+      background: var(--color-gold);
+      color: var(--color-black);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      line-height: 1;
+    }
+
+    .sidebar-footer {
+      padding: var(--space-4) var(--space-5);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar-quick-balance {
+      background: rgba(201, 168, 76, 0.1);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+
+    .sidebar-balance-label {
+      font-size: 11px;
+      color: rgba(245, 240, 232, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sidebar-balance-val {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-gold-light);
+      margin-top: 2px;
+    }
+
+    /* Main Dashboard Header */
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-8);
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .dashboard-greeting h1 {
+      font-size: var(--text-3xl);
+      color: var(--color-black);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .dashboard-greeting p {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    .header-actions-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    /* Stat Cards Custom */
+    .stats-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
+
+    .stat-card-gold {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition-base);
+    }
+
+    .stat-card-gold::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-gold);
+    }
+
+    .stat-card-gold:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(201, 168, 76, 0.4);
+    }
+
+    .stat-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-3);
+    }
+
+    .stat-icon-wrapper {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: rgba(201, 168, 76, 0.12);
+      color: var(--color-gold-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon-wrapper.green {
+      background: rgba(27, 77, 30, 0.1);
+      color: var(--color-green);
+    }
+
+    .stat-icon-wrapper.orange {
+      background: rgba(230, 126, 34, 0.1);
+      color: var(--color-warning);
+    }
+
+    .stat-icon-wrapper.purple {
+      background: rgba(142, 68, 173, 0.1);
+      color: #8E44AD;
+    }
+
+    .stat-title-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+
+    .stat-main-number {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--color-black);
+      line-height: 1.2;
+      margin-bottom: var(--space-2);
+    }
+
+    .stat-badge-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .stat-badge-trend.up {
+      background: rgba(39, 174, 96, 0.12);
+      color: var(--color-success);
+    }
+
+    .stat-badge-trend.warning {
+      background: rgba(230, 126, 34, 0.12);
+      color: var(--color-warning);
+    }
+
+    .stat-badge-trend.neutral {
+      background: var(--color-surface-alt);
+      color: var(--color-text-muted);
+    }
+
+    /* Content Layout Grids */
+    .dashboard-two-col {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-6);
+      margin-bottom: var(--space-8);
+      align-items: start;
+    }
+
+    /* Pure CSS Bar Chart */
+    .chart-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: var(--space-6);
+    }
+
+    .chart-title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-black);
+    }
+
+    .css-chart-container {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-4);
+      height: 200px;
+      padding-top: var(--space-4);
+      border-bottom: 2px solid var(--color-border);
+      position: relative;
+    }
+
+    .css-chart-bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .css-chart-bar {
+      width: 100%;
+      max-width: 44px;
+      background: linear-gradient(180deg, var(--color-gold) 0%, var(--color-green) 100%);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.2s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .css-chart-bar:hover {
+      transform: scaleY(1.05);
+      background: linear-gradient(180deg, var(--color-gold-light) 0%, var(--color-forest-light) 100%);
+    }
+
+    .css-chart-bar .tooltip {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-black);
+      color: var(--color-cream);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .css-chart-bar:hover .tooltip {
+      opacity: 1;
+    }
+
+    .css-chart-bar-label {
+      margin-top: var(--space-2);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Side info card beside chart */
+    .sales-summary-widget {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .summary-widget-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: var(--space-3);
+      border-bottom: 1px dashed var(--color-border);
+    }
+
+    .summary-widget-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    /* Section Headers inside Main */
+    .dashboard-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+
+    .dashboard-section-title {
+      font-size: var(--text-xl);
+      color: var(--color-black);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* Orders Table Styling */
+    .table-actions-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .btn-action-accept {
+      background: rgba(39, 174, 96, 0.12);
+      color: var(--color-success);
+      border: 1px solid rgba(39, 174, 96, 0.3);
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition-fast);
+    }
+
+    .btn-action-accept:hover {
+      background: var(--color-success);
+      color: #FFFFFF;
+      border-color: var(--color-success);
+    }
+
+    .btn-action-reject {
+      background: rgba(192, 57, 43, 0.08);
+      color: var(--color-error);
+      border: 1px solid rgba(192, 57, 43, 0.2);
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition-fast);
+    }
+
+    .btn-action-reject:hover {
+      background: var(--color-error);
+      color: #FFFFFF;
+      border-color: var(--color-error);
+    }
+
+    /* Product Card Small Grid */
+    .products-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
+
+    .merchant-prod-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-base);
+    }
+
+    .merchant-prod-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      border-color: rgba(201, 168, 76, 0.35);
+    }
+
+    .prod-card-thumb {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: #FFFFFF;
+    }
+
+    .prod-card-thumb svg {
+      width: 48px;
+      height: 48px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+    }
+
+    .stock-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background: rgba(0, 0, 0, 0.65);
+      color: #FFFFFF;
+      backdrop-filter: blur(4px);
+    }
+
+    .stock-badge.low {
+      background: rgba(230, 126, 34, 0.9);
+      color: #FFFFFF;
+    }
+
+    .prod-card-body {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .prod-card-cat {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-gold-dark);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .prod-card-name {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-black);
+      line-height: 1.3;
+      margin-bottom: var(--space-2);
+      flex: 1;
+    }
+
+    .prod-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: var(--space-2);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .prod-card-price {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-green-deep);
+    }
+
+    .prod-card-actions {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+
+    .btn-card-action {
+      flex: 1;
+      padding: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-alt);
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition-fast);
+    }
+
+    .btn-card-action:hover {
+      background: var(--color-gold);
+      color: var(--color-black);
+      border-color: var(--color-gold);
+    }
+
+    /* Tab views handling */
+    .tab-view-content {
+      display: none;
+    }
+
+    .tab-view-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-head {
+      padding: var(--space-5) var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-content-body {
+      padding: var(--space-6);
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .stats-grid-4, .products-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .dashboard-two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: var(--nav-height);
+        bottom: 0;
+        transform: translateX(-100%);
+      }
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .stats-grid-4, .products-grid-4 {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       NAVBAR (All French with role indicator 'Marchand')
+       ===================================================== -->
+  <header class="navbar">
+    <div class="container">
+      <a href="../index.html" class="navbar-brand">
+        <img src="../assets/icons/logo.png" alt="AMABELLEPEAU Logo" class="navbar-logo">
+        <div class="navbar-brand-text">
+          AMABELLE<span>PEAU</span>
+        </div>
+      </a>
+
+      <nav class="navbar-nav">
+        <a href="../index.html" class="navbar-link">Accueil</a>
+        <a href="../catalogue.html" class="navbar-link">Catalogue</a>
+        <a href="../marques.html" class="navbar-link">Marques</a>
+        <a href="index.html" class="navbar-link active">Marchands</a>
+        <a href="../compte.html" class="navbar-link">Mon Compte</a>
+      </nav>
+
+      <div class="navbar-actions">
+        <!-- Role Indicator Badge -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="tag tag-gold" style="font-weight: 700; border: 1px solid rgba(201,168,76,0.4);">
+            ✦ ESPACE MARCHAND
+          </span>
+        </div>
+
+        <!-- Sidebar mobile toggle -->
+        <button class="btn btn-sm btn-outline" id="sidebarToggleBtn" style="display: none; padding: 6px 10px;" aria-label="Menu Marchand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+
+        <a href="../panier.html" class="cart-badge" title="Voir le panier">
+          <button class="btn btn-icon btn-ghost" aria-label="Panier">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </button>
+        </a>
+
+        <!-- Mobile hamburger menu for main links -->
+        <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Menu Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer for Navbar Links -->
+  <div class="mobile-nav" id="mobileNav">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+      <div class="navbar-brand-text" style="color: white;">AMABELLE<span style="color: var(--color-gold);">PEAU</span></div>
+      <button id="closeMobileNav" style="background: none; border: none; color: white; font-size: 28px; cursor: pointer;">&times;</button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+      <a href="../index.html" class="navbar-link" style="font-size: var(--text-lg);">Accueil</a>
+      <a href="../catalogue.html" class="navbar-link" style="font-size: var(--text-lg);">Catalogue</a>
+      <a href="../marques.html" class="navbar-link" style="font-size: var(--text-lg);">Marques</a>
+      <a href="index.html" class="navbar-link active" style="font-size: var(--text-lg); color: var(--color-gold);">Espace Marchand</a>
+      <a href="../compte.html" class="navbar-link" style="font-size: var(--text-lg);">Mon Compte</a>
+      <a href="../panier.html" class="navbar-link" style="font-size: var(--text-lg);">Panier</a>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       APP LAYOUT: SIDEBAR + MAIN CONTENT
+       ===================================================== -->
+  <div class="app-layout">
+
+    <!-- ── SIDEBAR NAVIGATION (Dark green #0D1A0D) ── -->
+    <aside class="sidebar" id="merchantSidebar">
+      <div>
+        <!-- Merchant Store Profile Header -->
+        <div class="sidebar-header-badge">
+          <div class="merchant-avatar">AN</div>
+          <div class="merchant-meta">
+            <div class="merchant-name">Atelier Nanan</div>
+            <div class="merchant-status-tag">
+              <span class="status-indicator-dot"></span>
+              Boutique Active · Cocody
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Sections -->
+        <nav class="sidebar-nav">
+          
+          <!-- TABLEAU DE BORD -->
+          <div class="sidebar-section-title">TABLEAU DE BORD</div>
+          <button class="sidebar-item-btn active" data-tab="tab-overview">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Vue d'ensemble</span>
+            </div>
+          </button>
+
+          <!-- CATALOGUE -->
+          <div class="sidebar-section-title">CATALOGUE</div>
+          <button class="sidebar-item-btn" data-tab="tab-products">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+              <span>Mes Produits</span>
+            </div>
+            <span class="sidebar-badge" style="background: rgba(255,255,255,0.15); color: #fff;">34</span>
+          </button>
+          <button class="sidebar-item-btn" data-tab="tab-add-product" onclick="openAddProductModal()">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              <span>Ajouter un Produit</span>
+            </div>
+            <span class="tag tag-gold" style="font-size: 9px; padding: 1px 6px;">+ NOUVEAU</span>
+          </button>
+
+          <!-- COMMANDES -->
+          <div class="sidebar-section-title">COMMANDES</div>
+          <button class="sidebar-item-btn" data-tab="tab-new-orders">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              <span>Nouvelles Commandes</span>
+            </div>
+            <span class="sidebar-badge" id="sidebarOrdersBadge">8</span>
+          </button>
+          <button class="sidebar-item-btn" data-tab="tab-all-orders">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>Toutes les Commandes</span>
+            </div>
+          </button>
+
+          <!-- FINANCES -->
+          <div class="sidebar-section-title">FINANCES</div>
+          <button class="sidebar-item-btn" data-tab="tab-finances">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              <span>Mon Solde</span>
+            </div>
+          </button>
+          <button class="sidebar-item-btn" data-tab="tab-payouts">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+              <span>Historique</span>
+            </div>
+          </button>
+
+          <!-- PARAMÈTRES -->
+          <div class="sidebar-section-title">PARAMÈTRES</div>
+          <button class="sidebar-item-btn" data-tab="tab-profile">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Mon Profil</span>
+            </div>
+          </button>
+
+        </nav>
+      </div>
+
+      <!-- Sidebar Bottom Solde Widget -->
+      <div class="sidebar-footer">
+        <div class="sidebar-quick-balance">
+          <div class="sidebar-balance-label">Solde Disponible</div>
+          <div class="sidebar-balance-val" id="sidebarBalanceAmount">208 930 XOF</div>
+        </div>
+        <button class="btn btn-primary btn-sm w-full" onclick="openPayoutModal()" style="font-size: 11px;">
+          Retrait Wave / OM
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT AREA ── -->
+    <main class="main-content">
+      
+      <!-- TAB 1: VUE D'ENSEMBLE (Default Active) -->
+      <div class="tab-view-content active" id="tab-overview">
+        
+        <!-- Header -->
+        <div class="dashboard-header">
+          <div class="dashboard-greeting">
+            <h1>Bonjour, Awa Ouattara 👋</h1>
+            <p>Atelier Nanan · Savonnerie Artisanale & Soins Botaniques · Abidjan, Côte d'Ivoire · <span id="currentDateDisplay">Lundi 26 Octobre 2026</span></p>
+          </div>
+          <div class="header-actions-group">
+            <button class="btn btn-outline btn-sm" onclick="showAllOrdersTab()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              Toutes mes commandes
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Ajouter un Produit
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Stat Cards (gold top border) -->
+        <div class="stats-grid-4">
+          <!-- Stat 1: Ventes du mois -->
+          <div class="stat-card-gold">
+            <div class="stat-top-row">
+              <span class="stat-title-label">Ventes du mois</span>
+              <div class="stat-icon-wrapper green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+            </div>
+            <div class="stat-main-number">245 800 XOF</div>
+            <div>
+              <span class="stat-badge-trend up">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                ↑ 12% vs mois dernier
+              </span>
+            </div>
+          </div>
+
+          <!-- Stat 2: Commandes en attente -->
+          <div class="stat-card-gold">
+            <div class="stat-top-row">
+              <span class="stat-title-label">Commandes en attente</span>
+              <div class="stat-icon-wrapper orange">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+            </div>
+            <div class="stat-main-number" id="overviewPendingCount">8</div>
+            <div>
+              <span class="stat-badge-trend warning">
+                ● 5 à préparer d'urgence
+              </span>
+            </div>
+          </div>
+
+          <!-- Stat 3: Produits actifs -->
+          <div class="stat-card-gold">
+            <div class="stat-top-row">
+              <span class="stat-title-label">Produits actifs</span>
+              <div class="stat-icon-wrapper">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              </div>
+            </div>
+            <div class="stat-main-number">34</div>
+            <div>
+              <span class="stat-badge-trend neutral">
+                ✓ 2 réapprovisionnements requis
+              </span>
+            </div>
+          </div>
+
+          <!-- Stat 4: Note moyenne -->
+          <div class="stat-card-gold">
+            <div class="stat-top-row">
+              <span class="stat-title-label">Note moyenne</span>
+              <div class="stat-icon-wrapper purple">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+            </div>
+            <div class="stat-main-number">⭐ 4.7 <span style="font-size: var(--text-sm); font-weight: 400; color: var(--color-text-muted);">/ 5</span></div>
+            <div>
+              <span class="stat-badge-trend up">
+                Basé sur 89 avis vérifiés
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales Chart & Weekly Summary Row -->
+        <div class="dashboard-two-col">
+          <!-- CSS Bar Chart for Sales -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div>
+                <h2 class="chart-title">Évolution des Ventes Hebdomadaires</h2>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Recettes brutes des 7 derniers jours (XOF)</div>
+              </div>
+              <span class="tag tag-gold">Semaine 43</span>
+            </div>
+
+            <!-- Pure CSS Chart -->
+            <div class="css-chart-container">
+              <div class="css-chart-bar-group">
+                <div class="css-chart-bar" style="height: 45%;">
+                  <span class="tooltip">Lun: 24 500 XOF</span>
+                </div>
+                <span class="css-chart-bar-label">Lun</span>
+              </div>
+              <div class="css-chart-bar-group">
+                <div class="css-chart-bar" style="height: 60%;">
+                  <span class="tooltip">Mar: 31 000 XOF</span>
+                </div>
+                <span class="css-chart-bar-label">Mar</span>
+              </div>
+              <div class="css-chart-bar-group">
+                <div class="css-chart-bar" style="height: 38%;">
+                  <span class="tooltip">Mer: 19 800 XOF</span>
+                </div>
+                <span class="css-chart-bar-label">Mer</span>
+              </div>
+              <div class="css-chart-bar-group">
+                <div class="css-chart-bar" style="height: 75%;">
+                  <span class="tooltip">Jeu: 42 000 XOF</span>
+                </div>
+                <span class="css-chart-bar-label">Jeu</span>
+              </div>
+              <div class="css-chart-bar-group">
+                <div class="css-chart-bar" style="height: 90%;">
+                  <span class="tooltip">Ven: 56 500 XOF</span>
+                </div>
+                <span class="css-chart-bar-label">Ven</span>
+              </div>
+              <div class="css-chart-bar-group">
+                <div class="css-chart-bar" style="height: 100%;">
+                  <span class="tooltip">Sam: 68 000 XOF</span>
+                </div>
+                <span class="css-chart-bar-label">Sam</span>
+              </div>
+              <div class="css-chart-bar-group">
+                <div class="css-chart-bar" style="height: 25%;">
+                  <span class="tooltip">Dim: 14 000 XOF</span>
+                </div>
+                <span class="css-chart-bar-label">Dim</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance metrics widget -->
+          <div class="sales-summary-widget">
+            <h3 style="font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-black);">Performance Boutique</h3>
+            
+            <div class="summary-widget-item">
+              <div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Taux d'acceptation</div>
+                <div style="font-weight: 700; color: var(--color-black);">98.4%</div>
+              </div>
+              <span class="tag tag-green">Excellent</span>
+            </div>
+
+            <div class="summary-widget-item">
+              <div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Délai moyen de préparation</div>
+                <div style="font-weight: 700; color: var(--color-black);">2h 15min</div>
+              </div>
+              <span class="tag tag-gold">Rapide</span>
+            </div>
+
+            <div class="summary-widget-item">
+              <div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Panier moyen client</div>
+                <div style="font-weight: 700; color: var(--color-black);">14 200 XOF</div>
+              </div>
+              <span class="tag tag-dark">Abidjan</span>
+            </div>
+
+            <div style="margin-top: var(--space-2); background: rgba(201,168,76,0.08); padding: var(--space-3); border-radius: var(--radius-md); font-size: var(--text-xs); color: var(--color-text);">
+              💡 <strong>Conseil AMABELLEPEAU :</strong> Vos savons au moringa connaissent une forte demande le vendredi. Anticipez votre stock dès le mercredi soir.
+            </div>
+          </div>
+        </div>
+
+        <!-- 'Nouvelles Commandes' Table (5 rows) -->
+        <div style="margin-bottom: var(--space-10);">
+          <div class="dashboard-section-header">
+            <h2 class="dashboard-section-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              Nouvelles Commandes à traiter
+              <span class="tag tag-gold" id="ordersPendingBadge">5 récentes</span>
+            </h2>
+            <button class="btn btn-ghost btn-sm" onclick="showAllOrdersTab()">Voir l'historique complet →</button>
+          </div>
+
+          <div class="table-container">
+            <table class="table" id="newOrdersTable">
+              <thead>
+                <tr>
+                  <th>N° Commande</th>
+                  <th>Client</th>
+                  <th>Produits Commandés</th>
+                  <th>Total (XOF)</th>
+                  <th>Statut</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 1 -->
+                <tr id="order-row-1">
+                  <td>
+                    <strong>#CMD-0841</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">Aujourd'hui, 11:24</div>
+                  </td>
+                  <td>
+                    <strong>Kouamé Affoué</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">📍 Cocody Angré 8e Tranche</div>
+                  </td>
+                  <td>
+                    <span>2x Savon Moringa & Karité Brut (150g)</span>
+                  </td>
+                  <td>
+                    <strong style="color: var(--color-green-deep);">7 000 XOF</strong>
+                    <div style="font-size: 11px; color: #1BA4E8;">Payé Wave</div>
+                  </td>
+                  <td>
+                    <span class="status status-pending" id="status-badge-1">En attente</span>
+                  </td>
+                  <td style="text-align: right;">
+                    <div class="table-actions-cell" style="justify-content: flex-end;" id="actions-cell-1">
+                      <button class="btn-action-accept" onclick="acceptOrder('1', '#CMD-0841', 'Kouamé Affoué')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Accepter
+                      </button>
+                      <button class="btn-action-reject" onclick="rejectOrder('1', '#CMD-0841')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Rejeter
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr id="order-row-2">
+                  <td>
+                    <strong>#CMD-0839</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">Aujourd'hui, 10:48</div>
+                  </td>
+                  <td>
+                    <strong>Diop Mamadou</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">📍 Marcory Zone 4</div>
+                  </td>
+                  <td>
+                    <span>1x Sérum Baobab & Hibiscus + 1x Savon Cacao</span>
+                  </td>
+                  <td>
+                    <strong style="color: var(--color-green-deep);">13 000 XOF</strong>
+                    <div style="font-size: 11px; color: #FF7900;">Payé Orange Money</div>
+                  </td>
+                  <td>
+                    <span class="status status-pending" id="status-badge-2">En attente</span>
+                  </td>
+                  <td style="text-align: right;">
+                    <div class="table-actions-cell" style="justify-content: flex-end;" id="actions-cell-2">
+                      <button class="btn-action-accept" onclick="acceptOrder('2', '#CMD-0839', 'Diop Mamadou')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Accepter
+                      </button>
+                      <button class="btn-action-reject" onclick="rejectOrder('2', '#CMD-0839')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Rejeter
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr id="order-row-3">
+                  <td>
+                    <strong>#CMD-0835</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">Aujourd'hui, 09:15</div>
+                  </td>
+                  <td>
+                    <strong>Bamba Mariam</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">📍 Plateau Bd de la République</div>
+                  </td>
+                  <td>
+                    <span>3x Savon Douceur Miel & Curcuma (150g)</span>
+                  </td>
+                  <td>
+                    <strong style="color: var(--color-green-deep);">11 400 XOF</strong>
+                    <div style="font-size: 11px; color: #1BA4E8;">Payé Wave</div>
+                  </td>
+                  <td>
+                    <span class="status status-pending" id="status-badge-3">En attente</span>
+                  </td>
+                  <td style="text-align: right;">
+                    <div class="table-actions-cell" style="justify-content: flex-end;" id="actions-cell-3">
+                      <button class="btn-action-accept" onclick="acceptOrder('3', '#CMD-0835', 'Bamba Mariam')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Accepter
+                      </button>
+                      <button class="btn-action-reject" onclick="rejectOrder('3', '#CMD-0835')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Rejeter
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr id="order-row-4">
+                  <td>
+                    <strong>#CMD-0830</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">Hier, 19:30</div>
+                  </td>
+                  <td>
+                    <strong>Konan Jean-Yves</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">📍 Deux-Plateaux Vallons</div>
+                  </td>
+                  <td>
+                    <span>1x Beurre Cacao Pur 200g + 1x Savon Moringa</span>
+                  </td>
+                  <td>
+                    <strong style="color: var(--color-green-deep);">8 000 XOF</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">À la livraison</div>
+                  </td>
+                  <td>
+                    <span class="status status-pending" id="status-badge-4">En attente</span>
+                  </td>
+                  <td style="text-align: right;">
+                    <div class="table-actions-cell" style="justify-content: flex-end;" id="actions-cell-4">
+                      <button class="btn-action-accept" onclick="acceptOrder('4', '#CMD-0830', 'Konan Jean-Yves')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Accepter
+                      </button>
+                      <button class="btn-action-reject" onclick="rejectOrder('4', '#CMD-0830')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Rejeter
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 5 -->
+                <tr id="order-row-5">
+                  <td>
+                    <strong>#CMD-0828</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">Hier, 17:10</div>
+                  </td>
+                  <td>
+                    <strong>Yao Estelle</strong>
+                    <div style="font-size: 11px; color: var(--color-text-muted);">📍 Yopougon Niangon Sud</div>
+                  </td>
+                  <td>
+                    <span>2x Coffret Rituel Douceur Ivoirienne</span>
+                  </td>
+                  <td>
+                    <strong style="color: var(--color-green-deep);">28 000 XOF</strong>
+                    <div style="font-size: 11px; color: #1BA4E8;">Payé Wave</div>
+                  </td>
+                  <td>
+                    <span class="status status-pending" id="status-badge-5">En attente</span>
+                  </td>
+                  <td style="text-align: right;">
+                    <div class="table-actions-cell" style="justify-content: flex-end;" id="actions-cell-5">
+                      <button class="btn-action-accept" onclick="acceptOrder('5', '#CMD-0828', 'Yao Estelle')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Accepter
+                      </button>
+                      <button class="btn-action-reject" onclick="rejectOrder('5', '#CMD-0828')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Rejeter
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 'Mes Produits Récents' Grid (4 cards) -->
+        <div style="margin-bottom: var(--space-10);">
+          <div class="dashboard-section-header">
+            <h2 class="dashboard-section-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              Mes Produits Récents
+            </h2>
+            <button class="btn btn-ghost btn-sm" onclick="showProductsTab()">Gérer les 34 produits →</button>
+          </div>
+
+          <div class="products-grid-4" id="recentProductsGrid">
+            <!-- Product Card 1 -->
+            <div class="merchant-prod-card">
+              <div class="prod-card-thumb" style="background: linear-gradient(135deg, #1B4D1E 0%, #2D6B32 50%, #4A8C50 100%);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path></svg>
+                <span class="stock-badge">18 en stock</span>
+              </div>
+              <div class="prod-card-body">
+                <div class="prod-card-cat">Savons Saponifiés</div>
+                <h3 class="prod-card-name">Savon Moringa & Karité Brut 150g</h3>
+                <div class="prod-card-meta">
+                  <span class="prod-card-price">3 500 XOF</span>
+                  <span style="font-size: 11px; color: var(--color-text-muted);">42 vendus</span>
+                </div>
+                <div class="prod-card-actions">
+                  <button class="btn-card-action" onclick="quickEditStock('Savon Moringa & Karité Brut', 18)">Stock</button>
+                  <button class="btn-card-action" onclick="showToast('Ouverture de la fiche produit en édition', 'success')">Modifier</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product Card 2 -->
+            <div class="merchant-prod-card">
+              <div class="prod-card-thumb" style="background: linear-gradient(135deg, #C9896A 0%, #E2C67A 100%);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span class="stock-badge">7 en stock</span>
+              </div>
+              <div class="prod-card-body">
+                <div class="prod-card-cat">Huiles & Sérums</div>
+                <h3 class="prod-card-name">Sérum Éclat Baobab & Hibiscus 50ml</h3>
+                <div class="prod-card-meta">
+                  <span class="prod-card-price">8 500 XOF</span>
+                  <span style="font-size: 11px; color: var(--color-text-muted);">29 vendus</span>
+                </div>
+                <div class="prod-card-actions">
+                  <button class="btn-card-action" onclick="quickEditStock('Sérum Éclat Baobab & Hibiscus', 7)">Stock</button>
+                  <button class="btn-card-action" onclick="showToast('Ouverture de la fiche produit en édition', 'success')">Modifier</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product Card 3 -->
+            <div class="merchant-prod-card">
+              <div class="prod-card-thumb" style="background: linear-gradient(135deg, #8B7355 0%, #EDE8DC 100%);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1A1108" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                <span class="stock-badge">24 en stock</span>
+              </div>
+              <div class="prod-card-body">
+                <div class="prod-card-cat">Beurres Végétaux</div>
+                <h3 class="prod-card-name">Beurre Pur de Cacao & Fleur d'Oranger</h3>
+                <div class="prod-card-meta">
+                  <span class="prod-card-price">4 500 XOF</span>
+                  <span style="font-size: 11px; color: var(--color-text-muted);">51 vendus</span>
+                </div>
+                <div class="prod-card-actions">
+                  <button class="btn-card-action" onclick="quickEditStock('Beurre Pur de Cacao', 24)">Stock</button>
+                  <button class="btn-card-action" onclick="showToast('Ouverture de la fiche produit en édition', 'success')">Modifier</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product Card 4 -->
+            <div class="merchant-prod-card">
+              <div class="prod-card-thumb" style="background: linear-gradient(135deg, #E67E22 0%, #C9A84C 100%);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span class="stock-badge low">Stock faible (2)</span>
+              </div>
+              <div class="prod-card-body">
+                <div class="prod-card-cat">Savons Saponifiés</div>
+                <h3 class="prod-card-name">Savon Douceur Miel & Curcuma 150g</h3>
+                <div class="prod-card-meta">
+                  <span class="prod-card-price">3 800 XOF</span>
+                  <span style="font-size: 11px; color: var(--color-text-muted);">38 vendus</span>
+                </div>
+                <div class="prod-card-actions">
+                  <button class="btn-card-action" onclick="quickEditStock('Savon Douceur Miel & Curcuma', 2)">Stock</button>
+                  <button class="btn-card-action" onclick="showToast('Ouverture de la fiche produit en édition', 'success')">Modifier</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons Footer Bar -->
+        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+          <div>
+            <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--color-black);">Actions rapides marchand</h3>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted);">Gérez votre catalogue ou téléchargez vos relevés officiels AMABELLEPEAU</p>
+          </div>
+          <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+            <button class="btn btn-outline" onclick="showAllOrdersTab()">
+              Voir toutes mes commandes
+            </button>
+            <button class="btn btn-primary" onclick="openAddProductModal()">
+              + Ajouter un Produit
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: MES PRODUITS (Full Catalog Management) -->
+      <div class="tab-view-content" id="tab-products">
+        <div class="dashboard-header">
+          <div>
+            <h1>Mes Produits (34)</h1>
+            <p>Catalogue de votre boutique en ligne sur la marketplace AMABELLEPEAU</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Nouveau Produit</button>
+        </div>
+
+        <!-- Filters bar -->
+        <div style="display: flex; gap: var(--space-3); margin-bottom: var(--space-6); flex-wrap: wrap;">
+          <input type="text" id="prodSearchInput" class="form-input" placeholder="🔍 Rechercher un produit..." style="max-width: 320px;" oninput="filterMerchantProducts()">
+          <select class="form-select" id="prodCatSelect" style="max-width: 220px;" onchange="filterMerchantProducts()">
+            <option value="">Toutes les catégories</option>
+            <option value="Savons">Savons Saponifiés</option>
+            <option value="Huiles">Huiles & Sérums</option>
+            <option value="Beurres">Beurres Végétaux</option>
+            <option value="Coffrets">Coffrets Cadeaux</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table class="table" id="allMerchantProductsTable">
+            <thead>
+              <tr>
+                <th>Produit</th>
+                <th>Catégorie</th>
+                <th>Prix Unitaire</th>
+                <th>Stock</th>
+                <th>Statut</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Savon Noir Purifiant au Moringa & Karité</strong></td>
+                <td>Savons</td>
+                <td>3 500 XOF</td>
+                <td><span class="tag tag-green">18 unités</span></td>
+                <td><span class="status status-delivered">En ligne</span></td>
+                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Produit mis à jour', 'success')">Modifier</button></td>
+              </tr>
+              <tr>
+                <td><strong>Sérum Éclat à l'Huile de Baobab & Hibiscus</strong></td>
+                <td>Huiles</td>
+                <td>8 500 XOF</td>
+                <td><span class="tag tag-green">7 unités</span></td>
+                <td><span class="status status-delivered">En ligne</span></td>
+                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Produit mis à jour', 'success')">Modifier</button></td>
+              </tr>
+              <tr>
+                <td><strong>Beurre Cacao & Fleur d'Oranger 200g</strong></td>
+                <td>Beurres</td>
+                <td>4 500 XOF</td>
+                <td><span class="tag tag-green">24 unités</span></td>
+                <td><span class="status status-delivered">En ligne</span></td>
+                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Produit mis à jour', 'success')">Modifier</button></td>
+              </tr>
+              <tr>
+                <td><strong>Savon Douceur Miel & Curcuma 150g</strong></td>
+                <td>Savons</td>
+                <td>3 800 XOF</td>
+                <td><span class="tag tag-rose" style="color: var(--color-warning);">2 unités</span></td>
+                <td><span class="status status-pending">Alerte stock</span></td>
+                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Produit mis à jour', 'success')">Modifier</button></td>
+              </tr>
+              <tr>
+                <td><strong>Huile Pure de Ricin Noir d'Abidjan 100ml</strong></td>
+                <td>Huiles</td>
+                <td>5 000 XOF</td>
+                <td><span class="tag tag-green">15 unités</span></td>
+                <td><span class="status status-delivered">En ligne</span></td>
+                <td style="text-align: right;"><button class="btn btn-ghost btn-sm" onclick="showToast('Produit mis à jour', 'success')">Modifier</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: COMMANDES (Toutes les commandes) -->
+      <div class="tab-view-content" id="tab-all-orders">
+        <div class="dashboard-header">
+          <div>
+            <h1>Toutes les Commandes</h1>
+            <p>Historique et état de préparation de vos livraisons clients</p>
+          </div>
+          <div style="display: flex; gap: var(--space-2);">
+            <button class="btn btn-ghost btn-sm" onclick="showToast('Exportation du relevé Excel généré', 'success')">📥 Exporter CSV</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>N° Commande</th>
+                <th>Client</th>
+                <th>Détail Commande</th>
+                <th>Montant</th>
+                <th>Mode Paiement</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>#CMD-0841</strong></td>
+                <td>Kouamé Affoué</td>
+                <td>2x Savon Moringa</td>
+                <td>7 000 XOF</td>
+                <td><span class="payment-badge" style="background:#1BA4E8; color:white;">Wave</span></td>
+                <td><span class="status status-pending">En attente</span></td>
+              </tr>
+              <tr>
+                <td><strong>#CMD-0839</strong></td>
+                <td>Diop Mamadou</td>
+                <td>1x Sérum Baobab + 1x Savon</td>
+                <td>13 000 XOF</td>
+                <td><span class="payment-badge" style="background:#FF7900; color:white;">Orange Money</span></td>
+                <td><span class="status status-pending">En attente</span></td>
+              </tr>
+              <tr>
+                <td><strong>#CMD-0820</strong></td>
+                <td>Touré Fanta</td>
+                <td>1x Coffret Rituel Douceur</td>
+                <td>14 000 XOF</td>
+                <td><span class="payment-badge" style="background:#1BA4E8; color:white;">Wave</span></td>
+                <td><span class="status status-delivered">Livré</span></td>
+              </tr>
+              <tr>
+                <td><strong>#CMD-0815</strong></td>
+                <td>Bakayoko Ali</td>
+                <td>2x Beurre Cacao Brut</td>
+                <td>9 000 XOF</td>
+                <td>Espèces livraison</td>
+                <td><span class="status status-delivered">Livré</span></td>
+              </tr>
+              <tr>
+                <td><strong>#CMD-0808</strong></td>
+                <td>Gnahoré Patricia</td>
+                <td>1x Sérum Hibiscus</td>
+                <td>8 500 XOF</td>
+                <td><span class="payment-badge" style="background:#1BA4E8; color:white;">Wave</span></td>
+                <td><span class="status status-delivered">Livré</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: FINANCES & SOLDE -->
+      <div class="tab-view-content" id="tab-finances">
+        <div class="dashboard-header">
+          <div>
+            <h1>Finances & Mon Solde</h1>
+            <p>Retirez vos gains de vente directement vers votre compte Wave ou Orange Money</p>
+          </div>
+          <button class="btn btn-primary" onclick="openPayoutModal()">Effectuer un Retrait</button>
+        </div>
+
+        <div class="stats-grid-4" style="margin-bottom: var(--space-8);">
+          <div class="stat-card-gold">
+            <span class="stat-title-label">Solde Disponible</span>
+            <div class="stat-main-number" style="color: var(--color-green-deep);">208 930 XOF</div>
+            <span class="stat-badge-trend up">Prêt pour retrait instantané</span>
+          </div>
+          <div class="stat-card-gold">
+            <span class="stat-title-label">En cours de virement</span>
+            <div class="stat-main-number">36 870 XOF</div>
+            <span class="stat-badge-trend warning">Vérification bancaire</span>
+          </div>
+          <div class="stat-card-gold">
+            <span class="stat-title-label">Commissions prélevées (15%)</span>
+            <div class="stat-main-number" style="color: var(--color-gold-dark);">36 870 XOF</div>
+            <span class="stat-badge-trend neutral">Transparence AMABELLEPEAU</span>
+          </div>
+          <div class="stat-card-gold">
+            <span class="stat-title-label">Total Retiré à ce jour</span>
+            <div class="stat-main-number">1 420 500 XOF</div>
+            <span class="stat-badge-trend up">14 retraits réussis</span>
+          </div>
+        </div>
+
+        <h2 style="font-size: var(--text-lg); margin-bottom: var(--space-4);">Historique des Virements</h2>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Réf Transaction</th>
+                <th>Date</th>
+                <th>Destination</th>
+                <th>Montant Net</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>#VIR-2026-102</strong></td>
+                <td>20 Octobre 2026</td>
+                <td>Wave (+225 07 48 99 21)</td>
+                <td><strong>150 000 XOF</strong></td>
+                <td><span class="status status-delivered">Exécuté</span></td>
+              </tr>
+              <tr>
+                <td><strong>#VIR-2026-095</strong></td>
+                <td>05 Octobre 2026</td>
+                <td>Orange Money (+225 07 48 99 21)</td>
+                <td><strong>120 000 XOF</strong></td>
+                <td><span class="status status-delivered">Exécuté</span></td>
+              </tr>
+              <tr>
+                <td><strong>#VIR-2026-081</strong></td>
+                <td>20 Septembre 2026</td>
+                <td>Wave (+225 07 48 99 21)</td>
+                <td><strong>210 000 XOF</strong></td>
+                <td><span class="status status-delivered">Exécuté</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: MON PROFIL (Paramètres Boutique) -->
+      <div class="tab-view-content" id="tab-profile">
+        <div class="dashboard-header">
+          <div>
+            <h1>Mon Profil Marchand</h1>
+            <p>Coordonnées de l'Atelier Nanan, identifiants de paiement et adresse d'expédition</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showToast('Modifications enregistrées avec succès !', 'success')">Enregistrer les modifications</button>
+        </div>
+
+        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-8); max-width: 800px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6);">
+            <div class="form-group">
+              <label class="form-label">Nom de la Boutique / Marque</label>
+              <input type="text" class="form-input" value="Atelier Nanan">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Responsable Légal</label>
+              <input type="text" class="form-input" value="Awa Ouattara">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Téléphone (Wave & Orange Money)</label>
+              <input type="text" class="form-input" value="+225 07 48 99 21 00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Adresse de Retrait des Colis</label>
+              <input type="text" class="form-input" value="Cocody Deux-Plateaux Vallons, Rue des Jardins">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">Description de la Marque (affichée aux acheteurs)</label>
+              <textarea class="form-textarea" rows="3">Spécialiste de la saponification à froid en Côte d'Ivoire. Nous transformons les beurres de karité et de cacao issus de coopératives de femmes ivoiriennes en soins d'exception.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- =====================================================
+       MODAL: AJOUTER UN PRODUIT
+       ===================================================== -->
+  <div class="modal-overlay" id="addProductModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 style="font-family: var(--font-display); font-size: var(--text-xl); color: var(--color-black);">
+          🌿 Ajouter un Nouveau Produit
+        </h3>
+        <button class="modal-close-btn" onclick="closeAddProductModal()">&times;</button>
+      </div>
+      <div class="modal-content-body">
+        <form id="addProductForm" onsubmit="handleCreateProduct(event)">
+          <div class="form-group">
+            <label class="form-label">Nom du Produit *</label>
+            <input type="text" id="newProdName" class="form-input" placeholder="Ex: Savon Purifiant Argile Verte & Niaouli" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Catégorie *</label>
+              <select id="newProdCat" class="form-select" required>
+                <option value="Savons Saponifiés">Savons Saponifiés</option>
+                <option value="Huiles & Sérums">Huiles & Sérums</option>
+                <option value="Beurres Végétaux">Beurres Végétaux</option>
+                <option value="Soins du Visage">Soins du Visage</option>
+                <option value="Coffrets Cadeaux">Coffrets Cadeaux</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Prix de Vente (XOF) *</label>
+              <input type="number" id="newProdPrice" class="form-input" placeholder="Ex: 4000" min="500" step="100" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Stock Initial *</label>
+              <input type="number" id="newProdStock" class="form-input" placeholder="Ex: 25" min="1" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Format / Poids</label>
+              <input type="text" id="newProdFormat" class="form-input" placeholder="Ex: Pain 150g ou Flacon 50ml">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Ingrédients Clés & Description</label>
+            <textarea id="newProdDesc" class="form-textarea" rows="3" placeholder="Beurre de karité sauvage bio, huile de coco vierge, argile verte de Grand-Bassam..."></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6);">
+            <button type="button" class="btn btn-ghost" onclick="closeAddProductModal()">Annuler</button>
+            <button type="submit" class="btn btn-primary">Publier le Produit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL: DEMANDE DE RETRAIT WAVE / OM
+       ===================================================== -->
+  <div class="modal-overlay" id="payoutModal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-head">
+        <h3 style="font-family: var(--font-display); font-size: var(--text-xl); color: var(--color-black);">
+          💰 Demande de Retrait
+        </h3>
+        <button class="modal-close-btn" onclick="closePayoutModal()">&times;</button>
+      </div>
+      <div class="modal-content-body">
+        <div style="background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4);">
+          <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Solde disponible au retrait :</div>
+          <div style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; color: var(--color-green-deep);">208 930 XOF</div>
+        </div>
+
+        <form id="payoutForm" onsubmit="handlePayoutSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Moyen de Réception</label>
+            <select class="form-select" id="payoutMethod" required>
+              <option value="Wave">Wave Côte d'Ivoire (0% frais)</option>
+              <option value="Orange Money">Orange Money CI</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Numéro de Téléphone Récepteur</label>
+            <input type="tel" class="form-input" value="+225 07 48 99 21 00" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Montant à Retirer (XOF)</label>
+            <input type="number" id="payoutAmountInput" class="form-input" max="208930" min="5000" value="100000" required>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6);">
+            <button type="button" class="btn btn-ghost" onclick="closePayoutModal()">Annuler</button>
+            <button type="submit" class="btn btn-primary">Valider le virement</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- =====================================================
+       FOOTER (Standard AMABELLEPEAU Footer in French)
+       ===================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- About AMABELLEPEAU -->
+        <div>
+          <div class="footer-brand-name">
+            AMABELLE<span>PEAU</span>
+          </div>
+          <p class="footer-description">
+            Savons saponifiés à froid et cosmétiques 100% naturels fabriqués avec passion et authenticité. L'alliance subtile du savoir-faire artisanal ivoirien et des bienfaits purs de la terre d'Afrique.
+          </p>
+          <div style="font-size: var(--text-xs); color: rgba(245, 240, 232, 0.5);">
+            Abidjan, Côte d'Ivoire · Espace Partenaire Marchand
+          </div>
+        </div>
+
+        <!-- Liens utiles -->
+        <div>
+          <div class="footer-heading">Liens Utiles</div>
+          <ul class="footer-links">
+            <li><a href="../index.html" class="footer-link">Accueil</a></li>
+            <li><a href="../catalogue.html" class="footer-link">Notre Catalogue</a></li>
+            <li><a href="../marques.html" class="footer-link">Marques Partenaires</a></li>
+            <li><a href="index.html" class="footer-link">Espace Marchand</a></li>
+            <li><a href="../admin/index.html" class="footer-link">Portail Administrateur</a></li>
+          </ul>
+        </div>
+
+        <!-- Catégories -->
+        <div>
+          <div class="footer-heading">Catégories</div>
+          <ul class="footer-links">
+            <li><a href="../catalogue.html?cat=savons" class="footer-link">Savons Saponifiés à Froid</a></li>
+            <li><a href="../catalogue.html?cat=huiles" class="footer-link">Huiles Pures & Sérums</a></li>
+            <li><a href="../catalogue.html?cat=beurres" class="footer-link">Beurres Végétaux Bruts</a></li>
+            <li><a href="../catalogue.html?cat=soins" class="footer-link">Soins du Visage</a></li>
+            <li><a href="../catalogue.html?cat=coffrets" class="footer-link">Coffrets & Rituels Cadeaux</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact Abidjan -->
+        <div>
+          <div class="footer-heading">Support Marchands</div>
+          <ul class="footer-links">
+            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
+              📍 Cocody Deux-Plateaux Vallons, Abidjan
+            </li>
+            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
+              📞 +225 07 88 00 11 22 (Ligne Pro)
+            </li>
+            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
+              ✉️ marchands@amabellepeau.ci
+            </li>
+            <li style="font-size: var(--text-xs); color: var(--color-gold); margin-top: var(--space-2);">
+              🕒 Assistance dédiée : 08h00 - 19h00
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 AMABELLEPEAU — Portail Marchand. Tous droits réservés.
+        </div>
+        <div class="payment-methods">
+          <span style="margin-right: 6px;">Paiements & Versements :</span>
+          <span class="payment-badge">Wave CI</span>
+          <span class="payment-badge">Orange Money</span>
+          <span class="payment-badge">Virement Instantané</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       JAVASCRIPT LOGIC
+       ===================================================== -->
+  <script>
+    // State variables
+    let pendingCount = 8;
+    let availableBalance = 208930;
+
+    // Toast Notification Utility
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'error' ? 'toast-error' : 'toast-success'}`;
+      
+      const iconSvg = type === 'error'
+        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-error);"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`
+        : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-success);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+
+      toast.innerHTML = `
+        ${iconSvg}
+        <div style="flex: 1; font-size: 13px; font-weight: 500; color: var(--color-black);">${message}</div>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Sidebar tab switching
+    document.querySelectorAll('.sidebar-item-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const targetTab = this.getAttribute('data-tab');
+        if (!targetTab) return;
+
+        // update active class on sidebar buttons
+        document.querySelectorAll('.sidebar-item-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        // update active view
+        document.querySelectorAll('.tab-view-content').forEach(view => view.classList.remove('active'));
+        const activeView = document.getElementById(targetTab);
+        if (activeView) {
+          activeView.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Close sidebar on mobile
+        const sidebar = document.getElementById('merchantSidebar');
+        if (sidebar && sidebar.classList.contains('mobile-open')) {
+          sidebar.classList.remove('mobile-open');
+        }
+      });
+    });
+
+    // Helper functions for quick navigation
+    function showAllOrdersTab() {
+      const orderBtn = document.querySelector('[data-tab="tab-all-orders"]');
+      if (orderBtn) orderBtn.click();
+    }
+
+    function showProductsTab() {
+      const prodBtn = document.querySelector('[data-tab="tab-products"]');
+      if (prodBtn) prodBtn.click();
+    }
+
+    // Accept Order Logic
+    function acceptOrder(id, orderRef, clientName) {
+      const badge = document.getElementById(`status-badge-${id}`);
+      const actionsCell = document.getElementById(`actions-cell-${id}`);
+      
+      if (badge) {
+        badge.className = 'status status-accepted';
+        badge.innerText = 'Acceptée';
+      }
+
+      if (actionsCell) {
+        actionsCell.innerHTML = `
+          <span style="font-size: 12px; font-weight: 700; color: #2980B9;">Colis à préparer 📦</span>
+          <button class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 10px;" onclick="markOrderReady('${id}', '${orderRef}')">Prêt</button>
+        `;
+      }
+
+      // Update counters
+      if (pendingCount > 0) {
+        pendingCount--;
+        updateOrderBadges();
+      }
+
+      showToast(`Commande ${orderRef} (${clientName}) acceptée avec succès !`, 'success');
+    }
+
+    function markOrderReady(id, orderRef) {
+      const badge = document.getElementById(`status-badge-${id}`);
+      const actionsCell = document.getElementById(`actions-cell-${id}`);
+      
+      if (badge) {
+        badge.className = 'status status-preparing';
+        badge.innerText = 'Prête livraison';
+      }
+
+      if (actionsCell) {
+        actionsCell.innerHTML = `<span style="font-size: 11px; color: var(--color-text-muted);">En attente coursier</span>`;
+      }
+
+      showToast(`Commande ${orderRef} signalée prête pour expédition !`, 'success');
+    }
+
+    // Reject Order Logic
+    function rejectOrder(id, orderRef) {
+      if (!confirm(`Êtes-vous sûr de vouloir refuser la commande ${orderRef} ?`)) {
+        return;
+      }
+
+      const row = document.getElementById(`order-row-${id}`);
+      const badge = document.getElementById(`status-badge-${id}`);
+      const actionsCell = document.getElementById(`actions-cell-${id}`);
+
+      if (badge) {
+        badge.className = 'status status-cancelled';
+        badge.innerText = 'Rejetée';
+      }
+
+      if (actionsCell) {
+        actionsCell.innerHTML = `<span style="font-size: 11px; color: var(--color-error);">Commande déclinée</span>`;
+      }
+
+      if (pendingCount > 0) {
+        pendingCount--;
+        updateOrderBadges();
+      }
+
+      showToast(`La commande ${orderRef} a été déclinée. Le client a été notifié.`, 'error');
+    }
+
+    function updateOrderBadges() {
+      const overviewCount = document.getElementById('overviewPendingCount');
+      const sidebarBadge = document.getElementById('sidebarOrdersBadge');
+      const ordersPendingBadge = document.getElementById('ordersPendingBadge');
+
+      if (overviewCount) overviewCount.innerText = pendingCount;
+      if (sidebarBadge) sidebarBadge.innerText = pendingCount;
+      if (ordersPendingBadge) ordersPendingBadge.innerText = `${pendingCount} récentes`;
+    }
+
+    // Modal Add Product
+    function openAddProductModal() {
+      document.getElementById('addProductModal').classList.add('active');
+    }
+
+    function closeAddProductModal() {
+      document.getElementById('addProductModal').classList.remove('active');
+    }
+
+    function handleCreateProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('newProdName').value;
+      const cat = document.getElementById('newProdCat').value;
+      const price = parseInt(document.getElementById('newProdPrice').value) || 3500;
+      const stock = parseInt(document.getElementById('newProdStock').value) || 10;
+
+      // Add to recent products grid dynamically
+      const grid = document.getElementById('recentProductsGrid');
+      if (grid) {
+        const card = document.createElement('div');
+        card.className = 'merchant-prod-card';
+        card.innerHTML = `
+          <div class="prod-card-thumb" style="background: linear-gradient(135deg, #1B4D1E 0%, #C9A84C 100%);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8M8 12h8"></path></svg>
+            <span class="stock-badge">${stock} en stock</span>
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-cat">${cat}</div>
+            <h3 class="prod-card-name">${name}</h3>
+            <div class="prod-card-meta">
+              <span class="prod-card-price">${price.toLocaleString('fr-FR')} XOF</span>
+              <span style="font-size: 11px; color: var(--color-gold-dark);">Nouveau</span>
+            </div>
+            <div class="prod-card-actions">
+              <button class="btn-card-action" onclick="quickEditStock('${name}', ${stock})">Stock</button>
+              <button class="btn-card-action" onclick="showToast('Ouverture de la fiche produit', 'success')">Modifier</button>
+            </div>
+          </div>
+        `;
+        grid.prepend(card);
+      }
+
+      closeAddProductModal();
+      document.getElementById('addProductForm').reset();
+      showToast(`Le produit "${name}" a été ajouté avec succès !`, 'success');
+    }
+
+    function quickEditStock(name, current) {
+      const newStock = prompt(`Modifier le niveau de stock pour "${name}" :`, current);
+      if (newStock !== null) {
+        showToast(`Stock mis à jour : ${newStock} unités pour "${name}".`, 'success');
+      }
+    }
+
+    // Modal Payout
+    function openPayoutModal() {
+      document.getElementById('payoutModal').classList.add('active');
+    }
+
+    function closePayoutModal() {
+      document.getElementById('payoutModal').classList.remove('active');
+    }
+
+    function handlePayoutSubmit(e) {
+      e.preventDefault();
+      const amount = parseInt(document.getElementById('payoutAmountInput').value) || 0;
+      const method = document.getElementById('payoutMethod').value;
+
+      if (amount <= 0 || amount > availableBalance) {
+        showToast('Montant invalide ou solde insuffisant.', 'error');
+        return;
+      }
+
+      availableBalance -= amount;
+      document.getElementById('sidebarBalanceAmount').innerText = `${availableBalance.toLocaleString('fr-FR')} XOF`;
+      closePayoutModal();
+      showToast(`Demande de retrait de ${amount.toLocaleString('fr-FR')} XOF via ${method} transmise avec succès !`, 'success');
+    }
+
+    // Filter products in table
+    function filterMerchantProducts() {
+      const q = document.getElementById('prodSearchInput').value.toLowerCase();
+      const cat = document.getElementById('prodCatSelect').value.toLowerCase();
+      const rows = document.querySelectorAll('#allMerchantProductsTable tbody tr');
+
+      rows.forEach(r => {
+        const text = r.innerText.toLowerCase();
+        const matchesQ = text.includes(q);
+        const matchesCat = !cat || text.includes(cat);
+        r.style.display = (matchesQ && matchesCat) ? '' : 'none';
+      });
+    }
+
+    // Responsive Mobile Drawer & Sidebar
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const closeMobileNav = document.getElementById('closeMobileNav');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const merchantSidebar = document.getElementById('merchantSidebar');
+
+    if (mobileMenuBtn && mobileNav) {
+      mobileMenuBtn.addEventListener('click', () => mobileNav.classList.add('active'));
+    }
+    if (closeMobileNav && mobileNav) {
+      closeMobileNav.addEventListener('click', () => mobileNav.classList.remove('active'));
+    }
+
+    // Handle mobile screen sidebar toggle
+    function checkResponsive() {
+      if (window.innerWidth <= 768) {
+        sidebarToggleBtn.style.display = 'inline-flex';
+      } else {
+        sidebarToggleBtn.style.display = 'none';
+        merchantSidebar.classList.remove('mobile-open');
+      }
+    }
+
+    if (sidebarToggleBtn) {
+      sidebarToggleBtn.addEventListener('click', () => {
+        merchantSidebar.classList.toggle('mobile-open');
+      });
+    }
+
+    window.addEventListener('resize', checkResponsive);
+    checkResponsive();
+  </script>
+</body>
+</html>

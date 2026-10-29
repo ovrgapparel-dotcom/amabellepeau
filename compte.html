@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon Compte — AMABELLEPEAU Savons Naturels</title>
+  <meta name="description" content="Gérez votre compte AMABELLEPEAU. Suivez vos commandes, adresses et préférences."/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="assets/icons/logo.png"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <style>
+    .account-page { padding: var(--space-8) 0 var(--space-16); min-height: 70vh; }
+    .account-layout { display: grid; grid-template-columns: 260px 1fr; gap: var(--space-8); align-items: start; }
+    /* Sidebar */
+    .account-sidebar { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; position: sticky; top: calc(var(--nav-height) + var(--space-4)); }
+    .account-avatar { padding: var(--space-8) var(--space-6) var(--space-5); text-align: center; background: linear-gradient(135deg, #0D1A0D, #1B4D1E); }
+    .avatar-circle { width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; color: var(--color-black); margin: 0 auto var(--space-3); border: 3px solid rgba(201,168,76,0.5); }
+    .avatar-name { font-family: var(--font-display); color: var(--color-cream); font-weight: 600; font-size: var(--text-lg); }
+    .avatar-email { color: rgba(245,240,232,0.6); font-size: var(--text-xs); margin-top: 2px; }
+    .account-nav { padding: var(--space-3) 0; }
+    .account-nav-item { display: flex; align-items: center; gap: var(--space-3); padding: 12px var(--space-6); color: var(--color-text-muted); font-size: var(--text-sm); font-weight: 500; cursor: pointer; transition: var(--transition-fast); border-left: 3px solid transparent; }
+    .account-nav-item:hover { background: var(--color-surface-alt); color: var(--color-green); }
+    .account-nav-item.active { background: rgba(27,77,30,0.06); color: var(--color-green); border-left-color: var(--color-green); font-weight: 700; }
+    .account-nav-item .icon { font-size: 1rem; width: 22px; text-align: center; }
+    .account-nav-item .badge { background: var(--color-gold); color: var(--color-black); font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 20px; margin-left: auto; }
+    /* Content panels */
+    .account-panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-8); display: none; }
+    .account-panel.active { display: block; animation: fadeIn 0.3s ease; }
+    .panel-title { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-2); display: flex; align-items: center; gap: var(--space-3); }
+    .panel-subtitle { color: var(--color-text-muted); font-size: var(--text-sm); margin-bottom: var(--space-6); }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    /* Orders */
+    .order-card { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: var(--space-4); transition: var(--transition-fast); }
+    .order-card:hover { box-shadow: var(--shadow-md); }
+    .order-card-header { padding: var(--space-4) var(--space-5); background: var(--color-surface-alt); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); }
+    .order-number { font-family: monospace; font-weight: 700; font-size: var(--text-sm); color: var(--color-green); }
+    .order-date { font-size: var(--text-xs); color: var(--color-text-muted); }
+    .order-card-body { padding: var(--space-5); }
+    .order-items-list { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-4); }
+    .order-item-row { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-sm); }
+    .order-item-thumb { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .order-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
+    .order-total { font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg); color: var(--color-green); }
+    /* Status badges */
+    .status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: var(--radius-full); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .status-pending   { background: rgba(241,196,15,0.12); color: #D4A017; }
+    .status-paid      { background: rgba(30,144,255,0.12); color: #1E90FF; }
+    .status-accepted  { background: rgba(39,174,96,0.12); color: #27AE60; }
+    .status-preparing { background: rgba(155,89,182,0.12); color: #9B59B6; }
+    .status-delivered { background: rgba(39,174,96,0.15); color: #1B8C3D; }
+    .status-cancelled { background: rgba(192,57,43,0.12); color: #C0392B; }
+    /* Tracking */
+    .tracking-timeline { padding-left: 24px; position: relative; margin-top: var(--space-4); }
+    .tracking-timeline::before { content:''; position:absolute; left:8px; top:10px; bottom:20px; width:2px; background:var(--color-border); }
+    .track-step { position:relative; margin-bottom:var(--space-5); }
+    .track-dot { position:absolute; left:-24px; top:3px; width:16px; height:16px; border-radius:50%; border:2px solid var(--color-border); background:white; }
+    .track-step.done .track-dot { background:var(--color-success); border-color:var(--color-success); }
+    .track-step.current .track-dot { background:var(--color-gold); border-color:var(--color-gold); box-shadow:0 0 0 4px rgba(201,168,76,0.2); }
+    .track-title { font-size:var(--text-sm); font-weight:700; }
+    .track-time { font-size:var(--text-xs); color:var(--color-text-muted); }
+    /* Profile form */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+    /* Empty state */
+    .empty-state { text-align: center; padding: var(--space-16); }
+    .empty-icon { font-size: 3.5rem; margin-bottom: var(--space-4); opacity: 0.3; }
+    /* Address cards */
+    .address-card { border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-3); }
+    .address-card .label { font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; color: var(--color-gold); margin-bottom: var(--space-1); }
+    @media(max-width:900px) { .account-layout { grid-template-columns: 1fr; } .account-sidebar { position: static; } .form-grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container flex-between">
+    <a href="index.html" class="navbar-brand">
+      <img src="assets/icons/logo.png" alt="AMABELLEPEAU" class="navbar-logo"/>
+      <span class="navbar-brand-text">AMABELLE<span>PEAU</span></span>
+    </a>
+    <div class="navbar-nav">
+      <a href="index.html" class="navbar-link">Accueil</a>
+      <a href="catalogue.html" class="navbar-link">Catalogue</a>
+      <a href="#" class="navbar-link">Marques</a>
+    </div>
+    <div class="navbar-actions">
+      <a href="panier.html" class="btn btn-ghost btn-sm">🛒</a>
+      <a href="compte.html" class="btn btn-primary btn-sm nav-account-link">👤 Mon Compte</a>
+    </div>
+    <div class="mobile-menu-toggle" id="mobileToggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<main class="account-page">
+  <div class="container">
+    <nav class="breadcrumb" style="margin-bottom:var(--space-6);">
+      <a href="index.html">Accueil</a><span class="breadcrumb-sep">›</span><span>Mon Compte</span>
+    </nav>
+
+    <div class="account-layout">
+      <!-- SIDEBAR -->
+      <div class="account-sidebar">
+        <div class="account-avatar">
+          <div class="avatar-circle" id="avatarInitials">AK</div>
+          <div class="avatar-name" id="userName">Aminata Koné</div>
+          <div class="avatar-email" id="userEmail">aminata@exemple.ci</div>
+        </div>
+        <div class="account-nav">
+          <div class="account-nav-item active" onclick="showPanel('orders')"><span class="icon">📦</span>Mes Commandes<span class="badge" id="orderBadge">3</span></div>
+          <div class="account-nav-item" onclick="showPanel('tracking')"><span class="icon">🚚</span>Suivi de commande</div>
+          <div class="account-nav-item" onclick="showPanel('addresses')"><span class="icon">📍</span>Mes Adresses</div>
+          <div class="account-nav-item" onclick="showPanel('profile')"><span class="icon">👤</span>Mon Profil</div>
+          <div class="account-nav-item" onclick="showPanel('security')"><span class="icon">🔒</span>Sécurité</div>
+          <div class="account-nav-item" onclick="logout()" style="color:var(--color-error);margin-top:var(--space-2);border-top:1px solid var(--color-border);padding-top:var(--space-4);"><span class="icon">🚪</span>Déconnexion</div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div>
+        <!-- ORDERS PANEL -->
+        <div class="account-panel active" id="panel-orders">
+          <h2 class="panel-title">📦 Mes Commandes</h2>
+          <p class="panel-subtitle">Historique de toutes vos commandes AMABELLEPEAU.</p>
+
+          <div class="order-card">
+            <div class="order-card-header">
+              <div><span class="order-number">#ABP-X1Y2Z3</span><span class="order-date" style="margin-left:var(--space-3);">25 Oct 2026, 14h32</span></div>
+              <span class="status status-preparing">⏳ En préparation</span>
+            </div>
+            <div class="order-card-body">
+              <div class="order-items-list">
+                <div class="order-item-row"><div class="order-item-thumb" style="background:linear-gradient(135deg,#1B4D1E,#4A8C50);">🌿</div><div style="flex:1;"><strong>Savon Karité & Vanille</strong><br/><span style="color:var(--color-text-muted);font-size:var(--text-xs);">Qté: 2 × 3 500 XOF</span></div><div style="font-weight:700;">7 000 XOF</div></div>
+                <div class="order-item-row"><div class="order-item-thumb" style="background:linear-gradient(135deg,#C9A84C,#E2C67A);">🧴</div><div style="flex:1;"><strong>Huile de Coco Bio Pure</strong><br/><span style="color:var(--color-text-muted);font-size:var(--text-xs);">Qté: 1 × 7 200 XOF</span></div><div style="font-weight:700;">7 200 XOF</div></div>
+              </div>
+              <div class="order-card-footer">
+                <div class="order-total">Total: 15 700 XOF</div>
+                <div style="display:flex;gap:var(--space-2);">
+                  <button class="btn btn-ghost btn-sm" onclick="showPanel('tracking')">🚚 Suivre</button>
+                  <a href="https://wa.me/2250799108108?text=Bonjour%2C+je+souhaite+un+suivi+de+ma+commande+%23ABP-X1Y2Z3" target="_blank" class="btn btn-ghost btn-sm">💬 WhatsApp</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-card">
+            <div class="order-card-header">
+              <div><span class="order-number">#ABP-D4E5F6</span><span class="order-date" style="margin-left:var(--space-3);">23 Oct 2026, 10h15</span></div>
+              <span class="status status-delivered">✅ Livrée</span>
+            </div>
+            <div class="order-card-body">
+              <div class="order-items-list">
+                <div class="order-item-row"><div class="order-item-thumb" style="background:linear-gradient(135deg,#2D6B32,#6AAB70);">✨</div><div style="flex:1;"><strong>Sérum Vitamine C</strong><br/><span style="color:var(--color-text-muted);font-size:var(--text-xs);">Qté: 1 × 12 000 XOF</span></div><div style="font-weight:700;">12 000 XOF</div></div>
+                <div class="order-item-row"><div class="order-item-thumb" style="background:linear-gradient(135deg,#8B7355,#D9D2C0);">🫧</div><div style="flex:1;"><strong>Gel Aloe Vera Pur</strong><br/><span style="color:var(--color-text-muted);font-size:var(--text-xs);">Qté: 2 × 4 500 XOF</span></div><div style="font-weight:700;">9 000 XOF</div></div>
+              </div>
+              <div class="order-card-footer">
+                <div class="order-total">Total: 22 500 XOF</div>
+                <button class="btn btn-primary btn-sm">🔄 Commander à nouveau</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-card">
+            <div class="order-card-header">
+              <div><span class="order-number">#ABP-G7H8I9</span><span class="order-date" style="margin-left:var(--space-3);">18 Oct 2026, 09h48</span></div>
+              <span class="status status-cancelled">❌ Annulée</span>
+            </div>
+            <div class="order-card-body">
+              <div class="order-items-list">
+                <div class="order-item-row"><div class="order-item-thumb" style="background:linear-gradient(135deg,#0F2E11,#2D6B32);">🧼</div><div style="flex:1;"><strong>Savon Charbon Actif</strong><br/><span style="color:var(--color-text-muted);font-size:var(--text-xs);">Qté: 3 × 3 200 XOF</span></div><div style="font-weight:700;">9 600 XOF</div></div>
+              </div>
+              <div class="order-card-footer">
+                <div class="order-total" style="color:var(--color-text-muted);text-decoration:line-through;">Total: 11 100 XOF</div>
+                <span style="font-size:var(--text-xs);color:var(--color-error);">Paiement non reçu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRACKING PANEL -->
+        <div class="account-panel" id="panel-tracking">
+          <h2 class="panel-title">🚚 Suivi de Commande</h2>
+          <p class="panel-subtitle">Commande <strong style="color:var(--color-green);">#ABP-X1Y2Z3</strong> — En cours de préparation</p>
+
+          <div style="background:var(--color-surface-alt);border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-6);">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--space-3);">
+              <div>
+                <div style="font-size:var(--text-xs);text-transform:uppercase;color:var(--color-text-muted);letter-spacing:0.1em;">Livraison estimée</div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:var(--text-xl);color:var(--color-green);">27 Oct 2026</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);text-transform:uppercase;color:var(--color-text-muted);letter-spacing:0.1em;">Méthode</div>
+                <div style="font-weight:600;">Livraison Abidjan Standard</div>
+              </div>
+              <div>
+                <div style="font-size:var(--text-xs);text-transform:uppercase;color:var(--color-text-muted);letter-spacing:0.1em;">Destination</div>
+                <div style="font-weight:600;">Cocody, Riviera 3</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tracking-timeline">
+            <div class="track-step done">
+              <div class="track-dot"></div>
+              <div class="track-title">Commande passée</div>
+              <div class="track-time">25 Oct 2026, 14h32</div>
+            </div>
+            <div class="track-step done">
+              <div class="track-dot"></div>
+              <div class="track-title">Paiement confirmé (Wave)</div>
+              <div class="track-time">25 Oct 2026, 14h35</div>
+            </div>
+            <div class="track-step done">
+              <div class="track-dot"></div>
+              <div class="track-title">Commande acceptée par le marchand</div>
+              <div class="track-time">25 Oct 2026, 15h12</div>
+            </div>
+            <div class="track-step current">
+              <div class="track-dot"></div>
+              <div class="track-title">En préparation 📦</div>
+              <div class="track-time">Le marchand prépare votre commande...</div>
+            </div>
+            <div class="track-step">
+              <div class="track-dot"></div>
+              <div class="track-title">Expédition en cours</div>
+              <div class="track-time">—</div>
+            </div>
+            <div class="track-step">
+              <div class="track-dot"></div>
+              <div class="track-title">Livrée ✅</div>
+              <div class="track-time">—</div>
+            </div>
+          </div>
+
+          <div style="margin-top:var(--space-8);text-align:center;">
+            <a href="https://wa.me/2250799108108?text=Bonjour%2C+je+souhaite+le+suivi+de+ma+commande+%23ABP-X1Y2Z3" target="_blank" class="btn btn-primary">💬 Contacter le service client via WhatsApp</a>
+          </div>
+        </div>
+
+        <!-- ADDRESSES PANEL -->
+        <div class="account-panel" id="panel-addresses">
+          <div class="flex-between" style="margin-bottom:var(--space-6);">
+            <div>
+              <h2 class="panel-title">📍 Mes Adresses</h2>
+              <p class="panel-subtitle" style="margin-bottom:0;">Adresses de livraison enregistrées.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="showAddressForm()">+ Ajouter</button>
+          </div>
+
+          <div class="address-card">
+            <div>
+              <div class="label">🏠 Domicile</div>
+              <div style="font-weight:600;">Cocody, Riviera 3</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-muted);">Près du supermarché Playce, Rue des Jardins</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:4px;">+225 07 12 34 56 78</div>
+            </div>
+            <div style="display:flex;gap:var(--space-2);">
+              <button class="btn btn-ghost btn-sm">✏️</button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--color-error);">🗑</button>
+            </div>
+          </div>
+
+          <div class="address-card">
+            <div>
+              <div class="label">🏢 Bureau</div>
+              <div style="font-weight:600;">Plateau, Avenue Franchet d'Espérey</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-muted);">Immeuble Alpha 2000, 5ème étage</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:4px;">+225 07 12 34 56 78</div>
+            </div>
+            <div style="display:flex;gap:var(--space-2);">
+              <button class="btn btn-ghost btn-sm">✏️</button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--color-error);">🗑</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE PANEL -->
+        <div class="account-panel" id="panel-profile">
+          <h2 class="panel-title">👤 Mon Profil</h2>
+          <p class="panel-subtitle">Modifiez vos informations personnelles.</p>
+
+          <form onsubmit="event.preventDefault();saveProfile();">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Prénom *</label>
+                <input type="text" class="form-input" id="profileFirstName" value="Aminata"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nom *</label>
+                <input type="text" class="form-input" id="profileLastName" value="Koné"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" id="profileEmail" value="aminata@exemple.ci"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Téléphone</label>
+              <input type="tel" class="form-input" id="profilePhone" value="+225 07 12 34 56 78"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Commune de livraison préférée</label>
+              <select class="form-select" id="profileZone">
+                <option value="cocody" selected>Cocody</option>
+                <option value="plateau">Plateau</option>
+                <option value="marcory">Marcory</option>
+                <option value="treichville">Treichville</option>
+                <option value="adjame">Adjamé</option>
+                <option value="abobo">Abobo</option>
+                <option value="yopougon">Yopougon</option>
+                <option value="koumassi">Koumassi</option>
+                <option value="port-bouet">Port-Bouët</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:var(--space-4);">💾 Enregistrer</button>
+          </form>
+        </div>
+
+        <!-- SECURITY PANEL -->
+        <div class="account-panel" id="panel-security">
+          <h2 class="panel-title">🔒 Sécurité</h2>
+          <p class="panel-subtitle">Gérez votre mot de passe et la sécurité de votre compte.</p>
+
+          <div style="border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6);margin-bottom:var(--space-6);">
+            <h3 style="font-family:var(--font-display);margin-bottom:var(--space-4);">Changer le mot de passe</h3>
+            <div class="form-group">
+              <label class="form-label">Mot de passe actuel</label>
+              <input type="password" class="form-input" placeholder="••••••••"/>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Nouveau mot de passe</label>
+                <input type="password" class="form-input" placeholder="••••••••"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirmer</label>
+                <input type="password" class="form-input" placeholder="••••••••"/>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="margin-top:var(--space-3);">Mettre à jour</button>
+          </div>
+
+          <div style="border:1px solid rgba(192,57,43,0.2);border-radius:var(--radius-lg);padding:var(--space-6);">
+            <h3 style="font-family:var(--font-display);color:var(--color-error);margin-bottom:var(--space-2);">Zone de danger</h3>
+            <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-4);">La suppression de votre compte est irréversible.</p>
+            <button class="btn btn-ghost btn-sm" style="color:var(--color-error);border-color:var(--color-error);">Supprimer mon compte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" class="wa-fab" title="Commander via WhatsApp">
+  <svg viewBox="0 0 32 32" width="26" height="26" fill="white"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.827.737 5.479 2.027 7.785L0 32l8.454-2.01A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.262 13.262 0 01-6.771-1.853l-.485-.287-5.017 1.193 1.222-4.87-.316-.499A13.264 13.264 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.87c-.398-.199-2.357-1.163-2.722-1.295-.365-.133-.631-.199-.897.199-.266.398-1.031 1.295-1.264 1.562-.233.266-.465.299-.863.1-.398-.2-1.681-.619-3.202-1.974-1.183-1.054-1.982-2.356-2.215-2.754-.233-.398-.025-.613.175-.811.18-.178.398-.465.597-.698.2-.233.266-.398.398-.664.133-.266.066-.498-.033-.698-.1-.199-.897-2.162-1.23-2.96-.323-.776-.652-.671-.897-.683l-.764-.013c-.266 0-.698.1-1.064.498-.365.398-1.396 1.363-1.396 3.325 0 1.962 1.43 3.858 1.629 4.124.199.265 2.814 4.297 6.82 6.025.953.411 1.697.656 2.278.84.957.304 1.828.261 2.517.158.767-.114 2.357-.963 2.689-1.894.332-.931.332-1.73.233-1.895-.1-.165-.365-.265-.763-.464z"/></svg>
+</a>
+<style>.wa-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.5);z-index:9995;transition:var(--transition-base);animation:waPulse 2.5s infinite;}.wa-fab:hover{transform:scale(1.1);}@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.5);}50%{box-shadow:0 4px 30px rgba(37,211,102,0.8),0 0 0 8px rgba(37,211,102,0.1);}}</style>
+
+<script>
+  function showPanel(name) {
+    document.querySelectorAll('.account-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.account-nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(`panel-${name}`).classList.add('active');
+    event.currentTarget?.classList.add('active');
+  }
+
+  function saveProfile() {
+    const fn = document.getElementById('profileFirstName').value;
+    const ln = document.getElementById('profileLastName').value;
+    document.getElementById('userName').textContent = `${fn} ${ln}`;
+    document.getElementById('avatarInitials').textContent = `${fn[0]}${ln[0]}`.toUpperCase();
+    alert('Profil mis à jour avec succès !');
+  }
+
+  function showAddressForm() { alert('Formulaire d\'adresse — intégration Supabase à venir.'); }
+
+  function logout() {
+    if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+      window.location.href = 'auth.html';
+    }
+  }
+
+  // Mobile menu
+  document.getElementById('mobileToggle')?.addEventListener('click', () => {});
+</script>
+</body>
+</html>

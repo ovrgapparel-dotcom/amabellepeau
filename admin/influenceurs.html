@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestion des Influenceurs — Admin AMABELLEPEAU</title>
+  <meta name="description" content="Back-office gestion des influenceurs et codes promo AMABELLEPEAU"/>
+  <link rel="icon" href="../assets/icons/logo.png"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    body { background: var(--color-bg); }
+    /* ── Layout ── */
+    .app-layout { display: flex; min-height: calc(100vh - var(--nav-height)); }
+    .sidebar { width: 260px; background: #0D1A0D; padding: var(--space-4) 0; position: sticky; top: var(--nav-height); height: calc(100vh - var(--nav-height)); overflow-y: auto; flex-shrink: 0; border-right: 1px solid rgba(201,168,76,0.15); }
+    .sidebar-logo { padding: var(--space-4) var(--space-5) var(--space-6); border-bottom: 1px solid rgba(201,168,76,0.1); margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-3); }
+    .sidebar-logo-text { font-family: var(--font-display); color: var(--color-cream); font-size: 1rem; }
+    .sidebar-logo-text span { color: var(--color-gold); }
+    .sidebar-section { padding: var(--space-3) var(--space-4) var(--space-1); font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(201,168,76,0.4); }
+    .sidebar-link { display: flex; align-items: center; gap: var(--space-3); padding: 10px var(--space-5); color: rgba(245,240,232,0.6); font-size: var(--text-sm); transition: var(--transition-fast); border-left: 3px solid transparent; text-decoration: none; }
+    .sidebar-link:hover { color: var(--color-gold); background: rgba(201,168,76,0.08); border-left-color: rgba(201,168,76,0.4); }
+    .sidebar-link.active { color: var(--color-gold); background: rgba(201,168,76,0.12); border-left-color: var(--color-gold); }
+    .sidebar-link .icon { font-size: 1rem; width: 20px; text-align: center; }
+    .badge-pill { background: var(--color-gold); color: var(--color-black); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-left: auto; }
+    .main-content { flex: 1; padding: var(--space-8); overflow-x: hidden; }
+
+    /* ── Influencer Cards ── */
+    .influencer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: var(--space-5); }
+    .influencer-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; transition: var(--transition-base); }
+    .influencer-card:hover { box-shadow: var(--shadow-lg); border-color: rgba(27,77,30,0.3); transform: translateY(-2px); }
+    .influencer-card-header { padding: var(--space-5); background: linear-gradient(135deg, #0D1A0D, #1B4D1E); display: flex; align-items: center; gap: var(--space-4); }
+    .influencer-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: var(--color-black); flex-shrink: 0; }
+    .influencer-name { font-family: var(--font-display); color: var(--color-cream); font-weight: 600; font-size: var(--text-lg); }
+    .influencer-handle { font-size: var(--text-xs); color: rgba(201,168,76,0.8); display: flex; align-items: center; gap: var(--space-1); margin-top: 2px; }
+    .promo-code-badge { background: rgba(201,168,76,0.15); border: 1px dashed var(--color-gold); border-radius: var(--radius-md); padding: var(--space-2) var(--space-4); font-family: monospace; font-size: var(--text-base); font-weight: 700; color: var(--color-gold); letter-spacing: 0.1em; cursor: pointer; transition: var(--transition-fast); display: inline-block; }
+    .promo-code-badge:hover { background: rgba(201,168,76,0.25); }
+    .influencer-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-3); padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--color-border); }
+    .inf-stat { text-align: center; }
+    .inf-stat-val { font-family: var(--font-display); font-weight: 700; font-size: var(--text-base); color: var(--color-black); }
+    .inf-stat-lbl { font-size: 10px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+    .influencer-card-footer { padding: var(--space-4) var(--space-5); display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+    .balance-chip { background: rgba(39,174,96,0.1); color: var(--color-success); border-radius: var(--radius-full); padding: var(--space-1) var(--space-3); font-size: var(--text-xs); font-weight: 700; }
+    .balance-chip.due { background: rgba(192,57,43,0.1); color: var(--color-error); }
+
+    /* ── Modal ── */
+    .overlay { position: fixed; inset: 0; background: rgba(10,10,10,0.7); backdrop-filter: blur(4px); z-index: 900; display: none; align-items: center; justify-content: center; padding: var(--space-4); }
+    .overlay.active { display: flex; }
+    .modal { background: var(--color-surface); border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl); width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes modalIn { from { opacity:0; transform:scale(0.9) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    .modal-header { padding: var(--space-6); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; }
+    .modal-body { padding: var(--space-6); }
+    .modal-footer { padding: var(--space-5) var(--space-6); border-top: 1px solid var(--color-border); display: flex; gap: var(--space-3); justify-content: flex-end; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+
+    /* ── Payout panel ── */
+    .payout-panel { background: linear-gradient(135deg, #0D1A0D, #1B4D1E); border-radius: var(--radius-xl); padding: var(--space-6); color: var(--color-cream); margin-bottom: var(--space-6); }
+    .payout-total { font-family: var(--font-display); font-size: var(--text-4xl); font-weight: 700; color: var(--color-gold); }
+    .platform-icon { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--text-xs); }
+    .pi-instagram { color: #E1306C; }
+    .pi-tiktok    { color: var(--color-cream); }
+    .pi-facebook  { color: #1877F2; }
+    .pi-whatsapp  { color: #25D366; }
+    .pi-youtube   { color: #FF0000; }
+
+    /* ── Sales Table ── */
+    .sales-table-wrap { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; }
+
+    /* ── Empty ── */
+    .no-data { text-align: center; padding: var(--space-16); color: var(--color-text-muted); }
+    .no-data-icon { font-size: 3rem; margin-bottom: var(--space-4); opacity: 0.4; }
+
+    @media(max-width:768px) { .sidebar { display:none; } .influencer-grid { grid-template-columns: 1fr; } .form-grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR ADMIN -->
+<nav class="navbar">
+  <div class="container flex-between">
+    <a href="../index.html" class="navbar-brand">
+      <img src="../assets/icons/logo.png" alt="AMABELLEPEAU" class="navbar-logo"/>
+      <span class="navbar-brand-text">AMABELLE<span>PEAU</span> <span style="font-size:0.65rem;color:rgba(201,168,76,0.6);margin-left:4px;">ADMIN</span></span>
+    </a>
+    <div class="navbar-actions">
+      <span style="color:rgba(245,240,232,0.5);font-size:var(--text-sm);">👤 Administrateur</span>
+      <a href="../auth.html" class="btn btn-ghost btn-sm" style="color:rgba(245,240,232,0.6);">Déconnexion</a>
+    </div>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="../assets/icons/logo.png" style="width:32px;border-radius:6px;" alt=""/>
+      <div class="sidebar-logo-text">AMABELLE<span>PEAU</span></div>
+    </div>
+
+    <div class="sidebar-section">Principal</div>
+    <a href="index.html" class="sidebar-link"><span class="icon">📊</span> Vue d'ensemble</a>
+
+    <div class="sidebar-section">Marchands</div>
+    <a href="marchands.html" class="sidebar-link"><span class="icon">🏪</span> Marchands <span class="badge-pill">3</span></a>
+    <a href="produits.html"  class="sidebar-link"><span class="icon">📦</span> Produits</a>
+
+    <div class="sidebar-section">Commerce</div>
+    <a href="commandes.html" class="sidebar-link"><span class="icon">🛒</span> Commandes</a>
+    <a href="livraisons.html" class="sidebar-link"><span class="icon">🚚</span> Livraisons</a>
+
+    <div class="sidebar-section">Marketing</div>
+    <a href="influenceurs.html" class="sidebar-link active"><span class="icon">⭐</span> Influenceurs</a>
+    <a href="commissions.html"  class="sidebar-link"><span class="icon">💰</span> Commissions</a>
+
+    <div class="sidebar-section">Finance</div>
+    <a href="finances.html"  class="sidebar-link"><span class="icon">📈</span> Finances</a>
+    <a href="paiements.html" class="sidebar-link"><span class="icon">💳</span> Paiements</a>
+
+    <div class="sidebar-section">Système</div>
+    <a href="config.html" class="sidebar-link"><span class="icon">⚙️</span> Configuration</a>
+    <a href="logs.html"   class="sidebar-link"><span class="icon">📋</span> Audit logs</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="flex-between" style="margin-bottom:var(--space-6);">
+      <div>
+        <h1 style="font-family:var(--font-display);font-size:var(--text-3xl);">⭐ Influenceurs & Affiliés</h1>
+        <p style="color:var(--color-text-muted);margin-top:var(--space-1);">Gérez vos codes promo, suivez les ventes et les commissions.</p>
+      </div>
+      <button class="btn btn-primary" onclick="openCreateModal()">+ Nouvel influenceur</button>
+    </div>
+
+    <!-- Payout Overview Panel -->
+    <div class="payout-panel">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-6);">
+        <div>
+          <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.1em;color:rgba(201,168,76,0.7);margin-bottom:var(--space-2);">Total influenceurs</div>
+          <div class="payout-total" id="totalInfluencers">—</div>
+        </div>
+        <div>
+          <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.1em;color:rgba(201,168,76,0.7);margin-bottom:var(--space-2);">Ventes générées</div>
+          <div class="payout-total" id="totalSales" style="font-size:var(--text-2xl);">—</div>
+        </div>
+        <div>
+          <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.1em;color:rgba(201,168,76,0.7);margin-bottom:var(--space-2);">Commissions dues</div>
+          <div class="payout-total" id="totalDue" style="font-size:var(--text-2xl);color:#FF6B6B;">—</div>
+        </div>
+        <div>
+          <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.1em;color:rgba(201,168,76,0.7);margin-bottom:var(--space-2);">Total payé</div>
+          <div class="payout-total" id="totalPaid" style="font-size:var(--text-2xl);color:#6BCB77;">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="flex-between" style="margin-bottom:var(--space-5);gap:var(--space-3);flex-wrap:wrap;">
+      <div class="form-input-icon" style="flex:1;min-width:240px;">
+        <span class="icon">🔍</span>
+        <input type="text" class="form-input" id="searchInput" placeholder="Rechercher un influenceur ou code..." oninput="filterInfluencers()" style="padding-left:2.5rem;"/>
+      </div>
+      <div style="display:flex;gap:var(--space-2);">
+        <button class="btn btn-ghost btn-sm" onclick="filterByStatus('all')"      id="filter-all"      style="border-color:var(--color-green);color:var(--color-green);">Tous</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterByStatus('active')"   id="filter-active">Actifs</button>
+        <button class="btn btn-ghost btn-sm" onclick="filterByStatus('inactive')" id="filter-inactive">Inactifs</button>
+      </div>
+    </div>
+
+    <!-- Influencer Grid -->
+    <div class="influencer-grid" id="influencerGrid"></div>
+
+    <!-- Sales History Table -->
+    <div style="margin-top:var(--space-10);">
+      <h2 style="font-family:var(--font-display);margin-bottom:var(--space-4);">📋 Historique des ventes par code promo</h2>
+      <div class="sales-table-wrap">
+        <table class="table" id="salesTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Code Promo</th>
+              <th>Influenceur</th>
+              <th>Acheteur</th>
+              <th>Téléphone</th>
+              <th>Commande</th>
+              <th>Montant</th>
+              <th>Remise</th>
+              <th>Commission</th>
+            </tr>
+          </thead>
+          <tbody id="salesTableBody"></tbody>
+        </table>
+        <div class="no-data" id="noSales" style="display:none;">
+          <div class="no-data-icon">📊</div>
+          <p>Aucune vente via code promo pour le moment.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── CREATE / EDIT INFLUENCER MODAL ── -->
+<div class="overlay" id="influencerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 style="font-family:var(--font-display);" id="modalTitle">Nouvel influenceur</h3>
+      <button onclick="closeModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--color-text-muted);">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId"/>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Nom complet *</label>
+          <input type="text" class="form-input" id="infName" placeholder="Ex: Aminata Koné"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Téléphone *</label>
+          <input type="tel" class="form-input" id="infPhone" placeholder="+225 07 XX XX XX XX"/>
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Réseau social</label>
+          <select class="form-select" id="infPlatform">
+            <option value="instagram">📸 Instagram</option>
+            <option value="tiktok">🎵 TikTok</option>
+            <option value="facebook">👥 Facebook</option>
+            <option value="youtube">▶️ YouTube</option>
+            <option value="whatsapp">💬 WhatsApp</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Identifiant / @handle</label>
+          <input type="text" class="form-input" id="infHandle" placeholder="@influenceur"/>
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Code promo *</label>
+          <div style="display:flex;gap:var(--space-2);">
+            <input type="text" class="form-input" id="infCode" placeholder="Ex: AMINA20" style="text-transform:uppercase;letter-spacing:0.1em;font-family:monospace;font-weight:700;"/>
+            <button class="btn btn-ghost btn-sm" onclick="generateCode()" style="white-space:nowrap;">🎲 Auto</button>
+          </div>
+          <small style="color:var(--color-text-muted);font-size:var(--text-xs);">Le code sera en MAJUSCULES</small>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Statut</label>
+          <select class="form-select" id="infStatus">
+            <option value="active">✅ Actif</option>
+            <option value="inactive">⏸ Inactif</option>
+            <option value="suspended">🚫 Suspendu</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Commission influenceur (%)</label>
+          <input type="number" class="form-input" id="infCommission" value="10" min="1" max="50" step="0.5"/>
+          <small style="color:var(--color-text-muted);font-size:var(--text-xs);">% du montant de la vente versé à l'influenceur</small>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Remise acheteur (%)</label>
+          <input type="number" class="form-input" id="infDiscount" value="0" min="0" max="50" step="0.5"/>
+          <small style="color:var(--color-text-muted);font-size:var(--text-xs);">% de réduction offert à l'acheteur (0 = pas de remise)</small>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes internes</label>
+        <textarea class="form-textarea" id="infNotes" rows="2" placeholder="Informations supplémentaires sur cet influenceur..."></textarea>
+      </div>
+
+      <!-- Preview -->
+      <div style="background:var(--color-surface-alt);border-radius:var(--radius-lg);padding:var(--space-4);margin-top:var(--space-2);">
+        <div style="font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--color-text-muted);margin-bottom:var(--space-3);">Aperçu du code promo</div>
+        <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;">
+          <div class="promo-code-badge" id="codePreview">CODE</div>
+          <div style="font-size:var(--text-sm);">
+            <span id="previewDiscount" style="color:var(--color-success);font-weight:700;"></span>
+            <span style="color:var(--color-text-muted);"> · Commission: </span>
+            <span id="previewCommission" style="color:var(--color-green);font-weight:700;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveInfluencer()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAYOUT MODAL ── -->
+<div class="overlay" id="payoutModal">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-header">
+      <h3 style="font-family:var(--font-display);">💸 Enregistrer un paiement</h3>
+      <button onclick="closePayoutModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--color-surface-alt);border-radius:var(--radius-lg);padding:var(--space-4);margin-bottom:var(--space-4);">
+        <div style="font-weight:700;" id="payoutInfluencerName"></div>
+        <div style="font-size:var(--text-sm);color:var(--color-text-muted);">Solde dû: <strong id="payoutBalance" style="color:var(--color-error);"></strong></div>
+      </div>
+      <input type="hidden" id="payoutInfluencerId"/>
+      <div class="form-group">
+        <label class="form-label">Montant à payer (XOF) *</label>
+        <input type="number" class="form-input" id="payoutAmount" placeholder="Ex: 15000"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Méthode de paiement *</label>
+        <select class="form-select" id="payoutMethod">
+          <option value="wave">🌊 Wave</option>
+          <option value="orange_money">🟠 Orange Money</option>
+          <option value="cash">💵 Espèces</option>
+          <option value="other">Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Référence / Numéro de transaction</label>
+        <input type="text" class="form-input" id="payoutRef" placeholder="Ex: TXN-XXXXXXXX"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="payoutNotes" rows="2" placeholder="Détails du paiement..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closePayoutModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="savePayout()">✅ Confirmer le paiement</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DETAIL MODAL ── -->
+<div class="overlay" id="detailModal">
+  <div class="modal" style="max-width:700px;">
+    <div class="modal-header">
+      <h3 style="font-family:var(--font-display);" id="detailTitle">Détail influenceur</h3>
+      <button onclick="closeDetailModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeDetailModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  // ── Mock Data (replace with Supabase calls) ──
+  let influencers = [
+    { id:'inf-1', name:'Aminata Koné',    phone:'+225 07 12 34 56 78', social_handle:'@aminata_beauty', platform:'instagram', promo_code:'AMINA15',  commission_rate_bps:1500, discount_bps:500,  status:'active',   total_sales_xof:485000, total_commission_xof:72750, total_paid_xof:50000, notes:'Influenceuse beauté top Abidjan' },
+    { id:'inf-2', name:'Fatoumata Bah',   phone:'+225 05 98 76 54 32', social_handle:'@fati_glow',     platform:'tiktok',    promo_code:'FATIGLOW',  commission_rate_bps:1000, discount_bps:1000, status:'active',   total_sales_xof:312000, total_commission_xof:31200, total_paid_xof:20000, notes:'TikTokeuse, très bonne audience' },
+    { id:'inf-3', name:'Mariame Coulibaly',phone:'+225 01 23 45 67 89', social_handle:'@mariame_ci',    platform:'facebook',  promo_code:'MARIAME10', commission_rate_bps:1000, discount_bps:0,    status:'active',   total_sales_xof:198000, total_commission_xof:19800, total_paid_xof:19800, notes:'' },
+    { id:'inf-4', name:'Adja Traoré',     phone:'+225 07 55 44 33 22', social_handle:'@adja_natura',   platform:'whatsapp',  promo_code:'ADJA20',    commission_rate_bps:2000, discount_bps:500,  status:'inactive', total_sales_xof:45000,  total_commission_xof:9000,  total_paid_xof:9000,  notes:'Pause temporaire' },
+  ];
+
+  let salesHistory = [
+    { date:'2026-10-25', code:'AMINA15',  influencer:'Aminata Koné',     buyer_name:'Soro Awa',        buyer_phone:'+225 07 11 22 33 44', order:'ABP-X1Y2Z3', order_total_xof:18500, discount_xof:925,  commission_xof:2636 },
+    { date:'2026-10-24', code:'FATIGLOW', influencer:'Fatoumata Bah',    buyer_name:'Touré Khadija',   buyer_phone:'+225 05 88 77 66 55', order:'ABP-A1B2C3', order_total_xof:12000, discount_xof:1200, commission_xof:1080 },
+    { date:'2026-10-23', code:'AMINA15',  influencer:'Aminata Koné',     buyer_name:'Coulibaly Mariam',buyer_phone:'+225 01 23 45 67 89', order:'ABP-D4E5F6', order_total_xof:35000, discount_xof:1750, commission_xof:4988 },
+    { date:'2026-10-22', code:'MARIAME10',influencer:'Mariame Coulibaly',buyer_name:'Diallo Assitan',  buyer_phone:'+225 07 99 88 77 66', order:'ABP-G7H8I9', order_total_xof:8500,  discount_xof:0,    commission_xof:850  },
+    { date:'2026-10-21', code:'FATIGLOW', influencer:'Fatoumata Bah',    buyer_name:'Bamba Rokiatou',  buyer_phone:'+225 05 55 44 33 22', order:'ABP-J1K2L3', order_total_xof:22000, discount_xof:2200, commission_xof:1980 },
+  ];
+
+  let currentFilter = 'all';
+  let editingId = null;
+
+  const PLATFORM_ICONS = { instagram:'📸', tiktok:'🎵', facebook:'👥', youtube:'▶️', whatsapp:'💬', other:'🌐' };
+
+  function formatXOF(n) {
+    return new Intl.NumberFormat('fr-FR').format(n || 0) + ' XOF';
+  }
+
+  function bpsToPercent(bps) {
+    return (bps / 100).toFixed(0) + '%';
+  }
+
+  function getInitials(name) {
+    return name.split(' ').map(p => p[0]).join('').substring(0,2).toUpperCase();
+  }
+
+  function updateSummary() {
+    const active = influencers.filter(i => i.status === 'active');
+    const totalSales = influencers.reduce((s,i) => s + i.total_sales_xof, 0);
+    const totalComm  = influencers.reduce((s,i) => s + i.total_commission_xof, 0);
+    const totalPaid  = influencers.reduce((s,i) => s + i.total_paid_xof, 0);
+    const totalDue   = totalComm - totalPaid;
+
+    document.getElementById('totalInfluencers').textContent = influencers.length;
+    document.getElementById('totalSales').textContent       = formatXOF(totalSales);
+    document.getElementById('totalDue').textContent         = formatXOF(totalDue);
+    document.getElementById('totalPaid').textContent        = formatXOF(totalPaid);
+  }
+
+  function renderGrid() {
+    const search  = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    let filtered  = influencers;
+    if (currentFilter !== 'all') filtered = filtered.filter(i => i.status === currentFilter);
+    if (search) filtered = filtered.filter(i =>
+      i.name.toLowerCase().includes(search) ||
+      i.promo_code.toLowerCase().includes(search) ||
+      (i.social_handle||'').toLowerCase().includes(search)
+    );
+
+    const grid = document.getElementById('influencerGrid');
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="no-data" style="grid-column:1/-1;"><div class="no-data-icon">⭐</div><p>Aucun influenceur trouvé.</p></div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(inf => {
+      const balance = inf.total_commission_xof - inf.total_paid_xof;
+      const statusColors = { active:'#27AE60', inactive:'#E67E22', suspended:'#C0392B' };
+      const statusLabels = { active:'Actif', inactive:'Inactif', suspended:'Suspendu' };
+      return `
+        <div class="influencer-card">
+          <div class="influencer-card-header">
+            <div class="influencer-avatar">${getInitials(inf.name)}</div>
+            <div style="flex:1;min-width:0;">
+              <div class="influencer-name">${inf.name}</div>
+              <div class="influencer-handle">${PLATFORM_ICONS[inf.platform]||'🌐'} ${inf.social_handle || '—'}</div>
+            </div>
+            <div>
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${statusColors[inf.status]};margin-right:4px;"></span>
+              <span style="font-size:var(--text-xs);color:rgba(245,240,232,0.7);">${statusLabels[inf.status]}</span>
+            </div>
+          </div>
+
+          <div style="padding:var(--space-4) var(--space-5) var(--space-2);">
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-2);">CODE PROMO</div>
+            <div class="promo-code-badge" onclick="copyCode('${inf.promo_code}')" title="Cliquer pour copier">
+              ${inf.promo_code} 📋
+            </div>
+            <div style="margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-text-muted);">
+              Commission: <strong style="color:var(--color-green);">${bpsToPercent(inf.commission_rate_bps)}</strong>
+              ${inf.discount_bps > 0 ? `· Remise acheteur: <strong style="color:var(--color-gold);">${bpsToPercent(inf.discount_bps)}</strong>` : ''}
+            </div>
+          </div>
+
+          <div class="influencer-stats">
+            <div class="inf-stat">
+              <div class="inf-stat-val">${salesHistory.filter(s => s.code === inf.promo_code).length}</div>
+              <div class="inf-stat-lbl">Ventes</div>
+            </div>
+            <div class="inf-stat">
+              <div class="inf-stat-val" style="font-size:0.85rem;">${formatXOF(inf.total_sales_xof).replace(' XOF','')}</div>
+              <div class="inf-stat-lbl">CA (XOF)</div>
+            </div>
+            <div class="inf-stat">
+              <div class="inf-stat-val" style="font-size:0.85rem;color:${balance > 0 ? 'var(--color-error)' : 'var(--color-success)'};">${formatXOF(balance).replace(' XOF','')}</div>
+              <div class="inf-stat-lbl">Solde dû</div>
+            </div>
+          </div>
+
+          <div class="influencer-card-footer">
+            <span class="balance-chip ${balance > 0 ? 'due' : ''}">
+              ${balance > 0 ? `⚠️ ${formatXOF(balance)} dû` : '✅ Soldé'}
+            </span>
+            <div style="display:flex;gap:var(--space-2);">
+              <button class="btn btn-ghost btn-sm" onclick="openDetail('${inf.id}')" title="Détail">👁</button>
+              <button class="btn btn-ghost btn-sm" onclick="openEditModal('${inf.id}')" title="Modifier">✏️</button>
+              ${balance > 0 ? `<button class="btn btn-primary btn-sm" onclick="openPayoutModal('${inf.id}')">💸 Payer</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderSalesTable() {
+    const tbody = document.getElementById('salesTableBody');
+    if (salesHistory.length === 0) {
+      document.getElementById('noSales').style.display = 'block';
+      tbody.innerHTML = '';
+      return;
+    }
+    document.getElementById('noSales').style.display = 'none';
+    tbody.innerHTML = salesHistory.map(s => `
+      <tr>
+        <td>${new Date(s.date).toLocaleDateString('fr-FR')}</td>
+        <td><span class="promo-code-badge" style="font-size:var(--text-xs);padding:2px 10px;">${s.code}</span></td>
+        <td><strong>${s.influencer}</strong></td>
+        <td>${s.buyer_name}</td>
+        <td style="font-family:monospace;">${s.buyer_phone}</td>
+        <td><a href="#" style="color:var(--color-green);">${s.order}</a></td>
+        <td><strong>${formatXOF(s.order_total_xof)}</strong></td>
+        <td style="color:var(--color-success);">${s.discount_xof > 0 ? '-' + formatXOF(s.discount_xof) : '—'}</td>
+        <td><strong style="color:var(--color-gold);">${formatXOF(s.commission_xof)}</strong></td>
+      </tr>
+    `).join('');
+  }
+
+  // ── Modal handlers ──
+  function openCreateModal() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Nouvel influenceur';
+    document.getElementById('editId').value      = '';
+    document.getElementById('infName').value     = '';
+    document.getElementById('infPhone').value    = '';
+    document.getElementById('infHandle').value   = '';
+    document.getElementById('infCode').value     = '';
+    document.getElementById('infCommission').value = '10';
+    document.getElementById('infDiscount').value   = '0';
+    document.getElementById('infStatus').value     = 'active';
+    document.getElementById('infNotes').value      = '';
+    updatePreview();
+    document.getElementById('influencerModal').classList.add('active');
+  }
+
+  function openEditModal(id) {
+    const inf = influencers.find(i => i.id === id);
+    if (!inf) return;
+    editingId = id;
+    document.getElementById('modalTitle').textContent       = 'Modifier l\'influenceur';
+    document.getElementById('infName').value                = inf.name;
+    document.getElementById('infPhone').value               = inf.phone;
+    document.getElementById('infPlatform').value            = inf.platform;
+    document.getElementById('infHandle').value              = inf.social_handle || '';
+    document.getElementById('infCode').value                = inf.promo_code;
+    document.getElementById('infCommission').value          = inf.commission_rate_bps / 100;
+    document.getElementById('infDiscount').value            = inf.discount_bps / 100;
+    document.getElementById('infStatus').value              = inf.status;
+    document.getElementById('infNotes').value               = inf.notes || '';
+    updatePreview();
+    document.getElementById('influencerModal').classList.add('active');
+  }
+
+  function closeModal() { document.getElementById('influencerModal').classList.remove('active'); }
+
+  function generateCode() {
+    const name = document.getElementById('infName').value || 'ABP';
+    const base  = name.toUpperCase().replace(/\s+/g,'').replace(/[^A-Z]/g,'').substring(0,5);
+    const suffix = Math.random().toString(36).substring(2,5).toUpperCase();
+    document.getElementById('infCode').value = base + suffix;
+    updatePreview();
+  }
+
+  function updatePreview() {
+    const code    = document.getElementById('infCode').value || 'CODE';
+    const comm    = parseFloat(document.getElementById('infCommission').value || 0);
+    const disc    = parseFloat(document.getElementById('infDiscount').value || 0);
+    document.getElementById('codePreview').textContent   = code.toUpperCase();
+    document.getElementById('previewCommission').textContent = comm + '%';
+    document.getElementById('previewDiscount').textContent   = disc > 0 ? `-${disc}% remise` : 'Pas de remise';
+  }
+
+  // Auto-uppercase code
+  document.getElementById('infCode')?.addEventListener('input', e => {
+    e.target.value = e.target.value.toUpperCase();
+    updatePreview();
+  });
+
+  ['infCommission','infDiscount'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updatePreview);
+  });
+
+  function saveInfluencer() {
+    const name = document.getElementById('infName').value.trim();
+    const phone = document.getElementById('infPhone').value.trim();
+    const code  = document.getElementById('infCode').value.trim().toUpperCase();
+
+    if (!name || !phone || !code) {
+      showToast('Veuillez remplir tous les champs obligatoires.', 'error');
+      return;
+    }
+
+    const data = {
+      name, phone,
+      social_handle:       document.getElementById('infHandle').value.trim(),
+      platform:            document.getElementById('infPlatform').value,
+      promo_code:          code,
+      commission_rate_bps: Math.round(parseFloat(document.getElementById('infCommission').value) * 100),
+      discount_bps:        Math.round(parseFloat(document.getElementById('infDiscount').value) * 100),
+      status:              document.getElementById('infStatus').value,
+      notes:               document.getElementById('infNotes').value.trim(),
+    };
+
+    if (editingId) {
+      // Update
+      const idx = influencers.findIndex(i => i.id === editingId);
+      if (idx > -1) influencers[idx] = { ...influencers[idx], ...data };
+      showToast('Influenceur mis à jour !');
+    } else {
+      // Create
+      influencers.unshift({
+        id: 'inf-' + Date.now(),
+        total_sales_xof: 0, total_commission_xof: 0, total_paid_xof: 0,
+        ...data
+      });
+      showToast('Influenceur créé avec succès !');
+    }
+
+    closeModal();
+    renderGrid();
+    updateSummary();
+  }
+
+  // ── Payout Modal ──
+  function openPayoutModal(id) {
+    const inf = influencers.find(i => i.id === id);
+    if (!inf) return;
+    const balance = inf.total_commission_xof - inf.total_paid_xof;
+    document.getElementById('payoutInfluencerId').value  = id;
+    document.getElementById('payoutInfluencerName').textContent = inf.name;
+    document.getElementById('payoutBalance').textContent = formatXOF(balance);
+    document.getElementById('payoutAmount').value        = balance;
+    document.getElementById('payoutRef').value           = '';
+    document.getElementById('payoutNotes').value         = '';
+    document.getElementById('payoutModal').classList.add('active');
+  }
+
+  function closePayoutModal() { document.getElementById('payoutModal').classList.remove('active'); }
+
+  function savePayout() {
+    const id     = document.getElementById('payoutInfluencerId').value;
+    const amount = parseInt(document.getElementById('payoutAmount').value);
+    const method = document.getElementById('payoutMethod').value;
+    const ref    = document.getElementById('payoutRef').value;
+
+    if (!amount || amount <= 0) { showToast('Montant invalide','error'); return; }
+
+    const inf = influencers.find(i => i.id === id);
+    if (inf) {
+      inf.total_paid_xof += amount;
+      showToast(`💸 Paiement de ${formatXOF(amount)} enregistré pour ${inf.name}`);
+    }
+
+    closePayoutModal();
+    renderGrid();
+    updateSummary();
+  }
+
+  // ── Detail Modal ──
+  function openDetail(id) {
+    const inf = influencers.find(i => i.id === id);
+    if (!inf) return;
+    const sales = salesHistory.filter(s => s.code === inf.promo_code);
+    const balance = inf.total_commission_xof - inf.total_paid_xof;
+
+    document.getElementById('detailTitle').textContent = `${PLATFORM_ICONS[inf.platform]||''} ${inf.name}`;
+    document.getElementById('detailBody').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-5);">
+        <div><strong>Téléphone:</strong> ${inf.phone}</div>
+        <div><strong>Réseau:</strong> ${PLATFORM_ICONS[inf.platform]} ${inf.social_handle}</div>
+        <div><strong>Code promo:</strong> <span class="promo-code-badge" style="font-size:0.75rem;">${inf.promo_code}</span></div>
+        <div><strong>Statut:</strong> ${inf.status}</div>
+        <div><strong>Commission:</strong> ${bpsToPercent(inf.commission_rate_bps)}</div>
+        <div><strong>Remise acheteur:</strong> ${inf.discount_bps > 0 ? bpsToPercent(inf.discount_bps) : 'Aucune'}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);margin-bottom:var(--space-5);">
+        <div class="stat-card"><div class="stat-label">Total Ventes</div><div class="stat-value" style="font-size:var(--text-xl);">${formatXOF(inf.total_sales_xof)}</div></div>
+        <div class="stat-card"><div class="stat-label">Commissions</div><div class="stat-value" style="font-size:var(--text-xl);">${formatXOF(inf.total_commission_xof)}</div></div>
+        <div class="stat-card" style="--accent:${balance > 0 ? 'var(--color-error)' : 'var(--color-success)'}"><div class="stat-label">Solde dû</div><div class="stat-value" style="font-size:var(--text-xl);color:${balance > 0 ? 'var(--color-error)':'var(--color-success)'};">${formatXOF(balance)}</div></div>
+      </div>
+      <h4 style="font-family:var(--font-display);margin-bottom:var(--space-3);">Achats référés (${sales.length})</h4>
+      ${sales.length === 0 ? '<p style="color:var(--color-text-muted);">Aucun achat pour l\'instant.</p>' : `
+      <table class="table" style="font-size:var(--text-xs);">
+        <thead><tr><th>Date</th><th>Acheteur</th><th>Téléphone</th><th>Commande</th><th>Montant</th><th>Commission</th></tr></thead>
+        <tbody>${sales.map(s => `
+          <tr>
+            <td>${new Date(s.date).toLocaleDateString('fr-FR')}</td>
+            <td><strong>${s.buyer_name}</strong></td>
+            <td>${s.buyer_phone}</td>
+            <td style="color:var(--color-green);">${s.order}</td>
+            <td>${formatXOF(s.order_total_xof)}</td>
+            <td style="color:var(--color-gold);font-weight:700;">${formatXOF(s.commission_xof)}</td>
+          </tr>
+        `).join('')}</tbody>
+      </table>`}
+      ${inf.notes ? `<div style="margin-top:var(--space-4);padding:var(--space-3);background:var(--color-surface-alt);border-radius:var(--radius-md);font-size:var(--text-sm);color:var(--color-text-muted);">📝 ${inf.notes}</div>` : ''}
+    `;
+    document.getElementById('detailModal').classList.add('active');
+  }
+
+  function closeDetailModal() { document.getElementById('detailModal').classList.remove('active'); }
+
+  // ── Filters ──
+  function filterByStatus(status) {
+    currentFilter = status;
+    ['all','active','inactive'].forEach(s => {
+      const btn = document.getElementById(`filter-${s}`);
+      if (btn) btn.style.borderColor = s === status ? 'var(--color-green)' : '';
+      if (btn) btn.style.color = s === status ? 'var(--color-green)' : '';
+    });
+    renderGrid();
+  }
+
+  function filterInfluencers() { renderGrid(); }
+
+  // ── Copy code ──
+  function copyCode(code) {
+    navigator.clipboard?.writeText(code).then(() => showToast(`Code "${code}" copié ! 📋`));
+  }
+
+  // ── Toast ──
+  function showToast(msg, type = 'success') {
+    const tc = document.getElementById('toastContainer');
+    const t  = document.createElement('div');
+    t.className = `toast${type === 'error' ? ' toast-error' : ''}`;
+    t.innerHTML = `<span>${type === 'error' ? '❌' : '✅'}</span><span>${msg}</span>`;
+    tc.appendChild(t);
+    setTimeout(() => t.style.animation = 'fadeOut 0.3s forwards', 3200);
+    setTimeout(() => t.remove(), 3500);
+  }
+
+  // ── Init ──
+  updateSummary();
+  renderGrid();
+  renderSalesTable();
+
+  // Close modals on backdrop click
+  ['influencerModal','payoutModal','detailModal'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', e => {
+      if (e.target === e.currentTarget) document.getElementById(id).classList.remove('active');
+    });
+  });
+</script>
+</body>
+</html>

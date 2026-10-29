@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMABELLEPEAU — Savons Naturels & Soins d'Exception à Abidjan</title>
+  <meta name="description" content="Découvrez AMABELLEPEAU, la marketplace de référence pour les savons artisanaux et cosmétiques naturels d'exception à Abidjan, Côte d'Ivoire. Livraison rapide et paiement sécurisé via Wave et Orange Money.">
+  
+  <!-- Favicon / Logo -->
+  <link rel="icon" type="image/png" href="assets/icons/logo.png">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/main.css">
+
+  <style>
+    /* =====================================================
+       AMABELLEPEAU — Specific Homepage Enhancements & FX
+       ===================================================== */
+
+    /* ── Color Palette Overrides & Helpers ── */
+    :root {
+      --color-gold-glow: rgba(201, 168, 76, 0.35);
+      --color-dark-glass: rgba(13, 26, 13, 0.88);
+      --color-emerald-deep: #0a1f0d;
+    }
+
+    /* ── Sticky Navbar Extra Polish ── */
+    .navbar {
+      background: rgba(13, 26, 13, 0.95) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.22);
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 20, 10, 0.98) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(201, 168, 76, 0.3);
+    }
+
+    .nav-icon-btn {
+      position: relative;
+      background: transparent;
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      color: var(--color-cream);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .nav-icon-btn:hover {
+      background: rgba(201, 168, 76, 0.15);
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+      transform: translateY(-2px);
+    }
+
+    .badge-counter {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--gradient-gold);
+      color: var(--color-black);
+      font-size: 11px;
+      font-weight: 800;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .badge-counter.bump {
+      transform: scale(1.35);
+    }
+
+    /* ── Hero Section ── */
+    .hero {
+      position: relative;
+      min-height: calc(100vh - var(--nav-height));
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(160deg, #09140a 0%, #0D1A0D 30%, #153B18 70%, #0F2E11 100%);
+      overflow: hidden;
+      padding: var(--space-12) 0;
+    }
+
+    /* Botanical Background Floating Leaves & Particles */
+    .botanical-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .floating-leaf {
+      position: absolute;
+      width: 140px;
+      height: 70px;
+      border-radius: 140px 0;
+      background: linear-gradient(135deg, rgba(74, 140, 80, 0.12) 0%, rgba(201, 168, 76, 0.08) 100%);
+      border: 1px solid rgba(201, 168, 76, 0.15);
+      filter: blur(1px);
+      animation: floatBotanical 16s ease-in-out infinite alternate;
+    }
+
+    .floating-leaf::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: rgba(201, 168, 76, 0.2);
+    }
+
+    .leaf-1 {
+      top: 12%;
+      left: 6%;
+      transform: rotate(25deg);
+      animation-duration: 22s;
+      width: 160px;
+      height: 80px;
+    }
+
+    .leaf-2 {
+      top: 65%;
+      left: 45%;
+      transform: rotate(-40deg);
+      animation-duration: 26s;
+      animation-delay: -5s;
+      width: 120px;
+      height: 60px;
+    }
+
+    .leaf-3 {
+      bottom: 8%;
+      right: 8%;
+      transform: rotate(55deg);
+      animation-duration: 18s;
+      animation-delay: -9s;
+      width: 180px;
+      height: 90px;
+    }
+
+    .leaf-4 {
+      top: 20%;
+      right: 18%;
+      transform: rotate(-15deg);
+      animation-duration: 24s;
+      animation-delay: -12s;
+      width: 100px;
+      height: 50px;
+    }
+
+    @keyframes floatBotanical {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+      50% {
+        transform: translateY(-25px) rotate(12deg) scale(1.05);
+      }
+      100% {
+        transform: translateY(15px) rotate(-8deg) scale(0.96);
+      }
+    }
+
+    /* Ambient Gold & Green Light Orbs */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .glow-orb-green {
+      top: 15%;
+      right: 10%;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(45, 107, 50, 0.45) 0%, rgba(13, 26, 13, 0) 70%);
+    }
+
+    .glow-orb-gold {
+      bottom: 10%;
+      left: 5%;
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(201, 168, 76, 0.22) 0%, rgba(13, 26, 13, 0) 70%);
+    }
+
+    /* Hero Grid Layout */
+    .hero-content-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--space-12);
+      align-items: center;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: rgba(201, 168, 76, 0.12);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: var(--radius-full);
+      color: var(--color-gold-light);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-5);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-tag .tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-gold);
+      box-shadow: 0 0 10px var(--color-gold);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.7; }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 4.5vw, 4rem);
+      line-height: 1.12;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: var(--space-5);
+      letter-spacing: -0.01em;
+    }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #F3E5AB 0%, #C9A84C 50%, #E8CD82 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-style: italic;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+      color: rgba(245, 240, 232, 0.82);
+      line-height: 1.7;
+      margin-bottom: var(--space-8);
+      max-width: 580px;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-10);
+    }
+
+    .btn-gold-glow {
+      background: var(--gradient-gold);
+      color: var(--color-black);
+      font-weight: 700;
+      box-shadow: 0 8px 30px rgba(201, 168, 76, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-gold-glow:hover {
+      box-shadow: 0 12px 40px rgba(201, 168, 76, 0.6);
+      transform: translateY(-3px);
+    }
+
+    .hero-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+    }
+
+    .hero-stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(201, 168, 76, 0.22);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-4);
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .hero-stat-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--color-gold);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-stat-num {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-gold-light);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-stat-desc {
+      font-size: var(--text-xs);
+      color: rgba(245, 240, 232, 0.7);
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    /* Hero Showcase Card (Right Column) */
+    .hero-showcase {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-showcase-card {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(145deg, rgba(27, 77, 30, 0.5) 0%, rgba(13, 26, 13, 0.85) 100%);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(201, 168, 76, 0.15);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-showcase-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(201, 168, 76, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+      animation: rotateLight 20s linear infinite;
+    }
+
+    @keyframes rotateLight {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .showcase-badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: rgba(201, 168, 76, 0.15);
+      border: 1px solid var(--color-gold);
+      color: var(--color-gold-light);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-6);
+      position: relative;
+      z-index: 2;
+    }
+
+    .showcase-soap-art {
+      position: relative;
+      z-index: 2;
+      width: 210px;
+      height: 210px;
+      margin: 0 auto var(--space-6);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #2d6b32 0%, #153b18 50%, #0d1a0d 100%);
+      border: 3px solid rgba(201, 168, 76, 0.4);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.5), inset 0 0 25px rgba(201, 168, 76, 0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gold-light);
+      transition: transform 0.5s ease;
+    }
+
+    .hero-showcase-card:hover .showcase-soap-art {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    .showcase-soap-logo {
+      width: 105px;
+      height: 105px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+
+    .showcase-title {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      color: #FFFFFF;
+      margin-bottom: var(--space-2);
+    }
+
+    .showcase-desc {
+      position: relative;
+      z-index: 2;
+      font-size: var(--text-sm);
+      color: rgba(245, 240, 232, 0.75);
+      margin-bottom: var(--space-5);
+    }
+
+    .showcase-price-tag {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: var(--space-2) var(--space-6);
+      background: rgba(10, 20, 10, 0.7);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      border-radius: var(--radius-full);
+      color: var(--color-cream);
+    }
+
+    .showcase-price-tag strong {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-gold);
+    }
+
+    /* ── Brand Value Strip ── */
+    .brand-value-strip {
+      background: var(--color-cream);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-8) 0;
+      position: relative;
+      z-index: 5;
+    }
+
+    .value-strip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-6);
+    }
+
+    .value-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      transition: transform 0.25s ease;
+    }
+
+    .value-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .value-icon {
+      font-size: 2rem;
+      line-height: 1;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: white;
+      border: 1.5px solid rgba(201, 168, 76, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(27, 77, 30, 0.08);
+      flex-shrink: 0;
+    }
+
+    .value-title {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-black);
+      margin-bottom: 2px;
+    }
+
+    .value-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.35;
+    }
+
+    /* ── Featured Categories Section ── */
+    .categories-section {
+      padding: var(--space-20) 0;
+      background: var(--color-bg);
+      position: relative;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+
+    .category-card {
+      position: relative;
+      border-radius: var(--radius-xl);
+      padding: var(--space-8) var(--space-6);
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 210px;
+    }
+
+    .category-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(27, 77, 30, 0.04) 0%, rgba(201, 168, 76, 0.08) 100%);
+      opacity: 0.8;
+      transition: opacity 0.35s ease;
+    }
+
+    .category-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--color-gold);
+      box-shadow: 0 16px 36px rgba(201, 168, 76, 0.22), 0 4px 12px rgba(27, 77, 30, 0.08);
+    }
+
+    .category-card:hover::before {
+      opacity: 1;
+      background: linear-gradient(135deg, rgba(27, 77, 30, 0.09) 0%, rgba(201, 168, 76, 0.18) 100%);
+    }
+
+    .category-icon-box {
+      position: relative;
+      z-index: 2;
+      width: 58px;
+      height: 58px;
+      border-radius: var(--radius-lg);
+      background: white;
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin-bottom: var(--space-5);
+      transition: transform 0.3s ease;
+    }
+
+    .category-card:hover .category-icon-box {
+      transform: scale(1.1) rotate(4deg);
+      border-color: var(--color-gold);
+    }
+
+    .category-meta {
+      position: relative;
+      z-index: 2;
+    }
+
+    .category-count {
+      display: inline-block;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+      background: rgba(27, 77, 30, 0.1);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-2);
+    }
+
+    .category-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      color: var(--color-black);
+      margin-bottom: var(--space-2);
+    }
+
+    .category-card-arrow {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-gold-dark);
+      margin-top: var(--space-3);
+      transition: gap 0.25s ease;
+    }
+
+    .category-card:hover .category-card-arrow {
+      gap: 12px;
+      color: var(--color-forest);
+    }
+
+    /* ── Featured Products Section ── */
+    .products-section {
+      padding: var(--space-20) 0;
+      background: var(--color-surface-alt);
+    }
+
+    .product-grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-6);
+    }
+
+    /* Custom visual placeholder art inside .product-card-image */
+    .product-visual {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-visual {
+      transform: scale(1.06);
+    }
+
+    .visual-bg-karite {
+      background: radial-gradient(circle at 40% 40%, #FFFDF7 0%, #F5E8C7 50%, #E0CE9F 100%);
+    }
+
+    .visual-bg-coco {
+      background: radial-gradient(circle at 40% 40%, #FFFFFF 0%, #EBF6ED 55%, #CFE6D4 100%);
+    }
+
+    .visual-bg-aloe {
+      background: radial-gradient(circle at 40% 40%, #F1FDF3 0%, #C8EACD 50%, #85C78E 100%);
+    }
+
+    .visual-bg-charbon {
+      background: radial-gradient(circle at 40% 40%, #3D443E 0%, #1A211B 60%, #0D140E 100%);
+    }
+
+    .visual-bg-vitamine {
+      background: radial-gradient(circle at 40% 40%, #FFF8E7 0%, #FBE09C 50%, #EAA244 100%);
+    }
+
+    .visual-bg-argile {
+      background: radial-gradient(circle at 40% 40%, #F5FBF7 0%, #D0EBD8 50%, #76A883 100%);
+    }
+
+    .visual-bg-hibiscus {
+      background: radial-gradient(circle at 40% 40%, #FFF0F2 0%, #F8CAD1 50%, #C44569 100%);
+    }
+
+    .visual-bg-rose {
+      background: radial-gradient(circle at 40% 40%, #FFF5EF 0%, #FBD7C4 50%, #D88B69 100%);
+    }
+
+    .product-mockup-bottle {
+      width: 100px;
+      height: 125px;
+      border-radius: 20px 20px 14px 14px;
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .mockup-cap {
+      width: 38px;
+      height: 18px;
+      background: var(--gradient-gold);
+      border-radius: 4px 4px 0 0;
+      position: absolute;
+      top: -18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .mockup-label {
+      background: rgba(255, 255, 255, 0.95);
+      width: 82%;
+      padding: 8px 4px;
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .mockup-label-brand {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-forest);
+    }
+
+    .mockup-label-title {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--color-black);
+    }
+
+    /* Soap Bar Mockup */
+    .product-mockup-soap {
+      width: 120px;
+      height: 80px;
+      border-radius: 14px;
+      border: 1px solid rgba(201, 168, 76, 0.4);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .mockup-soap-stamp {
+      border: 1.5px dashed rgba(201, 168, 76, 0.6);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-quick-add {
+      width: 100%;
+      margin-top: var(--space-3);
+      padding: var(--space-2) var(--space-4);
+      background: rgba(27, 77, 30, 0.08);
+      color: var(--color-forest);
+      border: 1.5px solid var(--color-forest);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.25s ease;
+    }
+
+    .btn-quick-add:hover {
+      background: var(--color-forest);
+      color: white;
+      box-shadow: 0 4px 14px rgba(27, 77, 30, 0.25);
+    }
+
+    /* ── Promotional Banner ── */
+    .promo-banner {
+      background: linear-gradient(135deg, #09170A 0%, #153B18 50%, #0A1C0C 100%);
+      padding: var(--space-8) 0;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(201, 168, 76, 0.3);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+    }
+
+    .promo-shimmer-effect {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.2), transparent);
+      animation: promoShimmer 5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes promoShimmer {
+      0% { left: -100%; }
+      50% { left: 150%; }
+      100% { left: 150%; }
+    }
+
+    .promo-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+
+    .promo-content {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .promo-badge {
+      background: var(--gradient-gold);
+      color: var(--color-black);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      font-weight: 800;
+      font-size: var(--text-xs);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .promo-text {
+      font-family: var(--font-display);
+      font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+      color: var(--color-cream);
+    }
+
+    .promo-text span {
+      color: var(--color-gold);
+      font-weight: 700;
+    }
+
+    /* ── Merchant Brands Section ── */
+    .merchants-section {
+      padding: var(--space-20) 0;
+      background: var(--color-bg);
+    }
+
+    .merchants-scroll-wrapper {
+      position: relative;
+      overflow-x: auto;
+      padding-bottom: var(--space-4);
+      scrollbar-width: thin;
+    }
+
+    .merchants-grid {
+      display: flex;
+      gap: var(--space-6);
+      min-width: min-content;
+      padding: var(--space-2) 0;
+    }
+
+    .merchant-card {
+      width: 290px;
+      flex-shrink: 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .merchant-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--color-gold);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .merchant-logo-circle {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      margin: 0 auto var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-cream);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      border: 2px solid var(--color-gold);
+    }
+
+    .merchant-badge-verified {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+      background: rgba(39, 174, 96, 0.12);
+      color: var(--color-success);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .merchant-name {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-black);
+      margin-bottom: 3px;
+    }
+
+    .merchant-category {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+
+    .merchant-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-3);
+      margin-top: var(--space-4);
+      font-size: var(--text-xs);
+    }
+
+    /* ── Testimonials Section ── */
+    .testimonials-section {
+      padding: var(--space-20) 0;
+      background: var(--color-cream);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: var(--space-8) var(--space-6);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+      border: 1px solid rgba(27, 77, 30, 0.12);
+      border-left: 4px solid var(--color-forest);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(27, 77, 30, 0.12);
+      border-left-color: var(--color-gold);
+    }
+
+    .quote-icon {
+      font-family: Georgia, serif;
+      font-size: 3rem;
+      line-height: 1;
+      color: rgba(201, 168, 76, 0.3);
+      margin-bottom: -10px;
+    }
+
+    .testimonial-text {
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: var(--space-6);
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--color-forest);
+      color: var(--color-gold-light);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-sm);
+    }
+
+    .author-name {
+      font-weight: 700;
+      font-size: var(--text-sm);
+      color: var(--color-black);
+    }
+
+    .author-location {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Newsletter & App Community Section ── */
+    .community-section {
+      background: linear-gradient(160deg, #09170A 0%, #153B18 50%, #09140A 100%);
+      padding: var(--space-20) 0;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .community-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: var(--space-12);
+      align-items: center;
+    }
+
+    .community-newsletter-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      margin-bottom: var(--space-4);
+      color: white;
+    }
+
+    .community-newsletter-desc {
+      font-size: var(--text-base);
+      color: rgba(245, 240, 232, 0.82);
+      margin-bottom: var(--space-6);
+      line-height: 1.6;
+    }
+
+    .newsletter-form-row {
+      display: flex;
+      gap: var(--space-3);
+      max-width: 520px;
+    }
+
+    .newsletter-input {
+      flex: 1;
+      padding: var(--space-4) var(--space-5);
+      border-radius: var(--radius-full);
+      border: 1.5px solid rgba(201, 168, 76, 0.4);
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      font-size: var(--text-sm);
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .newsletter-input:focus {
+      border-color: var(--color-gold);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.25);
+    }
+
+    .newsletter-input::placeholder {
+      color: rgba(245, 240, 232, 0.5);
+    }
+
+    /* App Teaser Card */
+    .app-teaser-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      backdrop-filter: blur(16px);
+      text-align: center;
+    }
+
+    .app-badge-pill {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      background: rgba(201, 168, 76, 0.2);
+      color: var(--color-gold-light);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+    }
+
+    .app-store-buttons {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-3);
+      margin-top: var(--space-6);
+      flex-wrap: wrap;
+    }
+
+    .store-badge-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-4);
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .store-badge-btn:hover {
+      background: rgba(0, 0, 0, 0.85);
+      border-color: var(--color-gold);
+      transform: translateY(-2px);
+    }
+
+    .store-badge-btn .store-sub {
+      font-size: 9px;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, 0.6);
+      letter-spacing: 0.05em;
+    }
+
+    .store-badge-btn .store-main {
+      font-weight: 700;
+      font-size: 13px;
+      color: white;
+    }
+
+    /* ── Live Search Modal ── */
+    .search-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 12, 5, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: var(--space-12) var(--space-4);
+    }
+
+    .search-modal-backdrop.active {
+      display: flex;
+    }
+
+    .search-modal-box {
+      width: 100%;
+      max-width: 640px;
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+      border: 1px solid var(--color-gold);
+      overflow: hidden;
+      animation: modalSlide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .search-header-bar {
+      display: flex;
+      align-items: center;
+      padding: var(--space-4) var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+      gap: var(--space-3);
+    }
+
+    .search-input-field {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: var(--text-lg);
+      color: var(--color-black);
+      background: transparent;
+    }
+
+    .search-close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--color-text-muted);
+    }
+
+    .search-results-list {
+      max-height: 380px;
+      overflow-y: auto;
+      padding: var(--space-4) var(--space-6);
+    }
+
+    .search-result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-2);
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .search-result-row:hover {
+      background: var(--color-surface-alt);
+    }
+
+    /* ── Quick Toast Notification ── */
+    #amabelleToast {
+      position: fixed;
+      bottom: 96px;
+      right: var(--space-6);
+      z-index: 9999;
+      background: #0D1A0D;
+      color: #F5F2EC;
+      border-left: 4px solid var(--color-gold);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      padding: var(--space-4) var(--space-6);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    #amabelleToast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── Clickable Payment Badge Links ── */
+    .payment-badge-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .payment-badge-wave {
+      background: rgba(0, 164, 228, 0.18);
+      border: 1px solid #00A4E4;
+      color: #00A4E4;
+    }
+
+    .payment-badge-wave:hover {
+      background: #00A4E4;
+      color: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 164, 228, 0.4);
+    }
+
+    .payment-badge-om {
+      background: rgba(255, 102, 0, 0.18);
+      border: 1px solid #FF6600;
+      color: #FF6600;
+    }
+
+    .payment-badge-om:hover {
+      background: #FF6600;
+      color: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 102, 0, 0.4);
+    }
+
+    .payment-badge-wa {
+      background: rgba(37, 211, 102, 0.18);
+      border: 1px solid #25D366;
+      color: #25D366;
+    }
+
+    .payment-badge-wa:hover {
+      background: #25D366;
+      color: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+    }
+
+    /* ── WhatsApp Floating Action Button ── */
+    .whatsapp-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9995;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #25D366;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: waPulse 2.5s infinite;
+    }
+
+    .whatsapp-fab:hover {
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 10px 28px rgba(37, 211, 102, 0.65);
+      color: #FFFFFF;
+    }
+
+    .whatsapp-fab .wa-tooltip {
+      position: absolute;
+      right: 70px;
+      background: #0D1A0D;
+      color: #F5F2EC;
+      border: 1px solid var(--color-gold);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+    }
+
+    .whatsapp-fab:hover .wa-tooltip {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    @keyframes waPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 16px rgba(37, 211, 102, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .hero-content-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-subtitle {
+        margin: 0 auto var(--space-8);
+      }
+      .hero-cta-group {
+        justify-content: center;
+      }
+      .hero-stats-row {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .hero-showcase {
+        display: none;
+      }
+      .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .product-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+      .community-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .newsletter-form-row {
+        margin: 0 auto;
+      }
+      .value-strip-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-stats-row {
+        grid-template-columns: 1fr;
+      }
+      .categories-grid {
+        grid-template-columns: 1fr;
+      }
+      .product-grid-container {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: var(--space-4);
+      }
+      .product-card {
+        min-width: 270px;
+        scroll-snap-align: start;
+        flex-shrink: 0;
+      }
+      .value-strip-grid {
+        grid-template-columns: 1fr;
+      }
+      .newsletter-form-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       1. NAVBAR (Sticky, Dark Green with Gold Accents)
+       ===================================================== -->
+  <header class="navbar" id="mainNavbar">
+    <div class="container">
+      
+      <!-- Logo + Brand Text -->
+      <a href="index.html" class="navbar-brand">
+        <img src="assets/icons/logo.png" alt="AMABELLEPEAU Emblème" class="navbar-logo">
+        <span class="navbar-brand-text">AMABELLE<span>PEAU</span></span>
+      </a>
+
+      <!-- Desktop Navigation Links (French) -->
+      <nav class="navbar-nav">
+        <a href="index.html" class="navbar-link active">Accueil</a>
+        <a href="#catalogue" class="navbar-link">Catalogue</a>
+        <a href="#marques" class="navbar-link">Marques</a>
+        <a href="#marchands" class="navbar-link">Marchands</a>
+      </nav>
+
+      <!-- Right Navbar Action Icons -->
+      <div class="navbar-actions">
+        <!-- Search Trigger -->
+        <button class="nav-icon-btn" id="openSearchBtn" aria-label="Rechercher des produits">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- Wishlist / Heart -->
+        <button class="nav-icon-btn" id="wishlistNavBtn" aria-label="Liste d'envies">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="badge-counter" id="wishlistCount">0</span>
+        </button>
+
+        <!-- Cart with Badge Counter -->
+        <button class="nav-icon-btn" id="cartNavBtn" aria-label="Panier">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="badge-counter" id="cartCount">0</span>
+        </button>
+
+        <!-- Account Icon -->
+        <a href="#mon-compte" class="nav-icon-btn" aria-label="Mon Compte">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Menu navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="mobile-nav" id="mobileNav">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+      <div style="display: flex; align-items: center; gap: var(--space-3);">
+        <img src="assets/icons/logo.png" alt="Logo" style="width: 38px; height: 38px;">
+        <span style="font-family: var(--font-display); font-size: 1.3rem; color: #FFF; font-weight: 700;">AMABELLE<span style="color: var(--color-gold);">PEAU</span></span>
+      </div>
+      <button id="closeMobileNavBtn" style="background:none; border:none; color:white; font-size: 28px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+      <a href="index.html" class="mobile-nav-link" style="color: var(--color-gold); font-size: var(--text-xl); font-weight: 600; padding: var(--space-2) 0;">Accueil</a>
+      <a href="#catalogue" class="mobile-nav-link" style="color: var(--color-cream); font-size: var(--text-xl); font-weight: 500; padding: var(--space-2) 0;">Catalogue</a>
+      <a href="#categories" class="mobile-nav-link" style="color: var(--color-cream); font-size: var(--text-xl); font-weight: 500; padding: var(--space-2) 0;">Catégories</a>
+      <a href="#marques" class="mobile-nav-link" style="color: var(--color-cream); font-size: var(--text-xl); font-weight: 500; padding: var(--space-2) 0;">Marques</a>
+      <a href="#marchands" class="mobile-nav-link" style="color: var(--color-cream); font-size: var(--text-xl); font-weight: 500; padding: var(--space-2) 0;">Espace Marchand</a>
+      <a href="#avis" class="mobile-nav-link" style="color: var(--color-cream); font-size: var(--text-xl); font-weight: 500; padding: var(--space-2) 0;">Avis Clients</a>
+    </div>
+
+    <div style="margin-top: auto; padding-top: var(--space-8); border-top: 1px solid rgba(201,168,76,0.2);">
+      <p style="font-size: var(--text-xs); color: rgba(245,240,232,0.6); margin-bottom: var(--space-3);">Paiement direct Côte d'Ivoire & WhatsApp :</p>
+      <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+        <a href="https://pay.wave.com/mqr-tc/mqr-1cz6t6hdg21tj" target="_blank" rel="noopener noreferrer" class="payment-badge-link payment-badge-wave">🌊 Wave Direct</a>
+        <a href="https://multi.app.orange-money.com/app/v1/kapptivate/qrcode/odyssee/?id=codgen51-68692f6d78d84349b91a11cc1bcaa701&v=1" target="_blank" rel="noopener noreferrer" class="payment-badge-link payment-badge-om">🟠 Orange Money</a>
+        <a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" class="payment-badge-link payment-badge-wa">💬 Catalogue WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- =====================================================
+         2. HERO SECTION (Full Viewport, Botanical & Glass FX)
+         ===================================================== -->
+    <section class="hero">
+      
+      <!-- Botanical Background: Leaves & Glowing Orbs -->
+      <div class="botanical-bg">
+        <div class="floating-leaf leaf-1"></div>
+        <div class="floating-leaf leaf-2"></div>
+        <div class="floating-leaf leaf-3"></div>
+        <div class="floating-leaf leaf-4"></div>
+        <div class="glow-orb glow-orb-green"></div>
+        <div class="glow-orb glow-orb-gold"></div>
+      </div>
+
+      <div class="container">
+        <div class="hero-content-grid">
+          
+          <!-- Left Column: Hero Text & CTAs -->
+          <div class="hero-text-content">
+            
+            <div class="hero-tag">
+              <span class="tag-dot"></span>
+              Savons Naturels • Soins • Bien-être
+            </div>
+
+            <h1 class="hero-title">
+              La Nature au Service de <br>
+              <span class="gold-gradient-text">Votre Beauté</span>
+            </h1>
+
+            <p class="hero-subtitle">
+              Savons artisanaux d'exception et soins botaniques purs, confectionnés avec les plus nobles ingrédients d'Afrique et livrés avec soin chez vous à Abidjan.
+            </p>
+
+            <div class="hero-cta-group">
+              <a href="#catalogue" class="btn btn-primary btn-lg btn-gold-glow">
+                <span>Découvrir la Collection</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+
+              <a href="#marchands" class="btn btn-outline btn-lg">
+                <span>Nos Marchands</span>
+              </a>
+            </div>
+
+            <!-- Floating Stat Cards (Glass effect) -->
+            <div class="hero-stats-row">
+              
+              <div class="hero-stat-card">
+                <div class="hero-stat-num">
+                  <span>200+</span>
+                  <span style="font-size: 14px;">🌿</span>
+                </div>
+                <div class="hero-stat-desc">Produits Naturels & Bio Certifiés</div>
+              </div>
+
+              <div class="hero-stat-card">
+                <div class="hero-stat-num">
+                  <span>24-48h</span>
+                  <span style="font-size: 14px;">⚡</span>
+                </div>
+                <div class="hero-stat-desc">Livraison Rapide sur Tout Abidjan</div>
+              </div>
+
+              <a href="#paiement" class="hero-stat-card" style="text-decoration: none; cursor: pointer;" title="Wave, Orange Money & WhatsApp">
+                <div class="hero-stat-num">
+                  <span>Wave & OM</span>
+                  <span style="font-size: 14px;">🔒</span>
+                </div>
+                <div class="hero-stat-desc">Paiement Direct Wave & OM</div>
+              </a>
+
+            </div>
+
+          </div>
+
+          <!-- Right Column: Luxury Organic Visual Showcase -->
+          <div class="hero-showcase">
+            <div class="hero-showcase-card">
+              
+              <div class="showcase-badge-top">
+                <span>✨ Édition Botanique Pure</span>
+              </div>
+
+              <div class="showcase-soap-art">
+                <img src="assets/icons/logo.png" alt="AMABELLEPEAU Sceau" class="showcase-soap-logo">
+              </div>
+
+              <h2 class="showcase-title">AMABELLEPEAU</h2>
+              <p class="showcase-desc">Saponification à froid & Beurres Purs d'Afrique de l'Ouest</p>
+
+              <div class="showcase-price-tag">
+                <span>Dès</span>
+                <strong>3 500 XOF</strong>
+                <span>• Fabrication Artisanale</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         3. BRAND VALUE STRIP (Cream Background)
+         ===================================================== -->
+    <section class="brand-value-strip">
+      <div class="container">
+        <div class="value-strip-grid">
+          
+          <div class="value-item">
+            <div class="value-icon">🌿</div>
+            <div>
+              <div class="value-title">100% Naturels</div>
+              <div class="value-desc">Ingrédients purs, sans parabènes ni sulfates</div>
+            </div>
+          </div>
+
+          <div class="value-item">
+            <div class="value-icon">💧</div>
+            <div>
+              <div class="value-title">Doux pour la Peau</div>
+              <div class="value-desc">Formules nourrissantes testées dermatologiquement</div>
+            </div>
+          </div>
+
+          <div class="value-item">
+            <div class="value-icon">✨</div>
+            <div>
+              <div class="value-title">Éclat Naturel</div>
+              <div class="value-desc">Sublimez et illuminez le teint sans l'agresser</div>
+            </div>
+          </div>
+
+          <div class="value-item">
+            <div class="value-icon">💚</div>
+            <div>
+              <div class="value-title">Bien-être Quotidien</div>
+              <div class="value-desc">Des rituels apaisants et une fraîcheur durable</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         4. FEATURED CATEGORIES (Grid of 6)
+         ===================================================== -->
+    <section class="categories-section" id="categories">
+      <div class="container">
+        
+        <div class="section-header">
+          <div class="section-label">Explorer par Rituel</div>
+          <h2 class="section-title">Nos Univers Botaniques</h2>
+          <div class="divider"></div>
+          <p class="section-subtitle">
+            Une sélection rigoureuse de soins corporels et savons artisanaux adaptés aux peaux sahéliennes et tropicales.
+          </p>
+        </div>
+
+        <div class="categories-grid">
+          
+          <!-- Cat 1 -->
+          <div class="category-card" onclick="window.location.href='#catalogue'">
+            <div>
+              <div class="category-icon-box">🧼</div>
+              <span class="category-count">48 Produits</span>
+              <h3 class="category-title">Savons Artisanaux</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted);">Saponifiés à froid, surgras au beurre de karité et coco vierge.</p>
+            </div>
+            <div class="category-card-arrow">
+              <span>Voir la collection</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          <!-- Cat 2 -->
+          <div class="category-card" onclick="window.location.href='#catalogue'">
+            <div>
+              <div class="category-icon-box">🧴</div>
+              <span class="category-count">36 Produits</span>
+              <h3 class="category-title">Soins Visage</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted);">Sérums éclat, crèmes hydratantes et lotions rééquilibrantes.</p>
+            </div>
+            <div class="category-card-arrow">
+              <span>Voir la collection</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          <!-- Cat 3 -->
+          <div class="category-card" onclick="window.location.href='#catalogue'">
+            <div>
+              <div class="category-icon-box">🥥</div>
+              <span class="category-count">52 Produits</span>
+              <h3 class="category-title">Soins Corps</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted);">Chantillys de karité, gommages au sucre roux et laits veloutés.</p>
+            </div>
+            <div class="category-card-arrow">
+              <span>Voir la collection</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          <!-- Cat 4 -->
+          <div class="category-card" onclick="window.location.href='#catalogue'">
+            <div>
+              <div class="category-icon-box">🌸</div>
+              <span class="category-count">24 Produits</span>
+              <h3 class="category-title">Parfums Naturels</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted);">Brumes botaniques, nectars de fleurs et huiles d'ambiance pures.</p>
+            </div>
+            <div class="category-card-arrow">
+              <span>Voir la collection</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          <!-- Cat 5 -->
+          <div class="category-card" onclick="window.location.href='#catalogue'">
+            <div>
+              <div class="category-icon-box">🌿</div>
+              <span class="category-count">30 Produits</span>
+              <h3 class="category-title">Soins Cheveux</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted);">Bains d'huiles de ricin & baobab, shampoings solides fortifiants.</p>
+            </div>
+            <div class="category-card-arrow">
+              <span>Voir la collection</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          <!-- Cat 6 -->
+          <div class="category-card" onclick="window.location.href='#catalogue'">
+            <div>
+              <div class="category-icon-box">✨</div>
+              <span class="category-count">22 Produits</span>
+              <h3 class="category-title">Bien-être & Spa</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted);">Argiles volcaniques, sels de bain détox et rituels de détente.</p>
+            </div>
+            <div class="category-card-arrow">
+              <span>Voir la collection</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================
+         5. FEATURED PRODUCTS (8 Products, 4-col desktop, scroll mobile)
+         ===================================================== -->
+    <section class="products-section" id="catalogue">
+      <div class="container">
+        
+        <div class="section-header">
+          <div class="section-label">Sélection Exclusive</div>
+          <h2 class="section-title">Nos Produits Phares</h2>
+          <div class="divider"></div>
+          <p class="section-subtitle">
+            Les créations les plus appréciées par nos clientes à Abidjan pour leur pureté et leur efficacité.
+          </p>
+        </div>
+
+        <div class="product-grid-container">
+          
+          <!-- Product 1 -->
+          <div class="product-card" data-id="1" data-title="Savon Karité Vanille" data-price="3500">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-bestseller">Bestseller</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-karite">
+                <div class="product-mockup-soap" style="background: #F4E8D1; color: #695229;">
+                  <div class="mockup-soap-stamp">KARITÉ PUR</div>
+                  <span style="font-size: 10px; margin-top: 4px; color: #8F7241;">Vanille Bourbon</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">Maison Botanique</div>
+              <h3 class="product-card-title">Savon Karité Vanille</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(48 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">3 500 XOF</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Savon Karité Vanille', 3500, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product 2 -->
+          <div class="product-card" data-id="2" data-title="Huile de Coco Pure" data-price="4500">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-new">Nouveau</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-coco">
+                <div class="product-mockup-bottle" style="background: rgba(255,255,255,0.85);">
+                  <div class="mockup-cap"></div>
+                  <div class="mockup-label">
+                    <div class="mockup-label-brand">Ivoire Naturals</div>
+                    <div class="mockup-label-title">Coco Vierge</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">Ivoire Naturals</div>
+              <h3 class="product-card-title">Huile de Coco Pure</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(32 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">4 500 XOF</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Huile de Coco Pure', 4500, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product 3 -->
+          <div class="product-card" data-id="3" data-title="Crème Beurre de Karité" data-price="6000">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-bestseller">Bestseller</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-rose">
+                <div class="product-mockup-bottle" style="background: #FFF3EB; height: 105px; border-radius: 24px;">
+                  <div class="mockup-cap" style="width: 50px;"></div>
+                  <div class="mockup-label">
+                    <div class="mockup-label-brand">Aura Noire</div>
+                    <div class="mockup-label-title">Chantilly Karité</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">Aura Noire Cosmetics</div>
+              <h3 class="product-card-title">Crème Beurre de Karité</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(76 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">6 000 XOF</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Crème Beurre de Karité', 6000, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product 4 -->
+          <div class="product-card" data-id="4" data-title="Gel Aloe Vera" data-price="5000">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-promo">Promo</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-aloe">
+                <div class="product-mockup-bottle" style="background: rgba(235, 252, 237, 0.9);">
+                  <div class="mockup-cap" style="background: #2D6B32;"></div>
+                  <div class="mockup-label">
+                    <div class="mockup-label-brand">BioÉclat CI</div>
+                    <div class="mockup-label-title">Aloe Vera 99%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">BioÉclat CI</div>
+              <h3 class="product-card-title">Gel Aloe Vera Pur</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★☆</span>
+                <span class="rating-count">(29 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">5 000 XOF</span>
+                <span class="price-old">6 500 XOF</span>
+                <span class="price-discount">-23%</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Gel Aloe Vera Pur', 5000, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product 5 -->
+          <div class="product-card" data-id="5" data-title="Savon Charbon Actif" data-price="3800">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-new">Nouveau</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-charbon">
+                <div class="product-mockup-soap" style="background: #222923; color: #C9A84C; border-color: #C9A84C;">
+                  <div class="mockup-soap-stamp" style="color: #E2C67A;">CHARBON DÉTOX</div>
+                  <span style="font-size: 10px; margin-top: 4px; color: #A5B3A7;">Tea Tree & Menthe</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">Botanica San Pedro</div>
+              <h3 class="product-card-title">Savon Charbon Actif & Tea Tree</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(41 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">3 800 XOF</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Savon Charbon Actif', 3800, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product 6 -->
+          <div class="product-card" data-id="6" data-title="Sérum Vitamine C" data-price="12000">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-bestseller">Coup de Cœur</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-vitamine">
+                <div class="product-mockup-bottle" style="background: #FFFDF0; height: 110px; border: 2px solid #C9A84C;">
+                  <div class="mockup-cap" style="width: 24px; border-radius: 50% 50% 0 0;"></div>
+                  <div class="mockup-label" style="background: #FFF;">
+                    <div class="mockup-label-brand" style="color: #D3821C;">Élixir Tropical</div>
+                    <div class="mockup-label-title">Vitamine C & Hibiscus</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">L'Élixir Tropical</div>
+              <h3 class="product-card-title">Sérum Vitamine C & Hibiscus</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(64 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">12 000 XOF</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Sérum Vitamine C', 12000, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product 7 -->
+          <div class="product-card" data-id="7" data-title="Masque Argile Verte" data-price="4200">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-promo">Promo</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-argile">
+                <div class="product-mockup-bottle" style="background: #E8F5EB; height: 95px; border-radius: 20px;">
+                  <div class="mockup-cap" style="width: 55px;"></div>
+                  <div class="mockup-label">
+                    <div class="mockup-label-brand">Terre Pure CI</div>
+                    <div class="mockup-label-title">Argile Verte</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">Terre Pure CI</div>
+              <h3 class="product-card-title">Masque Argile Verte & Menthe</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★☆</span>
+                <span class="rating-count">(19 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">4 200 XOF</span>
+                <span class="price-old">5 000 XOF</span>
+                <span class="price-discount">-16%</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Masque Argile Verte', 4200, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product 8 -->
+          <div class="product-card" data-id="8" data-title="Lotion Corps Hibiscus" data-price="7500">
+            <div class="product-card-image">
+              <span class="product-card-badge badge-bestseller">Sublime</span>
+              
+              <div class="product-card-actions">
+                <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris">🤍</button>
+              </div>
+
+              <div class="product-visual visual-bg-hibiscus">
+                <div class="product-mockup-bottle" style="background: #FFF2F4;">
+                  <div class="mockup-cap"></div>
+                  <div class="mockup-label">
+                    <div class="mockup-label-brand">Maison Botanique</div>
+                    <div class="mockup-label-title">Lotion Hibiscus</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card-body">
+              <div class="product-card-merchant">Maison Botanique</div>
+              <h3 class="product-card-title">Lotion Corps Hibiscus & Karité</h3>
+              <div class="product-card-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(53 avis)</span>
+              </div>
+              <div class="product-card-price">
+                <span class="price-main">7 500 XOF</span>
+              </div>
+              <button class="btn-quick-add" onclick="addToCart('Lotion Corps Hibiscus', 7500, event)">
+                <span>Ajouter au panier</span>
+                <span>🛒</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================
+         6. PROMOTIONAL BANNER (Full Width, Shimmer FX)
+         ===================================================== -->
+    <section class="promo-banner">
+      <div class="promo-shimmer-effect"></div>
+      <div class="container">
+        <div class="promo-container">
+          
+          <div class="promo-content">
+            <div class="promo-badge">Offre Privilège</div>
+            <div class="promo-text">
+              Livraison <span>100% Gratuite</span> pour toute commande supérieure à <span>15 000 XOF</span> à Abidjan !
+            </div>
+          </div>
+
+          <a href="#catalogue" class="btn btn-primary btn-sm" style="box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);">
+            Profiter de l'Offre &rarr;
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         7. OUR BRANDS / MERCHANTS SECTION
+         ===================================================== -->
+    <section class="merchants-section" id="marques">
+      <div class="container">
+        
+        <div class="section-header">
+          <div class="section-label">Artisans & Créateurs d'Abidjan</div>
+          <h2 class="section-title">Nos Marques Partenaires</h2>
+          <div class="divider"></div>
+          <p class="section-subtitle">
+            Chaque marque est soigneusement sélectionnée pour son engagement envers l'éthique, la naturalité et le savoir-faire ivoirien.
+          </p>
+        </div>
+
+        <div class="merchants-scroll-wrapper" id="marchands">
+          <div class="merchants-grid">
+            
+            <!-- Merchant 1 -->
+            <div class="merchant-card">
+              <span class="merchant-badge-verified">✓ Vérifié</span>
+              <div class="merchant-logo-circle" style="background: linear-gradient(135deg, #1B4D1E, #2D6B32);">
+                MB
+              </div>
+              <h3 class="merchant-name">Maison Botanique</h3>
+              <div class="merchant-category">Savonnerie Artisanale • Cocody</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-3);">
+                Spécialiste de la saponification à froid et des huiles essentielles d'Afrique de l'Ouest.
+              </p>
+              <div class="merchant-footer">
+                <span style="color: var(--color-gold); font-weight: 700;">★ 4.9 (128 avis)</span>
+                <span style="color: var(--color-forest); font-weight: 700;">34 Produits</span>
+              </div>
+            </div>
+
+            <!-- Merchant 2 -->
+            <div class="merchant-card">
+              <span class="merchant-badge-verified">✓ Vérifié</span>
+              <div class="merchant-logo-circle" style="background: linear-gradient(135deg, #8B7355, #C9A84C);">
+                IN
+              </div>
+              <h3 class="merchant-name">Ivoire Naturals</h3>
+              <div class="merchant-category">Soins Éco-certifiés • Grand-Bassam</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-3);">
+                Huiles pures de première pression à froid et eaux florales distillées sur le littoral.
+              </p>
+              <div class="merchant-footer">
+                <span style="color: var(--color-gold); font-weight: 700;">★ 4.8 (95 avis)</span>
+                <span style="color: var(--color-forest); font-weight: 700;">28 Produits</span>
+              </div>
+            </div>
+
+            <!-- Merchant 3 -->
+            <div class="merchant-card">
+              <span class="merchant-badge-verified">✓ Vérifié</span>
+              <div class="merchant-logo-circle" style="background: linear-gradient(135deg, #0D1A0D, #4A8C50);">
+                AN
+              </div>
+              <h3 class="merchant-name">Aura Noire</h3>
+              <div class="merchant-category">Beurres Rares • Marcory Zone 4</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-3);">
+                Chantillys fouettées à la main, karité bio de Korhogo et beurres de mangue sauvages.
+              </p>
+              <div class="merchant-footer">
+                <span style="color: var(--color-gold); font-weight: 700;">★ 5.0 (210 avis)</span>
+                <span style="color: var(--color-forest); font-weight: 700;">45 Produits</span>
+              </div>
+            </div>
+
+            <!-- Merchant 4 -->
+            <div class="merchant-card">
+              <span class="merchant-badge-verified">✓ Vérifié</span>
+              <div class="merchant-logo-circle" style="background: linear-gradient(135deg, #2D6B32, #6AAB70);">
+                BÉ
+              </div>
+              <h3 class="merchant-name">BioÉclat CI</h3>
+              <div class="merchant-category">Botanique & Teint • Plateau</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-3);">
+                Formules à haute teneur en aloe vera frais cultivé biologiquement en Côte d'Ivoire.
+              </p>
+              <div class="merchant-footer">
+                <span style="color: var(--color-gold); font-weight: 700;">★ 4.7 (74 avis)</span>
+                <span style="color: var(--color-forest); font-weight: 700;">19 Produits</span>
+              </div>
+            </div>
+
+            <!-- Merchant 5 -->
+            <div class="merchant-card">
+              <span class="merchant-badge-verified">✓ Vérifié</span>
+              <div class="merchant-logo-circle" style="background: linear-gradient(135deg, #1A211B, #3D443E);">
+                BS
+              </div>
+              <h3 class="merchant-name">Botanica San Pedro</h3>
+              <div class="merchant-category">Soins Détox • San Pedro</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-3);">
+                Savons noirs purifiants au charbon de bambou et gommages minéraux marins.
+              </p>
+              <div class="merchant-footer">
+                <span style="color: var(--color-gold); font-weight: 700;">★ 4.9 (112 avis)</span>
+                <span style="color: var(--color-forest); font-weight: 700;">22 Produits</span>
+              </div>
+            </div>
+
+            <!-- Merchant 6 -->
+            <div class="merchant-card">
+              <span class="merchant-badge-verified">✓ Vérifié</span>
+              <div class="merchant-logo-circle" style="background: linear-gradient(135deg, #C44569, #C9A84C);">
+                ÉT
+              </div>
+              <h3 class="merchant-name">L'Élixir Tropical</h3>
+              <div class="merchant-category">Sérums Précieux • II-Plateaux</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-3);">
+                Nectars concentrés de fleurs d'hibiscus et vitamines naturelles unifiantes.
+              </p>
+              <div class="merchant-footer">
+                <span style="color: var(--color-gold); font-weight: 700;">★ 4.8 (88 avis)</span>
+                <span style="color: var(--color-forest); font-weight: 700;">16 Produits</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================
+         8. TESTIMONIALS SECTION (Cream Background)
+         ===================================================== -->
+    <section class="testimonials-section" id="avis">
+      <div class="container">
+        
+        <div class="section-header">
+          <div class="section-label">Avis & Expériences</div>
+          <h2 class="section-title">Ce Que Disent Nos Clientes</h2>
+          <div class="divider"></div>
+          <p class="section-subtitle">
+            Des centaines d'amoureuses de soins naturels à Abidjan et en Côte d'Ivoire partagent leurs rituels beauté.
+          </p>
+        </div>
+
+        <div class="testimonials-grid">
+          
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card">
+            <div>
+              <div class="quote-icon">“</div>
+              <div class="stars" style="margin-bottom: var(--space-3); font-size: 16px;">★★★★★</div>
+              <p class="testimonial-text">
+                « Le Savon Karité Vanille a complètement transformé ma peau. Doux, parfumé délicatement et surtout aucun tiraillement après la douche. La livraison en 24h à Angré était irréprochable ! »
+              </p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">AK</div>
+              <div>
+                <div class="author-name">Aminata K.</div>
+                <div class="author-location">Cocody Angré, Abidjan • Achat vérifié</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card">
+            <div>
+              <div class="quote-icon">“</div>
+              <div class="stars" style="margin-bottom: var(--space-3); font-size: 16px;">★★★★★</div>
+              <p class="testimonial-text">
+                « Enfin une marketplace ivoirienne dédiée aux vrais soins bio ! Le paiement par Wave est instantané, et les produits de chez Aura Noire ont une texture digne des plus grands instituts de beauté. »
+              </p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">FB</div>
+              <div>
+                <div class="author-name">Fatoumata B.</div>
+                <div class="author-location">Marcory Zone 4, Abidjan • Achat vérifié</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card">
+            <div>
+              <div class="quote-icon">“</div>
+              <div class="stars" style="margin-bottom: var(--space-3); font-size: 16px;">★★★★★</div>
+              <p class="testimonial-text">
+                « Le Sérum Vitamine C associé au Gel Aloe Vera est devenu mon indispensable chaque matin. Mon teint est éclatant après seulement deux semaines. Je recommande AMABELLEPEAU les yeux fermés ! »
+              </p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">MC</div>
+              <div>
+                <div class="author-name">Mariame C.</div>
+                <div class="author-location">Deux-Plateaux Vallon, Abidjan • Achat vérifié</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================
+         9. NEWSLETTER & APP SECTION (Dark Green Background)
+         ===================================================== -->
+    <section class="community-section">
+      <div class="container">
+        <div class="community-grid">
+          
+          <!-- Newsletter Side -->
+          <div>
+            <div class="tag tag-gold" style="margin-bottom: var(--space-3);">Cercle Beauté AMABELLEPEAU</div>
+            <h2 class="community-newsletter-title">Rejoignez la Communauté AMABELLEPEAU</h2>
+            <p class="community-newsletter-desc">
+              Recevez nos secrets de beauté naturelle, nos lancements d'éditions limitées et profitez de <strong>10% de réduction</strong> immédiate sur votre première commande.
+            </p>
+
+            <form class="newsletter-form-row" id="newsletterForm" onsubmit="handleNewsletterSubmit(event)">
+              <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Votre adresse email..." required>
+              <button type="submit" class="btn btn-primary" style="white-space: nowrap;">
+                S'inscrire
+              </button>
+            </form>
+            <p style="font-size: 11px; color: rgba(245,240,232,0.5); margin-top: 10px;">
+              * Pas de spam. Vos données restent strictement confidentielles en Côte d'Ivoire.
+            </p>
+          </div>
+
+          <!-- Mobile App Teaser Side -->
+          <div>
+            <div class="app-teaser-card">
+              <span class="app-badge-pill">Bientôt Disponible</span>
+              <h3 style="font-family: var(--font-display); font-size: var(--text-2xl); color: #FFF; margin-bottom: var(--space-3);">
+                L'Application Mobile
+              </h3>
+              <p style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.75); line-height: 1.6;">
+                Commandez vos savons et soins naturels en un clic et suivez votre livreur en temps réel partout à Abidjan.
+              </p>
+
+              <div class="app-store-buttons">
+                <!-- Google Play Badge -->
+                <div class="store-badge-btn" onclick="showToast('L\'application Android sera bientôt disponible sur Google Play!')">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 20.5V3.5L14.5 12L3 20.5Z" fill="#3DDC84"/>
+                    <path d="M14.5 12L18.5 8L4.5 2L14.5 12Z" fill="#00E676"/>
+                    <path d="M14.5 12L4.5 22L18.5 16L14.5 12Z" fill="#00C853"/>
+                  </svg>
+                  <div>
+                    <div class="store-sub">DISPONIBLE SUR</div>
+                    <div class="store-main">Google Play</div>
+                  </div>
+                </div>
+
+                <!-- App Store Badge -->
+                <div class="store-badge-btn" onclick="showToast('L\'application iOS sera bientôt disponible sur l\'App Store!')">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.63 1.35-.57.65-1.07 1.72-.94 2.74 1.01.08 2.03-.5 2.65-1.24z"/>
+                  </svg>
+                  <div>
+                    <div class="store-sub">TÉLÉCHARGER DANS</div>
+                    <div class="store-main">App Store</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       10. FOOTER (Dark #0D1A0D, 4 Columns, Mobile Money)
+       ===================================================== -->
+  <footer class="footer">
+    <div class="container">
+      
+      <div class="footer-grid">
+        
+        <!-- Col 1: About AMABELLEPEAU -->
+        <div>
+          <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+            <img src="assets/icons/logo.png" alt="AMABELLEPEAU Logo" style="width: 44px; height: 44px; border-radius: var(--radius-md);">
+            <div class="footer-brand-name" style="margin-bottom: 0;">AMABELLE<span>PEAU</span></div>
+          </div>
+          <p class="footer-description">
+            La première marketplace haut de gamme dédiée aux savons artisanaux et cosmétiques 100% naturels en Côte d'Ivoire. Nous valorisons les trésors botaniques de notre terroir pour révéler votre éclat authentique.
+          </p>
+          <div style="display: flex; gap: var(--space-3);">
+            <a href="#" class="nav-icon-btn" style="width: 36px; height: 36px; font-size: 14px;" title="Instagram">📸</a>
+            <a href="#" class="nav-icon-btn" style="width: 36px; height: 36px; font-size: 14px;" title="Facebook">👍</a>
+            <a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" class="nav-icon-btn" style="width: 36px; height: 36px; font-size: 14px; border-color: #25D366; color: #25D366;" title="Catalogue WhatsApp">💬</a>
+            <a href="#" class="nav-icon-btn" style="width: 36px; height: 36px; font-size: 14px;" title="TikTok">🎵</a>
+          </div>
+        </div>
+
+        <!-- Col 2: Useful Links -->
+        <div>
+          <div class="footer-heading">Liens Utiles</div>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Accueil</a></li>
+            <li><a href="#catalogue" class="footer-link">Catalogue Produits</a></li>
+            <li><a href="#marques" class="footer-link">Marques Partenaires</a></li>
+            <li><a href="#marchands" class="footer-link">Espace Marchand</a></li>
+            <li><a href="#avis" class="footer-link">Avis & Témoignages</a></li>
+            <li><a href="#suivi" class="footer-link">Suivre ma commande</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Categories -->
+        <div>
+          <div class="footer-heading">Catégories</div>
+          <ul class="footer-links">
+            <li><a href="#categories" class="footer-link">Savons Artisanaux</a></li>
+            <li><a href="#categories" class="footer-link">Soins du Visage</a></li>
+            <li><a href="#categories" class="footer-link">Soins du Corps</a></li>
+            <li><a href="#categories" class="footer-link">Beurres & Huiles Purs</a></li>
+            <li><a href="#categories" class="footer-link">Soins Capillaires</a></li>
+            <li><a href="#categories" class="footer-link">Coffrets Cadeaux</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact & Abidjan Location -->
+        <div>
+          <div class="footer-heading">Contact & Service Client</div>
+          <ul class="footer-links">
+            <li style="display: flex; align-items: flex-start; gap: 8px; font-size: var(--text-sm); color: rgba(245, 240, 232, 0.75);">
+              <span>📍</span>
+              <span>Abidjan, Côte d'Ivoire<br>(Cocody Riviera & Marcory)</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 8px; font-size: var(--text-sm);">
+              <span>💬</span>
+              <a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" style="color: #25D366; font-weight: 700; text-decoration: underline;" title="Ouvrir le catalogue WhatsApp">Catalogue WhatsApp (+225 07 99 10 81 08)</a>
+            </li>
+            <li style="display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); color: rgba(245, 240, 232, 0.75);">
+              <span>📞</span>
+              <span>+225 07 99 10 81 08</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); color: rgba(245, 240, 232, 0.75);">
+              <span>✉️</span>
+              <span>contact@amabellepeau.ci</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); color: rgba(245, 240, 232, 0.75);">
+              <span>🕒</span>
+              <span>Lun - Sam : 08h00 - 19h00</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar: Payments & Copyright -->
+      <div class="footer-bottom" id="paiement">
+        <div>
+          &copy; 2026 <strong>AMABELLEPEAU</strong> — Tous droits réservés. Fabriqué avec passion à Abidjan.
+        </div>
+
+        <div class="payment-methods">
+          <span style="font-size: 11px; margin-right: 4px; color: rgba(245,240,232,0.6);">Paiements sécurisés :</span>
+          <a href="https://pay.wave.com/mqr-tc/mqr-1cz6t6hdg21tj" target="_blank" rel="noopener noreferrer" class="payment-badge-link payment-badge-wave" title="Payer directement avec Wave">
+            🌊 Payer avec Wave
+          </a>
+          <a href="https://multi.app.orange-money.com/app/v1/kapptivate/qrcode/odyssee/?id=codgen51-68692f6d78d84349b91a11cc1bcaa701&v=1" target="_blank" rel="noopener noreferrer" class="payment-badge-link payment-badge-om" title="Payer directement avec Orange Money">
+            🟠 Payer avec Orange Money
+          </a>
+          <a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" class="payment-badge-link payment-badge-wa" title="Commander via le catalogue WhatsApp">
+            💬 Catalogue WhatsApp
+          </a>
+          <span class="payment-badge" style="background: rgba(255, 255, 255, 0.05); color: rgba(245,240,232,0.7);">Espèces à la livraison</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       WHATSAPP FLOATING BUTTON (Catalog & Direct Order)
+       ===================================================== -->
+  <a href="https://wa.me/c/2250799108108" target="_blank" rel="noopener noreferrer" class="whatsapp-fab" aria-label="Commander via WhatsApp">
+    <span class="wa-tooltip">Commander via WhatsApp 💬</span>
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.34C9.36 7.34 9.08 7.41 8.84 7.67C8.6 7.94 7.92 8.58 7.92 9.87C7.92 11.17 8.87 12.42 9 12.6C9.13 12.78 10.87 15.44 13.53 16.59C14.16 16.86 14.66 17.03 15.05 17.15C15.68 17.35 16.26 17.32 16.71 17.25C17.22 17.18 18.27 16.61 18.49 16C18.7 15.39 18.7 14.87 18.64 14.76C18.57 14.65 18.41 14.59 18.17 14.47C17.92 14.35 16.71 13.76 16.48 13.68C16.26 13.59 16.1 13.55 15.93 13.8C15.77 14.05 15.29 14.61 15.15 14.78C15 14.95 14.86 14.97 14.62 14.85C14.37 14.73 13.58 14.47 12.65 13.64C11.92 12.99 11.43 12.18 11.29 11.93C11.14 11.69 11.27 11.55 11.4 11.43C11.51 11.32 11.65 11.14 11.77 11C11.9 10.86 11.94 10.76 12.02 10.6C12.1 10.43 12.06 10.29 12 10.17C11.94 10.05 11.46 8.86 11.25 8.37C11.06 7.89 10.86 7.96 10.71 7.95C10.56 7.95 10.39 7.94 10.22 7.94C10.05 7.94 9.77 8 9.53 8.24C9.53 8.24 9.53 7.34 9.53 7.34Z"/>
+    </svg>
+  </a>
+
+  <!-- =====================================================
+       LIVE SEARCH MODAL OVERLAY
+       ===================================================== -->
+  <div class="search-modal-backdrop" id="searchModal">
+    <div class="search-modal-box">
+      <div class="search-header-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-gold);">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="search-input-field" id="searchInput" placeholder="Rechercher un savon, un soin, un ingrédient..." autofocus>
+        <button class="search-close-btn" id="closeSearchBtn">&times;</button>
+      </div>
+      <div class="search-results-list" id="searchResultsList">
+        <div style="padding: var(--space-4); text-align: center; color: var(--color-text-muted); font-size: var(--text-sm);">
+          Commencez à taper pour découvrir nos soins d'exception...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       TOAST NOTIFICATION COMPONENT
+       ===================================================== -->
+  <div id="amabelleToast">
+    <div style="font-size: 22px;">🌿</div>
+    <div>
+      <div id="toastTitle" style="font-weight: 700; font-size: 13px; color: var(--color-gold);">Notification</div>
+      <div id="toastMessage" style="font-size: 12px; color: #EDE8DC;">Action enregistrée avec succès.</div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       CLIENT JAVASCRIPT LOGIC
+       ===================================================== -->
+  <script>
+    /* ── AMABELLEPEAU Storefront Engine ── */
+
+    // Sample Catalog Data for Search & Dynamic Interactivity
+    const catalogData = [
+      { id: 1, name: 'Savon Karité Vanille', merchant: 'Maison Botanique', price: '3 500 XOF', category: 'Savons' },
+      { id: 2, name: 'Huile de Coco Pure', merchant: 'Ivoire Naturals', price: '4 500 XOF', category: 'Huiles' },
+      { id: 3, name: 'Crème Beurre de Karité', merchant: 'Aura Noire', price: '6 000 XOF', category: 'Soins Corps' },
+      { id: 4, name: 'Gel Aloe Vera Pur', merchant: 'BioÉclat CI', price: '5 000 XOF', category: 'Soins Visage' },
+      { id: 5, name: 'Savon Charbon Actif & Tea Tree', merchant: 'Botanica San Pedro', price: '3 800 XOF', category: 'Savons' },
+      { id: 6, name: 'Sérum Vitamine C & Hibiscus', merchant: 'L\'Élixir Tropical', price: '12 000 XOF', category: 'Soins Visage' },
+      { id: 7, name: 'Masque Argile Verte & Menthe', merchant: 'Terre Pure CI', price: '4 200 XOF', category: 'Soins Visage' },
+      { id: 8, name: 'Lotion Corps Hibiscus & Karité', merchant: 'Maison Botanique', price: '7 500 XOF', category: 'Soins Corps' }
+    ];
+
+    // State Variables
+    let cart = JSON.parse(localStorage.getItem('amabelle_cart') || '[]');
+    let wishlist = JSON.parse(localStorage.getItem('amabelle_wishlist') || '[]');
+
+    // DOM Elements
+    const cartCountEl = document.getElementById('cartCount');
+    const wishlistCountEl = document.getElementById('wishlistCount');
+    const navbarEl = document.getElementById('mainNavbar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMobileNavBtn = document.getElementById('closeMobileNavBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const searchModal = document.getElementById('searchModal');
+    const openSearchBtn = document.getElementById('openSearchBtn');
+    const closeSearchBtn = document.getElementById('closeSearchBtn');
+    const searchInput = document.getElementById('searchInput');
+    const searchResultsList = document.getElementById('searchResultsList');
+
+    // Sync Counters on Load
+    function updateCounters() {
+      const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+      cartCountEl.textContent = totalCartItems;
+      wishlistCountEl.textContent = wishlist.length;
+
+      // Animate badge bump
+      cartCountEl.classList.add('bump');
+      setTimeout(() => cartCountEl.classList.remove('bump'), 300);
+    }
+
+    // Toast Notification System
+    let toastTimeout;
+    function showToast(message, title = 'AMABELLEPEAU') {
+      const toastEl = document.getElementById('amabelleToast');
+      const toastTitleEl = document.getElementById('toastTitle');
+      const toastMessageEl = document.getElementById('toastMessage');
+
+      toastTitleEl.textContent = title;
+      toastMessageEl.textContent = message;
+
+      toastEl.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 3500);
+    }
+
+    // Add To Cart Functionality
+    function addToCart(productName, price, event) {
+      if (event) {
+        event.stopPropagation();
+      }
+
+      const existingIndex = cart.findIndex(item => item.name === productName);
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += 1;
+      } else {
+        cart.push({ name: productName, price: price, quantity: 1 });
+      }
+
+      localStorage.setItem('amabelle_cart', JSON.stringify(cart));
+      updateCounters();
+      showToast(`${productName} a été ajouté à votre panier avec succès !`, 'Panier Mis à Jour');
+    }
+
+    // Wishlist Toggle Functionality
+    document.querySelectorAll('.btn-wishlist-action').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const card = this.closest('.product-card');
+        const productTitle = card.getAttribute('data-title');
+        
+        const idx = wishlist.indexOf(productTitle);
+        if (idx > -1) {
+          wishlist.splice(idx, 1);
+          this.textContent = '🤍';
+          this.style.color = '';
+          showToast(`${productTitle} retiré de vos favoris.`, 'Favoris');
+        } else {
+          wishlist.push(productTitle);
+          this.textContent = '❤️';
+          this.style.color = '#E74C3C';
+          showToast(`${productTitle} ajouté à votre liste d'envies !`, 'Favoris');
+        }
+
+        localStorage.setItem('amabelle_wishlist', JSON.stringify(wishlist));
+        updateCounters();
+      });
+    });
+
+    // Mobile Navigation Controls
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileNav.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeMobileNavBtn.addEventListener('click', () => {
+      mobileNav.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Sticky Navbar Scroll Effect
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navbarEl.classList.add('scrolled');
+      } else {
+        navbarEl.classList.remove('scrolled');
+      }
+    });
+
+    // Live Search Controls
+    openSearchBtn.addEventListener('click', () => {
+      searchModal.classList.add('active');
+      searchInput.value = '';
+      searchInput.focus();
+      renderSearchResults('');
+    });
+
+    closeSearchBtn.addEventListener('click', () => {
+      searchModal.classList.remove('active');
+    });
+
+    searchModal.addEventListener('click', (e) => {
+      if (e.target === searchModal) {
+        searchModal.classList.remove('active');
+      }
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      renderSearchResults(e.target.value.trim().toLowerCase());
+    });
+
+    function renderSearchResults(query) {
+      if (!query) {
+        searchResultsList.innerHTML = `
+          <div style="padding: var(--space-4); text-align: center; color: var(--color-text-muted); font-size: var(--text-sm);">
+            Commencez à taper pour découvrir nos soins d'exception (ex: Karité, Coco, Savon...)
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = catalogData.filter(item => 
+        item.name.toLowerCase().includes(query) || 
+        item.merchant.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        searchResultsList.innerHTML = `
+          <div style="padding: var(--space-6); text-align: center; color: var(--color-text-muted); font-size: var(--text-sm);">
+            Aucun résultat trouvé pour « <strong>${query}</strong> ».<br>Essayez avec d'autres ingrédients botaniques.
+          </div>
+        `;
+        return;
+      }
+
+      searchResultsList.innerHTML = filtered.map(item => `
+        <div class="search-result-row" onclick="selectSearchResult('${item.name}', '${item.price}')">
+          <div>
+            <div style="font-weight: 700; color: var(--color-black); font-size: var(--text-sm);">${item.name}</div>
+            <div style="font-size: 11px; color: var(--color-text-muted);">${item.merchant} • ${item.category}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-display); font-weight: 700; color: var(--color-gold-dark);">${item.price}</div>
+            <span style="font-size: 11px; color: var(--color-forest); font-weight: 600;">Ajouter +</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectSearchResult(name, priceStr) {
+      const numPrice = parseInt(priceStr.replace(/[^0-9]/g, ''), 10);
+      addToCart(name, numPrice);
+      searchModal.classList.remove('active');
+    }
+
+    // Newsletter Submission Handler
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('newsletterEmail').value;
+      if (email) {
+        showToast(`Bienvenue dans le cercle AMABELLEPEAU ! Un bon de -10% a été envoyé à ${email}.`, 'Inscription Réussie');
+        document.getElementById('newsletterForm').reset();
+      }
+    }
+
+    // Initialize
+    updateCounters();
+  </script>
+</body>
+</html>

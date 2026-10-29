@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paiement & Commande | AMABELLEPEAU - Cosmétiques Naturels de Luxe</title>
+  <meta name="description" content="Finalisez votre commande en toute sécurité sur AMABELLEPEAU. Paiement Mobile Money Wave, Orange Money ou WhatsApp à Abidjan.">
+  <link rel="icon" type="image/png" href="assets/icons/logo.png">
+  <link rel="stylesheet" href="css/main.css">
+  
+  <style>
+    /* ── Styles Spécifiques Checkout ── */
+    .checkout-page {
+      padding: var(--space-8) 0 var(--space-20);
+      min-height: calc(100vh - var(--nav-height) - 400px);
+    }
+
+    /* Checkout Stepper Progress */
+    .stepper-progress-wrap {
+      margin-bottom: var(--space-10);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-8);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .checkout-stepper {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .checkout-stepper::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      right: 40px;
+      height: 3px;
+      background: var(--color-border);
+      z-index: 1;
+    }
+
+    .checkout-stepper-progress-bar {
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      height: 3px;
+      background: var(--gradient-gold);
+      z-index: 2;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    .step-item {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      cursor: default;
+    }
+
+    .step-item.clickable {
+      cursor: pointer;
+    }
+
+    .step-bubble {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 2px solid var(--color-border);
+      color: var(--color-text-muted);
+      font-weight: 700;
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .step-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    /* Active Step */
+    .step-item.active .step-bubble {
+      background: var(--color-green-deep);
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+      box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.25);
+    }
+
+    .step-item.active .step-label {
+      color: var(--color-black);
+      font-weight: 700;
+    }
+
+    /* Completed Step */
+    .step-item.completed .step-bubble {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: #FFFFFF;
+    }
+
+    .step-item.completed .step-label {
+      color: var(--color-green-deep);
+    }
+
+    /* Checkout Layout */
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .checkout-main-panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-content {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .step-content.active {
+      display: block;
+    }
+
+    .step-title {
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-2);
+      color: var(--color-black);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .step-subtitle {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-6);
+    }
+
+    /* Form Grids */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    .form-field-hint {
+      font-size: 11px;
+      color: var(--color-text-light);
+      margin-top: 4px;
+    }
+
+    .form-required {
+      color: var(--color-error);
+      margin-left: 2px;
+    }
+
+    /* Error highlight on invalid input */
+    .input-error {
+      border-color: var(--color-error) !important;
+      background: rgba(192, 57, 43, 0.03) !important;
+    }
+
+    .input-error-msg {
+      color: var(--color-error);
+      font-size: 11px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Step Navigation Buttons */
+    .step-buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--color-border);
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+
+    /* Address Recap Box (Step 2 & 3) */
+    .recap-box {
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+
+    .recap-box-info {
+      font-size: var(--text-sm);
+      line-height: 1.6;
+    }
+
+    .recap-box-title {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-gold-dark);
+      margin-bottom: var(--space-1);
+    }
+
+    .recap-box-name {
+      font-weight: 700;
+      color: var(--color-black);
+    }
+
+    .recap-edit-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-green-deep);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .recap-edit-btn:hover {
+      background: var(--color-surface);
+      border-color: var(--color-gold);
+      color: var(--color-gold-dark);
+    }
+
+    /* Delivery Option Cards */
+    .delivery-options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .delivery-option-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-5);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition-base);
+      background: var(--color-surface);
+      gap: var(--space-4);
+    }
+
+    .delivery-option-card:hover {
+      border-color: rgba(201, 168, 76, 0.5);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .delivery-option-card.selected {
+      border-color: var(--color-gold);
+      background: rgba(201, 168, 76, 0.04);
+      box-shadow: 0 4px 16px rgba(201, 168, 76, 0.15);
+    }
+
+    .delivery-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .custom-radio {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: var(--transition-fast);
+    }
+
+    .custom-radio::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-gold);
+      opacity: 0;
+      transform: scale(0);
+      transition: var(--transition-fast);
+    }
+
+    .delivery-option-card.selected .custom-radio {
+      border-color: var(--color-gold);
+    }
+
+    .delivery-option-card.selected .custom-radio::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .delivery-name {
+      font-weight: 700;
+      color: var(--color-black);
+      font-size: var(--text-base);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .delivery-badge-tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: rgba(39, 174, 96, 0.12);
+      color: var(--color-success);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .delivery-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .delivery-price {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-green-deep);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* STEP 3 - Payment Options */
+    .payment-methods-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .payment-card {
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      cursor: pointer;
+      transition: var(--transition-base);
+      background: var(--color-surface);
+      position: relative;
+    }
+
+    .payment-card:hover {
+      border-color: rgba(201, 168, 76, 0.5);
+    }
+
+    .payment-card.selected {
+      border-color: var(--color-gold);
+      background: rgba(201, 168, 76, 0.03);
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.18);
+    }
+
+    .payment-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .payment-brand-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .payment-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      flex-shrink: 0;
+      color: #FFFFFF;
+    }
+
+    .payment-icon-wave {
+      background: #1E90FF;
+    }
+
+    .payment-icon-om {
+      background: #FF6600;
+    }
+
+    .payment-icon-wa {
+      background: #25D366;
+    }
+
+    .payment-title-text {
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-black);
+      margin-bottom: 2px;
+    }
+
+    .payment-subtitle-text {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .payment-card-body {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px dashed var(--color-border);
+      display: none;
+    }
+
+    .payment-card.selected .payment-card-body {
+      display: block;
+    }
+
+    .payment-phone-input-wrap {
+      margin-top: var(--space-3);
+    }
+
+    .security-callout {
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-6);
+    }
+
+    /* STEP 4 - Confirmation Success */
+    .confirmation-view {
+      text-align: center;
+      padding: var(--space-8) var(--space-4);
+    }
+
+    /* Animated Checkmark Circle */
+    .success-checkmark-circle {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto var(--space-6);
+      border-radius: 50%;
+      background: rgba(39, 174, 96, 0.1);
+      border: 3px solid var(--color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: pulseGreen 2s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4); }
+      70% { box-shadow: 0 0 0 16px rgba(39, 174, 96, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); }
+    }
+
+    .checkmark-svg {
+      width: 48px;
+      height: 48px;
+      stroke: var(--color-success);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+      animation: drawCheckmark 0.8s ease forwards 0.2s;
+    }
+
+    @keyframes drawCheckmark {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .order-number-badge {
+      display: inline-block;
+      font-family: monospace;
+      font-size: var(--text-lg);
+      font-weight: 700;
+      background: rgba(201, 168, 76, 0.15);
+      color: var(--color-green-deep);
+      padding: 6px 18px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-gold);
+      margin-bottom: var(--space-4);
+      letter-spacing: 0.08em;
+    }
+
+    .confirmation-title {
+      font-size: var(--text-3xl);
+      color: var(--color-black);
+      margin-bottom: var(--space-3);
+    }
+
+    .confirmation-lead {
+      font-size: var(--text-base);
+      color: var(--color-text-muted);
+      max-width: 540px;
+      margin: 0 auto var(--space-8);
+      line-height: 1.6;
+    }
+
+    .order-receipt-card {
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      text-align: left;
+      max-width: 600px;
+      margin: 0 auto var(--space-8);
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-3);
+      color: var(--color-text-muted);
+    }
+
+    .receipt-row .label {
+      color: var(--color-text-muted);
+    }
+
+    .receipt-row .val {
+      font-weight: 700;
+      color: var(--color-text);
+      text-align: right;
+    }
+
+    /* Sidebar Summary */
+    .checkout-sidebar {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-6));
+    }
+
+    .sidebar-cart-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-black);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-items-preview {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      max-height: 260px;
+      overflow-y: auto;
+      margin-bottom: var(--space-5);
+      padding-right: var(--space-2);
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+    }
+
+    .sidebar-item-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+      font-size: 14px;
+    }
+
+    .sidebar-item-details {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sidebar-item-name {
+      font-weight: 700;
+      color: var(--color-black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-item-sub {
+      color: var(--color-text-muted);
+    }
+
+    .sidebar-item-price {
+      font-weight: 700;
+      color: var(--color-green-deep);
+      white-space: nowrap;
+    }
+
+    /* Modal for MVP payment confirmation ("J'ai effectué le paiement") */
+    .payment-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+
+    .payment-modal-overlay.active {
+      display: flex;
+    }
+
+    .payment-modal-box {
+      background: #FFFFFF;
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+      animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    /* Live Tracking Modal */
+    .tracking-timeline {
+      margin-top: var(--space-6);
+      text-align: left;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .tracking-timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      bottom: 20px;
+      width: 2px;
+      background: var(--color-border);
+    }
+
+    .tracking-step {
+      position: relative;
+      margin-bottom: var(--space-6);
+    }
+
+    .tracking-dot {
+      position: absolute;
+      left: -28px;
+      top: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tracking-step.done .tracking-dot {
+      background: var(--color-success);
+      border-color: var(--color-success);
+    }
+
+    .tracking-step.active .tracking-dot {
+      background: var(--color-gold);
+      border-color: var(--color-gold);
+      box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.25);
+    }
+
+    .tracking-step-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-black);
+    }
+
+    .tracking-step-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
+      .checkout-sidebar {
+        position: static;
+        margin-top: var(--space-6);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .checkout-stepper {
+        padding: 0;
+      }
+      .checkout-stepper::before, .checkout-stepper-progress-bar {
+        left: 20px;
+        right: 20px;
+      }
+      .step-label {
+        font-size: 10px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .checkout-main-panel {
+        padding: var(--space-5);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       NAVBAR
+       ===================================================== -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="assets/icons/logo.png" alt="AMABELLEPEAU Logo" class="navbar-logo">
+        <div class="navbar-brand-text">
+          AMABELLE<span>PEAU</span>
+        </div>
+      </a>
+
+      <nav class="navbar-nav">
+        <a href="index.html" class="navbar-link">Accueil</a>
+        <a href="catalogue.html" class="navbar-link">Catalogue</a>
+        <a href="marques.html" class="navbar-link">Marques</a>
+        <a href="marchand/index.html" class="navbar-link">Marchands</a>
+        <a href="compte.html" class="navbar-link">Mon Compte</a>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="panier.html" class="cart-badge" title="Retour au panier">
+          <button class="btn btn-icon btn-ghost" aria-label="Panier">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </button>
+          <span class="cart-badge-count" id="headerCartCount">0</span>
+        </a>
+
+        <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Menu Mobile">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-nav" id="mobileNav">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+      <div class="navbar-brand-text" style="color: white;">AMABELLE<span style="color: var(--color-gold);">PEAU</span></div>
+      <button id="closeMobileNav" style="background: none; border: none; color: white; font-size: 28px; cursor: pointer;">&times;</button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+      <a href="index.html" class="navbar-link" style="font-size: var(--text-lg);">Accueil</a>
+      <a href="catalogue.html" class="navbar-link" style="font-size: var(--text-lg);">Catalogue</a>
+      <a href="marques.html" class="navbar-link" style="font-size: var(--text-lg);">Marques</a>
+      <a href="marchand/index.html" class="navbar-link" style="font-size: var(--text-lg);">Marchands</a>
+      <a href="compte.html" class="navbar-link" style="font-size: var(--text-lg);">Mon Compte</a>
+      <a href="panier.html" class="navbar-link" style="font-size: var(--text-lg);">Panier</a>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       CHECKOUT MAIN SECTION
+       ===================================================== -->
+  <main class="checkout-page">
+    <div class="container">
+      
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <a href="index.html">Accueil</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="panier.html">Panier</a>
+        <span class="breadcrumb-sep">/</span>
+        <span id="breadcrumbCurrentStep">Commande sécurisée</span>
+      </nav>
+
+      <!-- Multi-step progress indicator -->
+      <div class="stepper-progress-wrap">
+        <div class="checkout-stepper">
+          <div class="checkout-stepper-progress-bar" id="stepperProgressBar"></div>
+
+          <!-- Step 1 Dot -->
+          <div class="step-item active" id="stepIndicator1" onclick="navigateToStep(1)">
+            <div class="step-bubble">1</div>
+            <span class="step-label">Informations</span>
+          </div>
+
+          <!-- Step 2 Dot -->
+          <div class="step-item" id="stepIndicator2" onclick="navigateToStep(2)">
+            <div class="step-bubble">2</div>
+            <span class="step-label">Livraison</span>
+          </div>
+
+          <!-- Step 3 Dot -->
+          <div class="step-item" id="stepIndicator3" onclick="navigateToStep(3)">
+            <div class="step-bubble">3</div>
+            <span class="step-label">Paiement</span>
+          </div>
+
+          <!-- Step 4 Dot -->
+          <div class="step-item" id="stepIndicator4">
+            <div class="step-bubble">4</div>
+            <span class="step-label">Confirmation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout 2-column layout (Steps 1, 2, 3) -->
+      <div class="checkout-grid" id="checkoutGrid">
+        
+        <!-- LEFT COLUMN (65%): Step Views -->
+        <div class="checkout-main-panel">
+          
+          <!-- =====================================================
+               STEP 1: Informations de livraison
+               ===================================================== -->
+          <section id="stepContent1" class="step-content active">
+            <h1 class="step-title">
+              <span style="color: var(--color-gold);">1.</span> Coordonnées de livraison
+            </h1>
+            <p class="step-subtitle">
+              Indiquez l'adresse où vous souhaitez recevoir vos cosmétiques à Abidjan ou en Côte d'Ivoire.
+            </p>
+
+            <form id="step1Form" onsubmit="handleStep1Submit(event)" novalidate>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="clientPrenom">Prénom <span class="form-required">*</span></label>
+                  <input type="text" id="clientPrenom" class="form-input" placeholder="Ex: Kouamé, Aïcha" required>
+                  <div class="input-error-msg" id="errClientPrenom">Veuillez renseigner votre prénom.</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="clientNom">Nom de famille <span class="form-required">*</span></label>
+                  <input type="text" id="clientNom" class="form-input" placeholder="Ex: Koffi, Touré" required>
+                  <div class="input-error-msg" id="errClientNom">Veuillez renseigner votre nom.</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="clientPhone">Numéro de téléphone <span class="form-required">*</span></label>
+                  <div class="form-input-icon">
+                    <span class="icon">📱</span>
+                    <input type="tel" id="clientPhone" class="form-input" placeholder="07 88 00 11 22 ou 05..." required>
+                  </div>
+                  <span class="form-field-hint">Le livreur vous contactera sur ce numéro avant livraison.</span>
+                  <div class="input-error-msg" id="errClientPhone">Veuillez saisir un numéro de téléphone valide à 10 chiffres.</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="clientEmail">Adresse email (Reçu)</label>
+                  <div class="form-input-icon">
+                    <span class="icon">✉️</span>
+                    <input type="email" id="clientEmail" class="form-input" placeholder="exemple@gmail.com">
+                  </div>
+                  <span class="form-field-hint">Pour recevoir la facture et le suivi par email.</span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="clientCommune">Commune / Ville <span class="form-required">*</span></label>
+                  <select id="clientCommune" class="form-select" required>
+                    <option value="" disabled selected>Sélectionnez votre commune...</option>
+                    <option value="Cocody">Cocody (Deux-Plateaux, Riviera, Angré...)</option>
+                    <option value="Plateau">Plateau (Centre des affaires)</option>
+                    <option value="Marcory">Marcory (Zone 4, Biétry, Résidentiel...)</option>
+                    <option value="Yopougon">Yopougon</option>
+                    <option value="Treichville">Treichville</option>
+                    <option value="Koumassi">Koumassi</option>
+                    <option value="Port-Bouët">Port-Bouët (Aéroport, Vridi...)</option>
+                    <option value="Attécoubé">Attécoubé</option>
+                    <option value="Adjamé">Adjamé</option>
+                    <option value="Abobo">Abobo</option>
+                    <option value="Bingerville">Bingerville</option>
+                    <option value="Grand-Bassam">Grand-Bassam</option>
+                    <option value="Autre ville">Autre ville de Côte d'Ivoire (Expédition UTB/La Poste)</option>
+                  </select>
+                  <div class="input-error-msg" id="errClientCommune">Veuillez sélectionner une commune.</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="clientQuartier">Quartier & Résidence <span class="form-required">*</span></label>
+                  <input type="text" id="clientQuartier" class="form-input" placeholder="Ex: Angré 8ème Tranche, Cité Belle Vue" required>
+                  <div class="input-error-msg" id="errClientQuartier">Veuillez préciser votre quartier.</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="clientLandmark">Repère précis / Indication pour le livreur <span class="form-required">*</span></label>
+                <input type="text" id="clientLandmark" class="form-input" placeholder="Ex: En face de la pharmacie Sainte-Cécile, portail noir à barreaux" required>
+                <div class="input-error-msg" id="errClientLandmark">Veuillez indiquer un repère connu pour faciliter la livraison.</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="clientNotes">Instructions supplémentaires (Optionnel)</label>
+                <textarea id="clientNotes" class="form-textarea" rows="2" placeholder="Ex: Déposer chez le gardien en cas d'absence, appeler 30 minutes avant d'arriver..."></textarea>
+              </div>
+
+              <div class="step-buttons-row">
+                <a href="panier.html" class="btn btn-ghost">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                  </svg>
+                  Retour au panier
+                </a>
+
+                <button type="submit" class="btn btn-primary btn-lg">
+                  Continuer vers la livraison
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+
+            </form>
+          </section>
+
+          <!-- =====================================================
+               STEP 2: Options de livraison
+               ===================================================== -->
+          <section id="stepContent2" class="step-content">
+            <h1 class="step-title">
+              <span style="color: var(--color-gold);">2.</span> Mode de livraison
+            </h1>
+            <p class="step-subtitle">
+              Choisissez votre formule de livraison préférée pour recevoir vos cosmétiques.
+            </p>
+
+            <!-- Address Recap Box -->
+            <div class="recap-box">
+              <div class="recap-box-info">
+                <div class="recap-box-title">Adresse de destination</div>
+                <div class="recap-box-name" id="recapCustomerName">Kouamé Koffi</div>
+                <div id="recapCustomerAddress" style="color: var(--color-text-muted);">Cocody Angré 8ème Tranche, en face de la pharmacie</div>
+                <div id="recapCustomerPhone" style="font-size: 12px; color: var(--color-gold-dark); margin-top: 4px;">📱 07 88 00 11 22</div>
+              </div>
+              <button type="button" class="recap-edit-btn" onclick="navigateToStep(1)">Modifier</button>
+            </div>
+
+            <!-- Delivery options selection -->
+            <div class="delivery-options-grid">
+              
+              <!-- Option 1: Standard (Default) -->
+              <div class="delivery-option-card selected" id="optStandardDelivery" onclick="selectDeliveryOption('standard', 1500)">
+                <div class="delivery-left">
+                  <div class="custom-radio"></div>
+                  <div>
+                    <div class="delivery-name">
+                      Livraison Standard Abidjan
+                      <span class="delivery-badge-tag">Recommandé</span>
+                    </div>
+                    <div class="delivery-desc">Livraison soignée sous 24-48h directement à domicile ou au bureau.</div>
+                  </div>
+                </div>
+                <div class="delivery-price">1 500 XOF</div>
+              </div>
+
+              <!-- Option 2: Express -->
+              <div class="delivery-option-card" id="optExpressDelivery" onclick="selectDeliveryOption('express', 3000)">
+                <div class="delivery-left">
+                  <div class="custom-radio"></div>
+                  <div>
+                    <div class="delivery-name">
+                      Livraison Express Jour-Même
+                    </div>
+                    <div class="delivery-desc">Livraison ultra-rapide en moins de 4h (pour toute commande avant 15h).</div>
+                  </div>
+                </div>
+                <div class="delivery-price">3 000 XOF</div>
+              </div>
+
+              <!-- Option 3: Retrait boutique Vallons -->
+              <div class="delivery-option-card" id="optPickupDelivery" onclick="selectDeliveryOption('pickup', 0)">
+                <div class="delivery-left">
+                  <div class="custom-radio"></div>
+                  <div>
+                    <div class="delivery-name">
+                      Retrait Gratuit en Boutique
+                    </div>
+                    <div class="delivery-desc">Disponible sous 24h à notre atelier des Deux-Plateaux Vallons, Cocody.</div>
+                  </div>
+                </div>
+                <div class="delivery-price" style="color: var(--color-success);">Gratuit</div>
+              </div>
+
+            </div>
+
+            <div style="background: rgba(201,168,76,0.08); border-left: 3px solid var(--color-gold); padding: var(--space-4); border-radius: var(--radius-md); font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5;">
+              🌿 Vos flacons et savons sont conditionnés dans des emballages écologiques thermo-isolés pour préserver intacte la fraîcheur des beurres et huiles précieuses.
+            </div>
+
+            <div class="step-buttons-row">
+              <button type="button" class="btn btn-ghost" onclick="navigateToStep(1)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Modifier mes coordonnées
+              </button>
+
+              <button type="button" class="btn btn-primary btn-lg" onclick="navigateToStep(3)">
+                Continuer vers le paiement
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+
+          </section>
+
+          <!-- =====================================================
+               STEP 3: Mode de Paiement
+               ===================================================== -->
+          <section id="stepContent3" class="step-content">
+            <h1 class="step-title">
+              <span style="color: var(--color-gold);">3.</span> Paiement sécurisé
+            </h1>
+            <p class="step-subtitle">
+              Sélectionnez votre moyen de paiement Mobile Money préféré en Côte d'Ivoire.
+            </p>
+
+            <div class="payment-methods-grid">
+              
+              <!-- Wave Option -->
+              <div class="payment-card selected" id="methodWaveCard" onclick="selectPaymentMethod('wave')">
+                <div class="payment-card-header">
+                  <div class="payment-brand-left">
+                    <div class="payment-icon-box payment-icon-wave">🌊</div>
+                    <div>
+                      <div class="payment-title-text">Wave Côte d'Ivoire</div>
+                      <div class="payment-subtitle-text">Paiement instantané sans frais via l'application Wave</div>
+                    </div>
+                  </div>
+                  <div class="custom-radio"></div>
+                </div>
+
+                <div class="payment-card-body">
+                  <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-3);">
+                    En cliquant sur « Confirmer et Payer », vous serez redirigé vers l'application sécurisée Wave pour valider le montant exact.
+                  </p>
+                  <div class="form-group payment-phone-input-wrap">
+                    <label class="form-label" for="wavePhone">Votre numéro de compte Wave</label>
+                    <input type="tel" id="wavePhone" class="form-input" placeholder="Ex: 07 88 00 11 22">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Orange Money Option -->
+              <div class="payment-card" id="methodOMCard" onclick="selectPaymentMethod('orangeMoney')">
+                <div class="payment-card-header">
+                  <div class="payment-brand-left">
+                    <div class="payment-icon-box payment-icon-om">🟠</div>
+                    <div>
+                      <div class="payment-title-text">Orange Money Côte d'Ivoire</div>
+                      <div class="payment-subtitle-text">Validation push via l'application OM ou code USSD #144#</div>
+                    </div>
+                  </div>
+                  <div class="custom-radio"></div>
+                </div>
+
+                <div class="payment-card-body">
+                  <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-3);">
+                    Vous serez redirigé vers le portail officiel sécurisé Orange Money pour autoriser le prélèvement.
+                  </p>
+                  <div class="form-group payment-phone-input-wrap">
+                    <label class="form-label" for="omPhone">Votre numéro Orange Money</label>
+                    <input type="tel" id="omPhone" class="form-input" placeholder="Ex: 07 88 00 11 22">
+                  </div>
+                </div>
+              </div>
+
+              <!-- WhatsApp Option -->
+              <div class="payment-card" id="methodWhatsAppCard" onclick="selectPaymentMethod('whatsapp')">
+                <div class="payment-card-header">
+                  <div class="payment-brand-left">
+                    <div class="payment-icon-box payment-icon-wa">💬</div>
+                    <div>
+                      <div class="payment-title-text">Commander via WhatsApp Business</div>
+                      <div class="payment-subtitle-text">Discussion directe avec notre service client & paiement assisté</div>
+                    </div>
+                  </div>
+                  <div class="custom-radio"></div>
+                </div>
+
+                <div class="payment-card-body">
+                  <p style="font-size: var(--text-xs); color: var(--color-text-muted);">
+                    Votre panier sera transmis pré-rempli sur WhatsApp à notre conseillère de vente à Abidjan (+225 07 99 10 81 08).
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Security Assurance Callout -->
+            <div class="security-callout">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-gold); flex-shrink: 0;">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <div>
+                <strong style="color: var(--color-black);">Paiement 100% Sécurisé & Chiffré</strong><br>
+                Vos transactions sont traitées directement par les serveurs agréés de Wave et Orange Money. Aucune donnée bancaire n'est stockée sur notre plateforme.
+              </div>
+            </div>
+
+            <div class="step-buttons-row">
+              <button type="button" class="btn btn-ghost" onclick="navigateToStep(2)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Retour à la livraison
+              </button>
+
+              <button type="button" id="submitPaymentBtn" class="btn btn-primary btn-lg" onclick="executePayment()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span id="submitPaymentBtnText">Confirmer et Payer</span>
+              </button>
+            </div>
+
+          </section>
+
+        </div>
+
+        <!-- RIGHT COLUMN (35%): Sticky Order Summary Sidebar -->
+        <aside class="checkout-sidebar">
+          <div class="sidebar-cart-card">
+            <div class="sidebar-title">
+              <span>Votre Commande</span>
+              <a href="panier.html" style="font-size: var(--text-xs); color: var(--color-gold); font-family: var(--font-body); font-weight: normal;">Modifier</a>
+            </div>
+
+            <!-- Mini Cart Items Preview -->
+            <div class="sidebar-items-preview" id="sidebarItemsList">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-row">
+              <span>Sous-total</span>
+              <span class="value" id="sideSubtotal">0 XOF</span>
+            </div>
+
+            <div class="summary-row discount-row" id="sideDiscountRow" style="display: none;">
+              <span>Remise promo (<span id="sideDiscountName"></span>)</span>
+              <span class="value" id="sideDiscountVal">-0 XOF</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Frais de livraison</span>
+              <span class="value" id="sideShippingCost">1 500 XOF</span>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-total" style="margin-bottom: 0;">
+              <div>
+                <span class="summary-total-label">Total à payer</span>
+                <span class="summary-total-sub">Taxes et service inclus</span>
+              </div>
+              <span class="summary-total-amount" id="sideTotal">0 XOF</span>
+            </div>
+
+            <div style="margin-top: var(--space-4); display: flex; align-items: center; justify-content: center; gap: var(--space-3); font-size: 11px; color: var(--color-text-light);">
+              <span>🛡️ Garantie Authenticité 100%</span>
+              <span>•</span>
+              <span>🚚 Suivi SMS</span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+
+      <!-- =====================================================
+           STEP 4: Confirmation de Commande (Full Width View)
+           ===================================================== -->
+      <section id="stepContent4" class="step-content">
+        <div class="confirmation-view">
+          
+          <!-- Animated Checkmark Circle -->
+          <div class="success-checkmark-circle">
+            <svg class="checkmark-svg" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+
+          <div class="order-number-badge" id="confirmedOrderNumber">#ABP-000000</div>
+
+          <h1 class="confirmation-title">Votre commande a été passée avec succès !</h1>
+          <p class="confirmation-lead">
+            Merci pour votre commande chez <strong>AMABELLEPEAU</strong>. Nos artisanes cosméticiennes préparent actuellement vos soins naturels avec le plus grand amour.
+          </p>
+
+          <!-- Order Receipt Details -->
+          <div class="order-receipt-card">
+            <div style="font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; color: var(--color-black); margin-bottom: var(--space-4); padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center;">
+              <span>Détails du règlement</span>
+              <span class="tag tag-green">Paiement Validé</span>
+            </div>
+
+            <div class="receipt-row">
+              <span class="label">Client :</span>
+              <span class="val" id="receiptClientName">—</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Téléphone de contact :</span>
+              <span class="val" id="receiptClientPhone">—</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Lieu de livraison :</span>
+              <span class="val" id="receiptDeliveryAddress">—</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Mode de règlement :</span>
+              <span class="val" id="receiptPaymentMethod">Wave CI</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">Délai estimé :</span>
+              <span class="val" id="receiptDeliveryEstimate" style="color: var(--color-green-deep);">Sous 24h à 48h</span>
+            </div>
+            
+            <div class="summary-divider"></div>
+
+            <div class="receipt-row" style="font-size: var(--text-base); margin-bottom: 0;">
+              <span class="label" style="font-weight: 700; color: var(--color-black);">Montant total réglé :</span>
+              <span class="val" id="receiptTotalPaid" style="font-family: var(--font-display); font-size: var(--text-xl); color: var(--color-green-deep);">0 XOF</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div style="display: flex; justify-content: center; gap: var(--space-4); flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary btn-lg" onclick="openTrackingModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="12 8 8 12 12 16 12 8"></polygon>
+              </svg>
+              Suivre ma commande en direct
+            </button>
+
+            <button type="button" class="btn btn-outline btn-lg" onclick="window.print()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Imprimer le reçu
+            </button>
+
+            <a href="index.html" class="btn btn-ghost btn-lg">
+              Retour à l'accueil
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =====================================================
+       MVP PAYMENT CONFIRMATION MODAL ("J'ai effectué le paiement")
+       ===================================================== -->
+  <div class="payment-modal-overlay" id="payment-confirmation-modal">
+    <div class="payment-modal-box">
+      <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(201, 168, 76, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 30px;">
+        💳
+      </div>
+
+      <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); color: var(--color-black); margin-bottom: var(--space-2);">
+        Paiement en cours...
+      </h2>
+      
+      <p style="font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.6; margin-bottom: var(--space-6);">
+        Une fenêtre sécurisée s'est ouverte pour effectuer le paiement via <strong class="payment-method-name" style="color: var(--color-black);">Wave</strong>.<br>
+        Une fois votre transaction approuvée dans l'application, cliquez sur le bouton ci-dessous pour valider votre commande.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        <button type="button" class="btn btn-primary btn-lg" style="width: 100%;" onclick="confirmPaymentSuccess()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          J'ai effectué le paiement
+        </button>
+
+        <button type="button" class="btn btn-ghost" onclick="closePaymentModal()">
+          Annuler ou changer de méthode
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       LIVE TRACKING MODAL
+       ===================================================== -->
+  <div class="payment-modal-overlay" id="trackingModal">
+    <div class="payment-modal-box" style="text-align: left; max-width: 520px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-3);">
+        <h3 style="font-family: var(--font-display); font-size: var(--text-xl); color: var(--color-black);">
+          Suivi de votre commande
+        </h3>
+        <button type="button" onclick="closeTrackingModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+
+      <div style="font-size: var(--text-xs); color: var(--color-gold-dark); font-weight: 700; margin-bottom: var(--space-3);">
+        NUMÉRO : <span id="trackingModalOrderNumber">#ABP-</span>
+      </div>
+
+      <div class="tracking-timeline">
+        <div class="tracking-step done">
+          <div class="tracking-dot">✓</div>
+          <div class="tracking-step-title">Commande reçue & enregistrée</div>
+          <div class="tracking-step-desc">Paiement validé avec succès.</div>
+        </div>
+
+        <div class="tracking-step active">
+          <div class="tracking-dot"></div>
+          <div class="tracking-step-title">Préparation à l'atelier AMABELLEPEAU</div>
+          <div class="tracking-step-desc">Emballage protecteur et vérification de la qualité des savons.</div>
+        </div>
+
+        <div class="tracking-step">
+          <div class="tracking-dot"></div>
+          <div class="tracking-step-title">Prise en charge par le coursier Abidjan</div>
+          <div class="tracking-step-desc">Le livreur vous appellera 30 min avant son arrivée.</div>
+        </div>
+
+        <div class="tracking-step">
+          <div class="tracking-dot"></div>
+          <div class="tracking-step-title">Livraison effectuée</div>
+          <div class="tracking-step-desc">Colis remis en main propre.</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-dark" style="width: 100%; margin-top: var(--space-4);" onclick="closeTrackingModal()">
+        Fermer
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div>
+          <div class="footer-brand-name">
+            AMABELLE<span>PEAU</span>
+          </div>
+          <p class="footer-description">
+            Savons saponifiés à froid et cosmétiques 100% naturels fabriqués avec passion et authenticité. L'alliance subtile du savoir-faire artisanal ivoirien et des bienfaits purs de la terre d'Afrique.
+          </p>
+          <div style="font-size: var(--text-xs); color: rgba(245, 240, 232, 0.5);">
+            Abidjan, Côte d'Ivoire · Expédition nationale & sous-régionale
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Liens Utiles</div>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Accueil</a></li>
+            <li><a href="catalogue.html" class="footer-link">Notre Catalogue</a></li>
+            <li><a href="marques.html" class="footer-link">Marques Partenaires</a></li>
+            <li><a href="marchand/index.html" class="footer-link">Espace Marchand</a></li>
+            <li><a href="compte.html" class="footer-link">Mon Compte</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Catégories</div>
+          <ul class="footer-links">
+            <li><a href="catalogue.html?cat=savons" class="footer-link">Savons Saponifiés à Froid</a></li>
+            <li><a href="catalogue.html?cat=huiles" class="footer-link">Huiles Pures & Sérums</a></li>
+            <li><a href="catalogue.html?cat=beurres" class="footer-link">Beurres Végétaux Bruts</a></li>
+            <li><a href="catalogue.html?cat=soins" class="footer-link">Soins du Visage</a></li>
+            <li><a href="catalogue.html?cat=coffrets" class="footer-link">Coffrets & Rituels Cadeaux</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Contact & Retrait</div>
+          <ul class="footer-links">
+            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
+              📍 Cocody Deux-Plateaux Vallons, Abidjan
+            </li>
+            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
+              📞 +225 07 88 00 11 22
+            </li>
+            <li style="font-size: var(--text-sm); color: rgba(245, 240, 232, 0.8);">
+              ✉️ contact@amabellepeau.ci
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 AMABELLEPEAU — Tous droits réservés. L'excellence cosmétique naturelle d'Afrique.
+        </div>
+        <div class="payment-methods">
+          <span style="margin-right: 6px;">Paiements acceptés :</span>
+          <span class="payment-badge">Wave</span>
+          <span class="payment-badge">Orange Money</span>
+          <span class="payment-badge">WhatsApp</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Payments JS Module -->
+  <script src="js/payments.js"></script>
+
+  <!-- =====================================================
+       CHECKOUT JAVASCRIPT CONTROLLER
+       ===================================================== -->
+  <script>
+    // State
+    let currentStep = 1;
+    let cart = [];
+    let currentPromo = null;
+    let selectedDelivery = { type: 'standard', cost: 1500, label: 'Livraison Standard Abidjan (24-48h)' };
+    let selectedPayment = 'wave'; // 'wave' | 'orangeMoney' | 'whatsapp'
+    let orderInfo = {
+      prenom: '',
+      nom: '',
+      phone: '',
+      email: '',
+      commune: '',
+      quartier: '',
+      landmark: '',
+      notes: ''
+    };
+    let confirmedOrderData = null;
+
+    // Helper: Toast
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'error' ? 'toast-error' : type === 'success' ? 'toast-success' : ''}`;
+      
+      let icon = '✨';
+      if (type === 'success') icon = '✅';
+      if (type === 'error') icon = '⚠️';
+
+      toast.innerHTML = `
+        <span style="font-size: 18px;">${icon}</span>
+        <div style="flex: 1; font-size: 13px; font-weight: 500; color: var(--color-black);">${message}</div>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Load Cart from LocalStorage
+    function loadCartData() {
+      const saved = localStorage.getItem('amabellepeau_cart');
+      if (saved) {
+        try {
+          cart = JSON.parse(saved);
+        } catch (e) {
+          cart = [];
+        }
+      }
+
+      // If cart is empty, redirect or alert
+      if (!cart || cart.length === 0) {
+        showToast('Votre panier est vide. Redirection...', 'error');
+        setTimeout(() => {
+          window.location.href = 'panier.html';
+        }, 1500);
+        return;
+      }
+
+      const savedPromo = localStorage.getItem('amabellepeau_promo');
+      if (savedPromo) {
+        try {
+          currentPromo = JSON.parse(savedPromo);
+        } catch (e) {
+          currentPromo = null;
+        }
+      }
+
+      // Update Nav Badges
+      const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+      document.getElementById('headerCartCount').textContent = totalCount;
+
+      renderSidebar();
+    }
+
+    // Render Sidebar Order Summary
+    function renderSidebar() {
+      const listEl = document.getElementById('sidebarItemsList');
+      if (!listEl) return;
+
+      listEl.innerHTML = cart.map(item => `
+        <div class="sidebar-item">
+          <div class="sidebar-item-thumb" style="background: ${item.imageGradient || 'var(--color-green)'};">
+            🌿
+          </div>
+          <div class="sidebar-item-details">
+            <div class="sidebar-item-name">${item.name}</div>
+            <div class="sidebar-item-sub">Qté: ${item.quantity} · ${formatXOF(item.price)}</div>
+          </div>
+          <div class="sidebar-item-price">${formatXOF(item.price * item.quantity)}</div>
+        </div>
+      `).join('');
+
+      calculateCheckoutTotals();
+    }
+
+    // Totals Calculation
+    function calculateCheckoutTotals() {
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      document.getElementById('sideSubtotal').textContent = formatXOF(subtotal);
+
+      let discountAmount = 0;
+      const discountRow = document.getElementById('sideDiscountRow');
+      const discountVal = document.getElementById('sideDiscountVal');
+      const discountName = document.getElementById('sideDiscountName');
+
+      if (currentPromo) {
+        if (currentPromo.discountPercent) {
+          discountAmount = Math.round((subtotal * currentPromo.discountPercent) / 100);
+        } else if (currentPromo.discountFixed) {
+          discountAmount = Math.min(currentPromo.discountFixed, subtotal);
+        }
+
+        discountRow.style.display = 'flex';
+        discountName.textContent = currentPromo.code;
+        discountVal.textContent = `-${formatXOF(discountAmount)}`;
+      } else {
+        discountRow.style.display = 'none';
+      }
+
+      const shippingCost = selectedDelivery.cost;
+      document.getElementById('sideShippingCost').textContent = shippingCost === 0 ? 'Gratuit' : formatXOF(shippingCost);
+
+      const total = Math.max(0, subtotal - discountAmount + shippingCost);
+      document.getElementById('sideTotal').textContent = formatXOF(total);
+
+      // Update button text on Step 3
+      const btnText = document.getElementById('submitPaymentBtnText');
+      if (btnText) {
+        btnText.textContent = `Confirmer et Payer ${formatXOF(total)}`;
+      }
+
+      return { subtotal, discountAmount, shippingCost, total };
+    }
+
+    // Navigation between steps
+    function navigateToStep(stepNumber) {
+      if (stepNumber < 1 || stepNumber > 4) return;
+
+      // Cannot jump directly to step 2 or 3 without completing Step 1
+      if (stepNumber > 1 && currentStep === 1) {
+        if (!validateStep1Form()) return;
+      }
+
+      currentStep = stepNumber;
+      updateStepViews();
+    }
+
+    function updateStepViews() {
+      // Hide all step views
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`stepContent${i}`);
+        if (el) el.classList.remove('active');
+        const ind = document.getElementById(`stepIndicator${i}`);
+        if (ind) {
+          ind.classList.remove('active', 'completed');
+          if (i < currentStep) ind.classList.add('completed');
+          if (i === currentStep) ind.classList.add('active');
+        }
+      }
+
+      // Show current step view
+      const activeContent = document.getElementById(`stepContent${currentStep}`);
+      if (activeContent) activeContent.classList.add('active');
+
+      // Update progress bar
+      const bar = document.getElementById('stepperProgressBar');
+      if (bar) {
+        const percent = ((currentStep - 1) / 3) * 100;
+        bar.style.width = `${percent}%`;
+      }
+
+      // Hide sidebar on confirmation view (Step 4)
+      const grid = document.getElementById('checkoutGrid');
+      if (grid) {
+        grid.style.display = currentStep === 4 ? 'none' : 'grid';
+      }
+
+      // Update breadcrumb
+      const breadcrumbStep = document.getElementById('breadcrumbCurrentStep');
+      const titles = {
+        1: 'Coordonnées de livraison',
+        2: 'Mode de livraison',
+        3: 'Paiement sécurisé',
+        4: 'Confirmation de commande'
+      };
+      if (breadcrumbStep) breadcrumbStep.textContent = titles[currentStep] || 'Commande';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Validation for Step 1
+    function validateStep1Form() {
+      let isValid = true;
+
+      const prenomInput = document.getElementById('clientPrenom');
+      const nomInput = document.getElementById('clientNom');
+      const phoneInput = document.getElementById('clientPhone');
+      const communeSelect = document.getElementById('clientCommune');
+      const quartierInput = document.getElementById('clientQuartier');
+      const landmarkInput = document.getElementById('clientLandmark');
+
+      // Helper field validation
+      function checkField(input, errId) {
+        const errEl = document.getElementById(errId);
+        if (!input.value.trim()) {
+          input.classList.add('input-error');
+          if (errEl) errEl.style.display = 'block';
+          isValid = false;
+        } else {
+          input.classList.remove('input-error');
+          if (errEl) errEl.style.display = 'none';
+        }
+      }
+
+      checkField(prenomInput, 'errClientPrenom');
+      checkField(nomInput, 'errClientNom');
+      checkField(communeSelect, 'errClientCommune');
+      checkField(quartierInput, 'errClientQuartier');
+      checkField(landmarkInput, 'errClientLandmark');
+
+      // Phone validation (at least 8-10 digits)
+      const phoneVal = phoneInput.value.replace(/[^0-9]/g, '');
+      const errPhone = document.getElementById('errClientPhone');
+      if (!phoneVal || phoneVal.length < 8) {
+        phoneInput.classList.add('input-error');
+        if (errPhone) errPhone.style.display = 'block';
+        isValid = false;
+      } else {
+        phoneInput.classList.remove('input-error');
+        if (errPhone) errPhone.style.display = 'none';
+      }
+
+      if (isValid) {
+        // Save into orderInfo state
+        orderInfo = {
+          prenom: prenomInput.value.trim(),
+          nom: nomInput.value.trim(),
+          phone: phoneInput.value.trim(),
+          email: document.getElementById('clientEmail').value.trim(),
+          commune: communeSelect.value,
+          quartier: quartierInput.value.trim(),
+          landmark: landmarkInput.value.trim(),
+          notes: document.getElementById('clientNotes').value.trim()
+        };
+
+        // Pre-fill phone inputs for payment step
+        const waveInput = document.getElementById('wavePhone');
+        const omInput = document.getElementById('omPhone');
+        if (waveInput && !waveInput.value) waveInput.value = orderInfo.phone;
+        if (omInput && !omInput.value) omInput.value = orderInfo.phone;
+
+        // Update Address Recap in Step 2
+        document.getElementById('recapCustomerName').textContent = `${orderInfo.prenom} ${orderInfo.nom}`;
+        document.getElementById('recapCustomerAddress').textContent = `${orderInfo.commune}, ${orderInfo.quartier} (${orderInfo.landmark})`;
+        document.getElementById('recapCustomerPhone').textContent = `📱 ${orderInfo.phone}`;
+      }
+
+      return isValid;
+    }
+
+    function handleStep1Submit(e) {
+      e.preventDefault();
+      if (validateStep1Form()) {
+        navigateToStep(2);
+      } else {
+        showToast('Veuillez compléter les champs obligatoires en rouge.', 'error');
+      }
+    }
+
+    // Step 2: Delivery Option Selection
+    function selectDeliveryOption(type, cost) {
+      selectedDelivery.type = type;
+      selectedDelivery.cost = cost;
+
+      if (type === 'standard') selectedDelivery.label = 'Livraison Standard Abidjan (24-48h)';
+      if (type === 'express') selectedDelivery.label = 'Livraison Express Jour-Même (Moins de 4h)';
+      if (type === 'pickup') selectedDelivery.label = 'Retrait Gratuit Boutique Vallons, Cocody';
+
+      document.getElementById('optStandardDelivery').classList.toggle('selected', type === 'standard');
+      document.getElementById('optExpressDelivery').classList.toggle('selected', type === 'express');
+      document.getElementById('optPickupDelivery').classList.toggle('selected', type === 'pickup');
+
+      calculateCheckoutTotals();
+    }
+
+    // Step 3: Payment Method Selection
+    function selectPaymentMethod(method) {
+      selectedPayment = method;
+
+      document.getElementById('methodWaveCard').classList.toggle('selected', method === 'wave');
+      document.getElementById('methodOMCard').classList.toggle('selected', method === 'orangeMoney');
+      document.getElementById('methodWhatsAppCard').classList.toggle('selected', method === 'whatsapp');
+    }
+
+    // Execute Payment with payments.js
+    function executePayment() {
+      const { total } = calculateCheckoutTotals();
+      const orderNumber = typeof generateOrderNumber === 'function' ? generateOrderNumber() : `ABP-${Date.now().toString(36).toUpperCase()}`;
+
+      const orderData = {
+        orderNumber,
+        total,
+        customerName: `${orderInfo.prenom} ${orderInfo.nom}`,
+        phone: orderInfo.phone,
+        address: `${orderInfo.commune}, ${orderInfo.quartier} (${orderInfo.landmark})`,
+        deliveryMethod: selectedDelivery.label,
+        items: cart.map(i => ({
+          name: i.name,
+          qty: i.quantity,
+          price: i.price
+        }))
+      };
+
+      confirmedOrderData = orderData;
+
+      // Call payment integration from js/payments.js
+      if (typeof initiatePayment === 'function') {
+        initiatePayment(selectedPayment, orderData);
+      } else {
+        // Fallback if payments.js not loaded
+        window.open('https://pay.wave.com/mqr-tc/mqr-1cz6t6hdg21tj', '_blank');
+        const modal = document.getElementById('payment-confirmation-modal');
+        if (modal) modal.classList.add('active');
+      }
+    }
+
+    // When customer confirms they have paid
+    function confirmPaymentSuccess() {
+      closePaymentModal();
+
+      if (!confirmedOrderData) {
+        const { total } = calculateCheckoutTotals();
+        confirmedOrderData = {
+          orderNumber: `ABP-${Date.now().toString(36).toUpperCase()}`,
+          total,
+          customerName: `${orderInfo.prenom} ${orderInfo.nom}`,
+          phone: orderInfo.phone,
+          address: `${orderInfo.commune}, ${orderInfo.quartier} (${orderInfo.landmark})`
+        };
+      }
+
+      // Populate Step 4 confirmation details
+      document.getElementById('confirmedOrderNumber').textContent = confirmedOrderData.orderNumber;
+      document.getElementById('trackingModalOrderNumber').textContent = confirmedOrderData.orderNumber;
+      document.getElementById('receiptClientName').textContent = confirmedOrderData.customerName || `${orderInfo.prenom} ${orderInfo.nom}`;
+      document.getElementById('receiptClientPhone').textContent = confirmedOrderData.phone || orderInfo.phone;
+      document.getElementById('receiptDeliveryAddress').textContent = confirmedOrderData.address || `${orderInfo.commune}, ${orderInfo.quartier}`;
+      
+      const paymentLabels = {
+        wave: 'Wave CI (Direct Mobile)',
+        orangeMoney: 'Orange Money CI',
+        whatsapp: 'WhatsApp Business'
+      };
+      document.getElementById('receiptPaymentMethod').textContent = paymentLabels[selectedPayment] || 'Mobile Money';
+      document.getElementById('receiptTotalPaid').textContent = formatXOF(confirmedOrderData.total);
+
+      // Clear cart from LocalStorage
+      localStorage.removeItem('amabellepeau_cart');
+      localStorage.removeItem('amabellepeau_promo');
+      document.getElementById('headerCartCount').textContent = '0';
+
+      // Move to Step 4
+      navigateToStep(4);
+      showToast('Félicitations ! Votre commande a été confirmée.', 'success');
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('payment-confirmation-modal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    // Tracking Modal Handlers
+    function openTrackingModal() {
+      const modal = document.getElementById('trackingModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeTrackingModal() {
+      const modal = document.getElementById('trackingModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    // Mobile nav toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const closeMobileNav = document.getElementById('closeMobileNav');
+
+    mobileMenuBtn?.addEventListener('click', () => mobileNav.classList.add('active'));
+    closeMobileNav?.addEventListener('click', () => mobileNav.classList.remove('active'));
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCartData();
+    });
+  </script>
+
+</body>
+</html>

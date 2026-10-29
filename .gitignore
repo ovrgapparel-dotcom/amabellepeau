@@ -1,0 +1,51 @@
+# AMABELLEPEAU — .gitignore
+# ==========================
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Node / npm (if added later)
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Vercel
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+build/
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.temp
+
+# Unrelated assets (user's local files)
+assets/images/*.mp3
+assets/images/*.mp4
+assets/images/*.m4a
+assets/images/*.zip
+assets/images/*.pdf
+assets/images/001_schema.sql
+assets/images/BOYA*
+assets/images/BLUID*
+assets/images/90DAYHUB*
+assets/images/8-Joy*
+assets/images/*Melodic*
+assets/images/AQP*

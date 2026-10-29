@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Commissions Influenceurs — Admin AMABELLEPEAU</title>
+  <meta name="description" content="Tableau de bord des commissions influenceurs AMABELLEPEAU. Suivi des paiements et rapports."/>
+  <link rel="icon" href="../assets/icons/logo.png"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    body { background: var(--color-bg); }
+    .app-layout { display: flex; min-height: calc(100vh - var(--nav-height)); }
+    .sidebar { width: 260px; background: #0D1A0D; padding: var(--space-4) 0; position: sticky; top: var(--nav-height); height: calc(100vh - var(--nav-height)); overflow-y: auto; flex-shrink: 0; border-right: 1px solid rgba(201,168,76,0.15); }
+    .sidebar-logo { padding: var(--space-4) var(--space-5) var(--space-6); border-bottom: 1px solid rgba(201,168,76,0.1); margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-3); }
+    .sidebar-logo-text { font-family: var(--font-display); color: var(--color-cream); font-size: 1rem; }
+    .sidebar-logo-text span { color: var(--color-gold); }
+    .sidebar-section { padding: var(--space-3) var(--space-4) var(--space-1); font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(201,168,76,0.4); }
+    .sidebar-link { display: flex; align-items: center; gap: var(--space-3); padding: 10px var(--space-5); color: rgba(245,240,232,0.6); font-size: var(--text-sm); transition: var(--transition-fast); border-left: 3px solid transparent; text-decoration: none; }
+    .sidebar-link:hover { color: var(--color-gold); background: rgba(201,168,76,0.08); border-left-color: rgba(201,168,76,0.4); }
+    .sidebar-link.active { color: var(--color-gold); background: rgba(201,168,76,0.12); border-left-color: var(--color-gold); }
+    .sidebar-link .icon { font-size: 1rem; width: 20px; text-align: center; }
+    .main-content { flex: 1; padding: var(--space-8); overflow-x: hidden; }
+    /* Stats row */
+    .commission-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); margin-bottom: var(--space-8); }
+    .c-stat { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5) var(--space-6); border-top: 3px solid var(--color-gold); transition: var(--transition-fast); }
+    .c-stat:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .c-stat-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); margin-bottom: var(--space-2); }
+    .c-stat-value { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 700; color: var(--color-black); }
+    .c-stat-sub { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-1); }
+    /* Leaderboard */
+    .leaderboard { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: var(--space-8); }
+    .lb-header { padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; }
+    .lb-row { display: grid; grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr 1fr auto; gap: var(--space-3); padding: var(--space-4) var(--space-6); align-items: center; border-bottom: 1px solid var(--color-border); transition: var(--transition-fast); font-size: var(--text-sm); }
+    .lb-row:hover { background: var(--color-surface-alt); }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-rank { font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg); color: var(--color-gold); text-align: center; }
+    .lb-rank.top { font-size: var(--text-xl); }
+    .lb-name { font-weight: 700; }
+    .lb-code { font-family: monospace; font-size: var(--text-xs); background: rgba(201,168,76,0.12); color: var(--color-gold); padding: 2px 8px; border-radius: var(--radius-sm); border: 1px dashed rgba(201,168,76,0.3); display: inline-block; }
+    /* Chart placeholder */
+    .chart-section { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-bottom: var(--space-8); }
+    .chart-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); }
+    .chart-title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-5); display: flex; align-items: center; gap: var(--space-2); }
+    .bar-chart { display: flex; align-items: flex-end; gap: var(--space-3); height: 200px; padding-top: var(--space-4); }
+    .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+    .bar { width: 100%; border-radius: var(--radius-sm) var(--radius-sm) 0 0; transition: height 0.8s cubic-bezier(0.34,1.56,0.64,1); position: relative; min-width: 20px; }
+    .bar:hover { opacity: 0.85; }
+    .bar-label { font-size: 10px; color: var(--color-text-muted); text-align: center; white-space: nowrap; }
+    .bar-value { font-size: 10px; font-weight: 700; color: var(--color-black); text-align: center; }
+    /* Payouts table */
+    .payouts-table-wrap { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; }
+    .payout-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: var(--radius-full); font-size: 10px; font-weight: 700; }
+    .ps-paid { background: rgba(39,174,96,0.12); color: #27AE60; }
+    .ps-pending { background: rgba(241,196,15,0.12); color: #D4A017; }
+    @media(max-width:900px) { .sidebar { display:none; } .commission-stats { grid-template-columns: 1fr 1fr; } .chart-section { grid-template-columns: 1fr; } .lb-row { grid-template-columns: 30px 1fr 1fr auto; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container flex-between">
+    <a href="../index.html" class="navbar-brand">
+      <img src="../assets/icons/logo.png" alt="AMABELLEPEAU" class="navbar-logo"/>
+      <span class="navbar-brand-text">AMABELLE<span>PEAU</span> <span style="font-size:0.65rem;color:rgba(201,168,76,0.6);margin-left:4px;">ADMIN</span></span>
+    </a>
+    <div class="navbar-actions">
+      <span style="color:rgba(245,240,232,0.5);font-size:var(--text-sm);">👤 Administrateur</span>
+    </div>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="../assets/icons/logo.png" style="width:32px;border-radius:6px;" alt=""/>
+      <div class="sidebar-logo-text">AMABELLE<span>PEAU</span></div>
+    </div>
+    <div class="sidebar-section">Principal</div>
+    <a href="index.html" class="sidebar-link"><span class="icon">📊</span> Vue d'ensemble</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="influenceurs.html" class="sidebar-link"><span class="icon">⭐</span> Influenceurs</a>
+    <a href="commissions.html" class="sidebar-link active"><span class="icon">💰</span> Commissions</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="finances.html" class="sidebar-link"><span class="icon">📈</span> Finances</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div style="margin-bottom:var(--space-6);">
+      <h1 style="font-family:var(--font-display);font-size:var(--text-3xl);">💰 Commissions & Paiements</h1>
+      <p style="color:var(--color-text-muted);margin-top:var(--space-1);">Vue d'ensemble des commissions influenceurs, balances et paiements.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="commission-stats">
+      <div class="c-stat">
+        <div class="c-stat-label">Commissions du mois</div>
+        <div class="c-stat-value" style="color:var(--color-gold);">132 750 XOF</div>
+        <div class="c-stat-sub">↗ +18% vs mois dernier</div>
+      </div>
+      <div class="c-stat">
+        <div class="c-stat-label">Total dû (non payé)</div>
+        <div class="c-stat-value" style="color:var(--color-error);">33 950 XOF</div>
+        <div class="c-stat-sub">3 influenceurs en attente</div>
+      </div>
+      <div class="c-stat">
+        <div class="c-stat-label">Payé ce mois</div>
+        <div class="c-stat-value" style="color:var(--color-success);">89 800 XOF</div>
+        <div class="c-stat-sub">5 paiements effectués</div>
+      </div>
+      <div class="c-stat">
+        <div class="c-stat-label">Ventes via codes promo</div>
+        <div class="c-stat-value">1 040 000 XOF</div>
+        <div class="c-stat-sub">87 commandes ce mois</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="chart-section">
+      <div class="chart-card">
+        <div class="chart-title">📊 Commissions par mois</div>
+        <div class="bar-chart" id="monthlyChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🏆 Top influenceurs (CA généré)</div>
+        <div class="bar-chart" id="topChart"></div>
+      </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="leaderboard">
+      <div class="lb-header">
+        <h2 style="font-family:var(--font-display);font-size:var(--text-xl);">🏆 Classement Influenceurs</h2>
+        <select style="border:1px solid var(--color-border);border-radius:var(--radius-md);padding:6px 12px;font-size:var(--text-sm);">
+          <option>Ce mois</option>
+          <option>Cette semaine</option>
+          <option>Tout</option>
+        </select>
+      </div>
+      <div class="lb-row" style="font-weight:700;color:var(--color-text-muted);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.06em;">
+        <div>#</div><div>Influenceur</div><div>Code</div><div>Ventes</div><div>CA Généré</div><div>Commission</div><div>Solde dû</div><div>Action</div>
+      </div>
+      <div class="lb-row">
+        <div class="lb-rank top">🥇</div>
+        <div><div class="lb-name">Aminata Koné</div><div style="font-size:var(--text-xs);color:var(--color-text-muted);">📸 @aminata_beauty</div></div>
+        <div><span class="lb-code">AMINA15</span></div>
+        <div><strong>34</strong></div>
+        <div><strong>485 000 XOF</strong></div>
+        <div style="color:var(--color-gold);font-weight:700;">72 750 XOF</div>
+        <div style="color:var(--color-error);font-weight:700;">22 750 XOF</div>
+        <div><button class="btn btn-primary btn-sm" onclick="alert('Paiement — aller sur la page Influenceurs')">💸 Payer</button></div>
+      </div>
+      <div class="lb-row">
+        <div class="lb-rank top">🥈</div>
+        <div><div class="lb-name">Fatoumata Bah</div><div style="font-size:var(--text-xs);color:var(--color-text-muted);">🎵 @fati_glow</div></div>
+        <div><span class="lb-code">FATIGLOW</span></div>
+        <div><strong>28</strong></div>
+        <div><strong>312 000 XOF</strong></div>
+        <div style="color:var(--color-gold);font-weight:700;">31 200 XOF</div>
+        <div style="color:var(--color-error);font-weight:700;">11 200 XOF</div>
+        <div><button class="btn btn-primary btn-sm" onclick="alert('Paiement')">💸 Payer</button></div>
+      </div>
+      <div class="lb-row">
+        <div class="lb-rank">🥉</div>
+        <div><div class="lb-name">Mariame Coulibaly</div><div style="font-size:var(--text-xs);color:var(--color-text-muted);">👥 @mariame_ci</div></div>
+        <div><span class="lb-code">MARIAME10</span></div>
+        <div><strong>19</strong></div>
+        <div><strong>198 000 XOF</strong></div>
+        <div style="color:var(--color-gold);font-weight:700;">19 800 XOF</div>
+        <div style="color:var(--color-success);font-weight:700;">0 XOF ✅</div>
+        <div><span style="font-size:var(--text-xs);color:var(--color-success);">Soldé</span></div>
+      </div>
+      <div class="lb-row">
+        <div class="lb-rank">4</div>
+        <div><div class="lb-name">Adja Traoré</div><div style="font-size:var(--text-xs);color:var(--color-text-muted);">💬 @adja_natura</div></div>
+        <div><span class="lb-code">ADJA20</span></div>
+        <div><strong>6</strong></div>
+        <div><strong>45 000 XOF</strong></div>
+        <div style="color:var(--color-gold);font-weight:700;">9 000 XOF</div>
+        <div style="color:var(--color-success);font-weight:700;">0 XOF ✅</div>
+        <div><span style="font-size:var(--text-xs);color:var(--color-text-muted);">Inactif</span></div>
+      </div>
+    </div>
+
+    <!-- Recent Payouts -->
+    <h2 style="font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-4);">💳 Derniers Paiements</h2>
+    <div class="payouts-table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th>Date</th><th>Influenceur</th><th>Montant</th><th>Méthode</th><th>Référence</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>25 Oct 2026</td>
+            <td><strong>Aminata Koné</strong></td>
+            <td><strong>50 000 XOF</strong></td>
+            <td>🌊 Wave</td>
+            <td style="font-family:monospace;font-size:var(--text-xs);">TXN-WV-8A2F3K</td>
+            <td><span class="payout-status ps-paid">✅ Payé</span></td>
+          </tr>
+          <tr>
+            <td>24 Oct 2026</td>
+            <td><strong>Fatoumata Bah</strong></td>
+            <td><strong>20 000 XOF</strong></td>
+            <td>🟠 Orange Money</td>
+            <td style="font-family:monospace;font-size:var(--text-xs);">TXN-OM-7C4D2E</td>
+            <td><span class="payout-status ps-paid">✅ Payé</span></td>
+          </tr>
+          <tr>
+            <td>22 Oct 2026</td>
+            <td><strong>Mariame Coulibaly</strong></td>
+            <td><strong>19 800 XOF</strong></td>
+            <td>💵 Espèces</td>
+            <td style="font-family:monospace;font-size:var(--text-xs);">CASH-MC-1022</td>
+            <td><span class="payout-status ps-paid">✅ Payé</span></td>
+          </tr>
+          <tr>
+            <td>20 Oct 2026</td>
+            <td><strong>Adja Traoré</strong></td>
+            <td><strong>9 000 XOF</strong></td>
+            <td>🌊 Wave</td>
+            <td style="font-family:monospace;font-size:var(--text-xs);">TXN-WV-5F1G8H</td>
+            <td><span class="payout-status ps-paid">✅ Payé</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Export -->
+    <div style="margin-top:var(--space-6);display:flex;gap:var(--space-3);">
+      <button class="btn btn-ghost" onclick="alert('Export CSV en cours...')">📥 Exporter CSV</button>
+      <button class="btn btn-ghost" onclick="alert('Rapport PDF en cours...')">📄 Rapport PDF</button>
+    </div>
+  </main>
+</div>
+
+<script>
+  // ── Monthly Chart ──
+  const months = ['Juin','Juil','Août','Sep','Oct','Nov'];
+  const values = [45000, 62000, 78000, 95000, 132750, 0];
+  const maxVal = Math.max(...values);
+  const chart = document.getElementById('monthlyChart');
+  months.forEach((m, i) => {
+    const h = values[i] ? Math.max(20, (values[i] / maxVal) * 180) : 4;
+    const isLast = i === months.length - 1;
+    chart.innerHTML += `
+      <div class="bar-group">
+        <div class="bar-value">${isLast ? '—' : (values[i]/1000).toFixed(0)+'k'}</div>
+        <div class="bar" style="height:${h}px;background:${i === 4 ? 'var(--gradient-gold)' : 'linear-gradient(to top,#1B4D1E,#4A8C50)'};${isLast ? 'opacity:0.2;' : ''}"></div>
+        <div class="bar-label">${m}</div>
+      </div>
+    `;
+  });
+
+  // ── Top influencers chart ──
+  const tops = [{n:'Aminata',v:485000,c:'#C9A84C'},{n:'Fatoumata',v:312000,c:'#B0B0B0'},{n:'Mariame',v:198000,c:'#CD7F32'},{n:'Adja',v:45000,c:'#1B4D1E'}];
+  const topMax = Math.max(...tops.map(t=>t.v));
+  const topChart = document.getElementById('topChart');
+  tops.forEach(t => {
+    const h = Math.max(20, (t.v / topMax) * 180);
+    topChart.innerHTML += `
+      <div class="bar-group">
+        <div class="bar-value">${(t.v/1000).toFixed(0)}k</div>
+        <div class="bar" style="height:${h}px;background:${t.c};"></div>
+        <div class="bar-label">${t.n}</div>
+      </div>
+    `;
+  });
+</script>
+</body>
+</html>
