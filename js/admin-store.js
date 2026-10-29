@@ -339,6 +339,15 @@ const AdminStore = {
     this.saveMerchants(list);
     return m;
   },
+  updateMerchant: function(id, data) {
+    const list = this.getMerchants();
+    const idx = list.findIndex(m => m.id === id || m.slug === id);
+    if (idx !== -1) {
+      list[idx] = { ...list[idx], ...data };
+      this.saveMerchants(list);
+    }
+    return list;
+  },
   updateMerchantStatus: function(id, status) {
     const list = this.getMerchants();
     const item = list.find(m => m.id === id);
@@ -439,6 +448,152 @@ const AdminStore = {
       ord.orderStatus = status;
       this.saveOrders(list);
     }
+  },
+
+  // ── Promotions, Banners & Short Videos ──
+  getPromotions: function() {
+    try {
+      const s = localStorage.getItem('abp_admin_promotions');
+      if (s) return JSON.parse(s);
+    } catch(e){}
+    const defaultPromos = [
+      {
+        id: 'promo-1',
+        title: 'Offre Découverte de Bienvenue : -10% sur tout le catalogue',
+        subtitle: 'Utilisez le code promo exclusif AMABELLE10 lors de votre commande.',
+        type: 'banner', // 'banner', 'video', 'advert'
+        mediaUrl: 'assets/images/products/ets-marie-andrea-catalogue.jpg',
+        badge: 'Offre Spéciale',
+        targetUrl: 'catalogue.html',
+        active: true,
+        startDate: '2026-10-01',
+        endDate: '2026-12-31'
+      },
+      {
+        id: 'promo-2',
+        title: 'Spotlight : AMABELLEBARBE Huile 100% Naturelle',
+        subtitle: 'Découvrez la vidéo exclusive du rituel d\'entretien de barbe haut de gamme.',
+        type: 'video',
+        mediaUrl: 'assets/images/products/amabellebarbe-homme.jpg',
+        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-barber-massaging-and-grooming-a-beard-43048-large.mp4',
+        badge: 'Vidéo & Démo',
+        targetUrl: 'produit.html?id=prod-kit-barbe-amabellebarbe',
+        active: true,
+        startDate: '2026-10-15',
+        endDate: '2026-12-31'
+      },
+      {
+        id: 'promo-3',
+        title: 'Coffret Signature AMAFLEURDEPEAU Édition Limitée',
+        subtitle: 'L\'alliance du beurre de karité, du miel sauvage et du curcuma d\'exception.',
+        type: 'advert',
+        mediaUrl: 'assets/images/products/amafleurdepeau-coffret.png',
+        badge: 'Édition Prestige',
+        targetUrl: 'produit.html?id=prod-coffret-signature',
+        active: true,
+        startDate: '2026-10-20',
+        endDate: '2026-12-31'
+      }
+    ];
+    localStorage.setItem('abp_admin_promotions', JSON.stringify(defaultPromos));
+    return defaultPromos;
+  },
+  savePromotions: function(data) {
+    localStorage.setItem('abp_admin_promotions', JSON.stringify(data));
+  },
+  addPromotion: function(promo) {
+    const list = this.getPromotions();
+    if (!promo.id) promo.id = 'promo-' + Date.now();
+    promo.active = promo.active !== false;
+    list.unshift(promo);
+    this.savePromotions(list);
+    return promo;
+  },
+  updatePromotion: function(id, data) {
+    const list = this.getPromotions();
+    const idx = list.findIndex(p => p.id === id);
+    if (idx !== -1) {
+      list[idx] = { ...list[idx], ...data };
+      this.savePromotions(list);
+    }
+    return list;
+  },
+  deletePromotion: function(id) {
+    let list = this.getPromotions().filter(p => p.id !== id);
+    this.savePromotions(list);
+    return list;
+  },
+  togglePromotion: function(id) {
+    const list = this.getPromotions();
+    const p = list.find(x => x.id === id);
+    if (p) {
+      p.active = !p.active;
+      this.savePromotions(list);
+    }
+    return list;
+  },
+
+  // ── Newsletter & VIP Subscribers ──
+  getSubscribers: function() {
+    try {
+      const s = localStorage.getItem('abp_newsletter_subscribers');
+      if (s) return JSON.parse(s);
+    } catch(e){}
+    const defaultSubscribers = [
+      {
+        id: 'sub-1',
+        name: 'Awa Konan',
+        email: 'awa.konan@gmail.com',
+        phone: '+225 07 48 99 21 00',
+        interest: 'Savons dermatologiques & Teint',
+        subscribedAt: '28 Oct 2026 14:22',
+        status: 'active'
+      },
+      {
+        id: 'sub-2',
+        name: 'Jean-Marc Kouassi',
+        email: 'jm.kouassi@outlook.com',
+        phone: '+225 05 01 22 34 56',
+        interest: 'Soins Barbe & Homme (AMABELLEBARBE)',
+        subscribedAt: '27 Oct 2026 09:15',
+        status: 'active'
+      },
+      {
+        id: 'sub-3',
+        name: 'Fatou Bamba',
+        email: 'fatoubamba.ci@yahoo.fr',
+        phone: '+225 01 44 88 12 30',
+        interest: 'Coffrets Rituels & Cadeaux',
+        subscribedAt: '26 Oct 2026 18:40',
+        status: 'active'
+      }
+    ];
+    localStorage.setItem('abp_newsletter_subscribers', JSON.stringify(defaultSubscribers));
+    return defaultSubscribers;
+  },
+  saveSubscribers: function(data) {
+    localStorage.setItem('abp_newsletter_subscribers', JSON.stringify(data));
+  },
+  addSubscriber: function(sub) {
+    const list = this.getSubscribers();
+    // Check duplicate by email
+    const existing = list.find(s => s.email.toLowerCase() === sub.email.toLowerCase());
+    if (existing) {
+      return { success: false, message: 'Cette adresse email est déjà inscrite à notre Cercle Beauté.' };
+    }
+    sub.id = 'sub-' + Date.now();
+    sub.subscribedAt = new Date().toLocaleDateString('fr-FR', {
+      day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    sub.status = 'active';
+    list.unshift(sub);
+    this.saveSubscribers(list);
+    return { success: true, subscriber: sub };
+  },
+  deleteSubscriber: function(id) {
+    let list = this.getSubscribers().filter(s => s.id !== id);
+    this.saveSubscribers(list);
+    return list;
   }
 };
 

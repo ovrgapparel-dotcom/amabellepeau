@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Administration | AMABELLEPEAU - Back-Office Marketplace</title>
-  <meta name="description" content="Panneau d'administration global de la marketplace AMABELLEPEAU. Gestion des marchands, modération des cosmétiques, dispatch livraison et suivi des commissions en Côte d'Ivoire.">
+  <meta name="description" content="Panneau d'administration global de la marketplace AMABELLEPEAU. Gestion des marchands, modÃ©ration des cosmÃ©tiques, dispatch livraison et suivi des commissions en CÃ´te d'Ivoire.">
   <link rel="icon" type="image/png" href="../assets/icons/brand-logo.png">
   <link rel="stylesheet" href="../css/main.css">
 
@@ -518,6 +518,61 @@
       animation: fadeIn 0.3s ease;
     }
 
+    /* File Upload Dropzones & Previews */
+    .upload-box {
+      border: 2px dashed rgba(201, 168, 76, 0.4);
+      background: rgba(27, 77, 30, 0.03);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upload-box:hover {
+      border-color: var(--color-gold);
+      background: rgba(201, 168, 76, 0.08);
+    }
+    .upload-preview-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .upload-preview-img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--color-gold);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .promo-media-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      background: white;
+      transition: all 0.2s;
+    }
+    .promo-media-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .promo-media-preview {
+      width: 100%;
+      height: 160px;
+      background: #0D1A0D;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .promo-media-preview img, .promo-media-preview video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     @media (max-width: 900px) {
       .app-layout { flex-direction: column; }
       .sidebar { width: 100%; height: auto; position: static; }
@@ -532,11 +587,11 @@
     <div class="container flex-between">
       <div style="display: flex; align-items: center; gap: var(--space-3);">
         <img src="../assets/icons/brand-logo.png" alt="AMABELLEPEAU" class="navbar-logo" style="width: 38px; height: 38px; object-fit: contain;">
-        <span class="navbar-brand-text">AMABELLE<span>PEAU</span> · <small style="font-size: 13px; color: var(--color-gold); font-weight: 600;">Back-Office</small></span>
+        <span class="navbar-brand-text">AMABELLE<span>PEAU</span> Â· <small style="font-size: 13px; color: var(--color-gold); font-weight: 600;">Back-Office</small></span>
       </div>
       <div style="display: flex; align-items: center; gap: var(--space-4);">
-        <a href="../index.html" class="btn btn-ghost btn-sm" target="_blank">🌐 Voir la boutique</a>
-        <a href="../marchand/index.html" class="btn btn-ghost btn-sm">🏪 Espace Marchand</a>
+        <a href="../index.html" class="btn btn-ghost btn-sm" target="_blank">ðŸŒ Voir la boutique</a>
+        <a href="../marchand/index.html" class="btn btn-ghost btn-sm">ðŸª Espace Marchand</a>
       </div>
     </div>
   </header>
@@ -549,7 +604,7 @@
         <div class="admin-profile-badge">
           <div class="admin-avatar">AP</div>
           <div class="admin-meta">
-            <div class="admin-name">Superviseur Général</div>
+            <div class="admin-name">Superviseur GÃ©nÃ©ral</div>
             <div class="admin-status-tag">
               <span class="status-indicator-dot"></span>
               Marketplace Abidjan CI
@@ -575,11 +630,11 @@
             <span class="sidebar-badge" id="badgeProdCount">15</span>
           </button>
 
-          <div class="sidebar-section-title">MARCHANDS & AGRÉMENTS</div>
+          <div class="sidebar-section-title">MARCHANDS & AGRÃ‰MENTS</div>
           <button class="sidebar-item-btn" data-view="view-merchants" onclick="switchAdminTab('view-merchants')">
             <div class="sidebar-item-content">
               <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              <span>Marchands Agréés</span>
+              <span>Marchands AgrÃ©Ã©s</span>
             </div>
             <span class="sidebar-badge alert" id="badgePendingMerch">2</span>
           </button>
@@ -588,7 +643,7 @@
           <button class="sidebar-item-btn" data-view="view-commissions" onclick="switchAdminTab('view-commissions')">
             <div class="sidebar-item-content">
               <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              <span>Réseau & Commissions</span>
+              <span>RÃ©seau & Commissions</span>
             </div>
             <span class="sidebar-badge">15%</span>
           </button>
@@ -600,6 +655,24 @@
               <span>Codes Influenceurs</span>
             </div>
             <span class="sidebar-badge" id="badgeInfCount">4</span>
+          </button>
+
+          <div class="sidebar-section-title">PROMOTIONS & MÉDIAS</div>
+          <button class="sidebar-item-btn" data-view="view-promotions" onclick="switchAdminTab('view-promotions')">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+              <span>Bannières & Vidéos Promo</span>
+            </div>
+            <span class="sidebar-badge" id="badgePromoCount">3</span>
+          </button>
+
+          <div class="sidebar-section-title">ENGAGEMENT CLIENT</div>
+          <button class="sidebar-item-btn" data-view="view-subscribers" onclick="switchAdminTab('view-subscribers')">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <span>Abonnés & Newsletter</span>
+            </div>
+            <span class="sidebar-badge" id="badgeSubCount">3</span>
           </button>
 
           <div class="sidebar-section-title">COMMANDES & DISPATCH</div>
@@ -616,7 +689,7 @@
       <div class="sidebar-footer">
         <div class="server-status-pill">
           <span>Passerelles Wave & OM</span>
-          <span style="color:var(--color-success);font-weight:700;">● En ligne</span>
+          <span style="color:var(--color-success);font-weight:700;">â— En ligne</span>
         </div>
       </div>
     </aside>
@@ -629,7 +702,7 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Tableau de Bord & Supervision</h1>
-            <p>Vue consolidée des ventes, commissions (15%), marchands et flux logistiques à Abidjan.</p>
+            <p>Vue consolidÃ©e des ventes, commissions (15%), marchands et flux logistiques Ã  Abidjan.</p>
           </div>
           <div style="display: flex; gap: var(--space-2);">
             <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Nouveau Produit</button>
@@ -639,32 +712,32 @@
 
         <div class="stats-grid-6">
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Ventes Globales</span><span>💰</span></div>
+            <div class="stat-admin-label"><span>Ventes Globales</span><span>ðŸ’°</span></div>
             <div class="stat-admin-value" id="statOverviewSales">11 850 000 XOF</div>
-            <div class="stat-admin-sub green">↑ 18.4% ce mois</div>
+            <div class="stat-admin-sub green">â†‘ 18.4% ce mois</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Commissions (15%)</span><span>💎</span></div>
+            <div class="stat-admin-label"><span>Commissions (15%)</span><span>ðŸ’Ž</span></div>
             <div class="stat-admin-value" style="color:var(--color-gold);" id="statOverviewComm">1 777 500 XOF</div>
             <div class="stat-admin-sub green">Revenu net plateforme</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Commandes</span><span>📦</span></div>
+            <div class="stat-admin-label"><span>Commandes</span><span>ðŸ“¦</span></div>
             <div class="stat-admin-value" id="statOverviewOrders">147</div>
-            <div class="stat-admin-sub blue">En Côte d'Ivoire</div>
+            <div class="stat-admin-sub blue">En CÃ´te d'Ivoire</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Marchands Actifs</span><span>🏪</span></div>
+            <div class="stat-admin-label"><span>Marchands Actifs</span><span>ðŸª</span></div>
             <div class="stat-admin-value" id="statOverviewMerchants">6</div>
-            <div class="stat-admin-sub green">Boutiques certifiées</div>
+            <div class="stat-admin-sub green">Boutiques certifiÃ©es</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>En Attente KYC</span><span>⏳</span></div>
+            <div class="stat-admin-label"><span>En Attente KYC</span><span>â³</span></div>
             <div class="stat-admin-value" style="color:#E67E22;" id="statOverviewPending">2</div>
-            <div class="stat-admin-sub orange">Dossiers à agréer</div>
+            <div class="stat-admin-sub orange">Dossiers Ã  agrÃ©er</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Produits Actifs</span><span>🌿</span></div>
+            <div class="stat-admin-label"><span>Produits Actifs</span><span>ðŸŒ¿</span></div>
             <div class="stat-admin-value" id="statOverviewProds">15</div>
             <div class="stat-admin-sub green">Savonnerie & Soins</div>
           </div>
@@ -675,13 +748,13 @@
           <div class="admin-card-header">
             <h2 class="admin-card-title" style="color:var(--color-gold);">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              Calculateur Automatique de Répartition (15% Commission)
+              Calculateur Automatique de RÃ©partition (15% Commission)
             </h2>
-            <span style="font-size:12px;color:rgba(255,255,255,0.7);">Règle commerciale MVP validée</span>
+            <span style="font-size:12px;color:rgba(255,255,255,0.7);">RÃ¨gle commerciale MVP validÃ©e</span>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4);align-items:center;">
             <div>
-              <label class="form-label" style="color:rgba(255,255,255,0.8);">Volume de Vente à Simuler (XOF)</label>
+              <label class="form-label" style="color:rgba(255,255,255,0.8);">Volume de Vente Ã  Simuler (XOF)</label>
               <input type="number" id="calcInputVolume" class="form-input" value="1000000" step="50000" oninput="calculateCommissionBreakdown()" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(201,168,76,0.5);">
             </div>
             <div style="background:rgba(0,0,0,0.3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);border:1px solid rgba(201,168,76,0.3);">
@@ -698,14 +771,14 @@
         <!-- Recent Activity Quick Tables -->
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">📦 Dernières Commandes Traitées</h2>
-            <button class="btn-action" onclick="switchAdminTab('view-orders')">Voir toutes les commandes →</button>
+            <h2 class="admin-card-title">ðŸ“¦ DerniÃ¨res Commandes TraitÃ©es</h2>
+            <button class="btn-action" onclick="switchAdminTab('view-orders')">Voir toutes les commandes â†’</button>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>N° Commande</th>
+                  <th>NÂ° Commande</th>
                   <th>Client</th>
                   <th>Commune</th>
                   <th>Produits</th>
@@ -725,10 +798,10 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Catalogue & Maintenance Produits</h1>
-            <p>Gérez les stocks, prix, compositions et visuels officiels (ETS Marie Andrea, AMABELLEBARBE, AMAFLEURDEPEAU).</p>
+            <p>GÃ©rez les stocks, prix, compositions et visuels officiels (ETS Marie Andrea, AMABELLEBARBE, AMAFLEURDEPEAU).</p>
           </div>
           <div style="display:flex;gap:var(--space-2);">
-            <button class="btn btn-outline btn-sm" onclick="resetProductDefaults()">🔄 Réinitialiser Données Initiales</button>
+            <button class="btn btn-outline btn-sm" onclick="resetProductDefaults()">ðŸ”„ RÃ©initialiser DonnÃ©es Initiales</button>
             <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Ajouter un Produit</button>
           </div>
         </div>
@@ -736,11 +809,11 @@
         <div class="admin-card">
           <div class="admin-card-header">
             <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;flex:1;">
-              <input type="text" id="prodSearchInput" class="form-input" placeholder="🔍 Rechercher un produit, ingrédient..." style="max-width:320px;" oninput="filterAdminProducts()">
+              <input type="text" id="prodSearchInput" class="form-input" placeholder="ðŸ” Rechercher un produit, ingrÃ©dient..." style="max-width:320px;" oninput="filterAdminProducts()">
               <select id="prodCategoryFilter" class="form-select" style="max-width:240px;" onchange="filterAdminProducts()">
-                <option value="all">Toutes les catégories</option>
+                <option value="all">Toutes les catÃ©gories</option>
                 <option value="savons">Savons Artisanaux</option>
-                <option value="soins-specifiques">Soins Spécifiques & Teint</option>
+                <option value="soins-specifiques">Soins SpÃ©cifiques & Teint</option>
                 <option value="soins-dermatologiques">Soins Dermatologiques</option>
                 <option value="barbe-homme">Soins Barbe & Homme</option>
                 <option value="coffrets-cadeaux">Coffrets Cadeaux & Rituels</option>
@@ -757,9 +830,9 @@
               <thead>
                 <tr>
                   <th>Visuel</th>
-                  <th>Désignation & Poids</th>
+                  <th>DÃ©signation & Poids</th>
                   <th>Marque & Gamme</th>
-                  <th>Catégorie</th>
+                  <th>CatÃ©gorie</th>
                   <th>Prix (XOF)</th>
                   <th>Stock & Statut</th>
                   <th>Actions</th>
@@ -775,8 +848,8 @@
       <div id="view-merchants" class="admin-view-panel">
         <div class="admin-main-header">
           <div class="admin-main-title">
-            <h1>Marchands Agréés & Demandes d'Intégration</h1>
-            <p>Contrôle des boutiques partenaires, validation KYC, comptes de reversement Wave/Orange Money et commission 15%.</p>
+            <h1>Marchands AgrÃ©Ã©s & Demandes d'IntÃ©gration</h1>
+            <p>ContrÃ´le des boutiques partenaires, validation KYC, comptes de reversement Wave/Orange Money et commission 15%.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openAddMerchantModal()">+ Nouveau Marchand</button>
         </div>
@@ -784,7 +857,7 @@
         <div class="admin-card" style="border-left:4px solid #E67E22;">
           <div class="admin-card-header">
             <h2 class="admin-card-title" style="color:#D35400;">
-              ⏳ Demandes d'Agréments en Attente (KYC)
+              â³ Demandes d'AgrÃ©ments en Attente (KYC)
             </h2>
             <span class="status-badge pending" id="pendingMerchantCountBadge">2 dossiers</span>
           </div>
@@ -792,13 +865,13 @@
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Établissement</th>
+                  <th>Ã‰tablissement</th>
                   <th>Responsable</th>
                   <th>Commune / Ville</th>
-                  <th>Téléphone / WhatsApp</th>
+                  <th>TÃ©lÃ©phone / WhatsApp</th>
                   <th>Compte Wave / OM</th>
                   <th>Date Inscription</th>
-                  <th>Décision</th>
+                  <th>DÃ©cision</th>
                 </tr>
               </thead>
               <tbody id="pendingMerchantsTableBody"></tbody>
@@ -808,7 +881,7 @@
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">🏪 Marchands Agréés Actifs</h2>
+            <h2 class="admin-card-title">ðŸª Marchands AgrÃ©Ã©s Actifs</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
@@ -816,7 +889,7 @@
                 <tr>
                   <th>Boutique</th>
                   <th>Responsable</th>
-                  <th>Catégorie Principale</th>
+                  <th>CatÃ©gorie Principale</th>
                   <th>Localisation</th>
                   <th>Volume Ventes</th>
                   <th>Commission</th>
@@ -834,30 +907,30 @@
       <div id="view-commissions" class="admin-view-panel">
         <div class="admin-main-header">
           <div class="admin-main-title">
-            <h1>Réseau Commercial & Suivi des Commissions</h1>
-            <p>Gestion des représentants par commune, ventilation du chiffre d'affaires et reversements Wave / Orange Money.</p>
+            <h1>RÃ©seau Commercial & Suivi des Commissions</h1>
+            <p>Gestion des reprÃ©sentants par commune, ventilation du chiffre d'affaires et reversements Wave / Orange Money.</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddRepModal()">+ Nouveau Représentant</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddRepModal()">+ Nouveau ReprÃ©sentant</button>
         </div>
 
         <div class="stats-grid-6">
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Ventes Réseau</span><span>📈</span></div>
+            <div class="stat-admin-label"><span>Ventes RÃ©seau</span><span>ðŸ“ˆ</span></div>
             <div class="stat-admin-value" id="statRepTotalSales">8 700 000 XOF</div>
-            <div class="stat-admin-sub green">Par les représentants</div>
+            <div class="stat-admin-sub green">Par les reprÃ©sentants</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Commissions Dues</span><span>💎</span></div>
+            <div class="stat-admin-label"><span>Commissions Dues</span><span>ðŸ’Ž</span></div>
             <div class="stat-admin-value" style="color:var(--color-gold);" id="statRepTotalDue">1 305 000 XOF</div>
-            <div class="stat-admin-sub green">Barème 15%</div>
+            <div class="stat-admin-sub green">BarÃ¨me 15%</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Montants Versés</span><span>✅</span></div>
+            <div class="stat-admin-label"><span>Montants VersÃ©s</span><span>âœ…</span></div>
             <div class="stat-admin-value" style="color:#27AE60;" id="statRepTotalPaid">1 000 000 XOF</div>
             <div class="stat-admin-sub green">Via Wave & OM</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Solde à Décaisser</span><span>⏳</span></div>
+            <div class="stat-admin-label"><span>Solde Ã  DÃ©caisser</span><span>â³</span></div>
             <div class="stat-admin-value" style="color:#E74C3C;" id="statRepTotalPending">305 000 XOF</div>
             <div class="stat-admin-sub orange">En attente de paiement</div>
           </div>
@@ -865,20 +938,20 @@
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">👥 Réseau des Représentants & Mandataires</h2>
+            <h2 class="admin-card-title">ðŸ‘¥ RÃ©seau des ReprÃ©sentants & Mandataires</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Nom du Représentant</th>
+                  <th>Nom du ReprÃ©sentant</th>
                   <th>Zone / Commune</th>
-                  <th>Téléphone</th>
+                  <th>TÃ©lÃ©phone</th>
                   <th>Nb Ventes</th>
                   <th>Volume Ventes</th>
                   <th>Commission Due (15%)</th>
-                  <th>Déjà Versé</th>
-                  <th>Solde Dû</th>
+                  <th>DÃ©jÃ  VersÃ©</th>
+                  <th>Solde DÃ»</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -893,27 +966,27 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Ambassadeurs, Influenceurs & Codes Promo</h1>
-            <p>Créez et suivez l'efficacité des codes promotionnels et des commissions d'affiliation.</p>
+            <p>CrÃ©ez et suivez l'efficacitÃ© des codes promotionnels et des commissions d'affiliation.</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddInfluencerModal()">+ Créer un Code Promo</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddInfluencerModal()">+ CrÃ©er un Code Promo</button>
         </div>
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">🌟 Codes Promo & Tracking Affiliation</h2>
+            <h2 class="admin-card-title">ðŸŒŸ Codes Promo & Tracking Affiliation</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
                   <th>Code Promo</th>
-                  <th>Influenceur / Créateur</th>
-                  <th>Réseaux Sociaux</th>
+                  <th>Influenceur / CrÃ©ateur</th>
+                  <th>RÃ©seaux Sociaux</th>
                   <th>Remise Client</th>
                   <th>Commission</th>
                   <th>Utilisations</th>
-                  <th>Ventes Générées</th>
-                  <th>Gains Cumulés</th>
+                  <th>Ventes GÃ©nÃ©rÃ©es</th>
+                  <th>Gains CumulÃ©s</th>
                   <th>Statut</th>
                   <th>Actions</th>
                 </tr>
@@ -929,30 +1002,133 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Gestion des Commandes & Ventes</h1>
-            <p>Suivi en direct des règlements Wave, Orange Money et dispatch de livraison sur Abidjan.</p>
+            <p>Suivi en direct des rÃ¨glements Wave, Orange Money et dispatch de livraison sur Abidjan.</p>
           </div>
         </div>
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">📋 Toutes les Commandes Récents</h2>
+            <h2 class="admin-card-title">ðŸ“‹ Toutes les Commandes RÃ©cents</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>N° Commande</th>
+                  <th>NÂ° Commande</th>
                   <th>Date & Heure</th>
                   <th>Client</th>
                   <th>Commune / Adresse</th>
-                  <th>Détail Articles</th>
+                  <th>DÃ©tail Articles</th>
                   <th>Total TTC</th>
-                  <th>Règlement</th>
+                  <th>RÃ¨glement</th>
                   <th>Statut Commande</th>
                   <th>Dispatch</th>
                 </tr>
               </thead>
               <tbody id="ordersFullTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 7: PROMOTIONS, BANNERS & SHORT VIDEOS -->
+      <div id="view-promotions" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Bannières, Vidéos & Publicités Promotionnelles</h1>
+            <p>Téléchargez et diffusez des bannières visuelles, spots vidéo courts et encarts promotionnels sur la marketplace.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddPromoModal()">+ Nouvelle Promotion / Vidéo</button>
+        </div>
+
+        <div class="stats-grid-4">
+          <div class="admin-card">
+            <div class="stat-label">Total Campagnes</div>
+            <div class="stat-value" id="statPromoTotal">3</div>
+            <div class="stat-change" style="color:var(--color-green);">Actives sur le site</div>
+          </div>
+          <div class="admin-card">
+            <div class="stat-label">Bannières Visuelles</div>
+            <div class="stat-value" id="statPromoBanners">2</div>
+            <div class="stat-change" style="color:var(--color-gold);">Affichage prioritaire</div>
+          </div>
+          <div class="admin-card">
+            <div class="stat-label">Spots Vidéo Produits</div>
+            <div class="stat-value" id="statPromoVideos">1</div>
+            <div class="stat-change" style="color:#2980B9;">Format Réel / Démo</div>
+          </div>
+          <div class="admin-card">
+            <div class="stat-label">Taux d'Interaction</div>
+            <div class="stat-value" style="color:var(--color-gold);">18.4%</div>
+            <div class="stat-change" style="color:var(--color-green);">Visites converties</div>
+          </div>
+        </div>
+
+        <div class="admin-card" style="margin-top:var(--space-6);">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">?? Campagnes & Médias Actifs</h2>
+          </div>
+          <div id="promotionsGridContainer" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-6);padding:var(--space-4);">
+            <!-- Dynamic promotions cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 8: NEWSLETTER & VIP SUBSCRIBERS -->
+      <div id="view-subscribers" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>Abonnés & Inscriptions Newsletter VIP</h1>
+            <p>Membres inscrits au Cercle Beauté pour les nouveautés, offres privilèges et futurs développements.</p>
+          </div>
+          <div style="display:flex;gap:var(--space-3);">
+            <button class="btn btn-outline btn-sm" onclick="copyAllSubscriberEmails()">?? Copier tous les emails</button>
+            <button class="btn btn-primary btn-sm" onclick="exportSubscribersCSV()">?? Exporter CSV</button>
+          </div>
+        </div>
+
+        <div class="stats-grid-4">
+          <div class="admin-card">
+            <div class="stat-label">Total Inscrits VIP</div>
+            <div class="stat-value" id="statSubTotal">0</div>
+            <div class="stat-change" style="color:var(--color-green);">+12% cette semaine</div>
+          </div>
+          <div class="admin-card">
+            <div class="stat-label">Intérêt Soins Teint</div>
+            <div class="stat-value" id="statSubTeint">0</div>
+            <div class="stat-change">Savons dermatologiques</div>
+          </div>
+          <div class="admin-card">
+            <div class="stat-label">Intérêt Soins Homme</div>
+            <div class="stat-value" id="statSubBarbe">0</div>
+            <div class="stat-change">AMABELLEBARBE</div>
+          </div>
+          <div class="admin-card">
+            <div class="stat-label">Numéros WhatsApp Recueillis</div>
+            <div class="stat-value" id="statSubWhatsapp" style="color:var(--color-gold);">0</div>
+            <div class="stat-change" style="color:var(--color-green);">Canal direct CI</div>
+          </div>
+        </div>
+
+        <div class="admin-card" style="margin-top:var(--space-6);">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">?? Répertoire des Inscrits</h2>
+            <input type="text" id="subSearchInput" class="form-input" placeholder="Filtrer par nom, email ou intérêt..." style="max-width:300px;" oninput="renderAdminSubscribers()">
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Nom & Prénoms</th>
+                  <th>Adresse Email</th>
+                  <th>Téléphone / WhatsApp</th>
+                  <th>Intérêt Beauté</th>
+                  <th>Date d'Inscription</th>
+                  <th>Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="subscribersTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -974,7 +1150,7 @@
         <div class="admin-modal-body">
           <input type="hidden" id="editProdId">
           <div class="form-group">
-            <label class="form-label">Désignation du Produit *</label>
+            <label class="form-label">DÃ©signation du Produit *</label>
             <input type="text" id="prodInputName" class="form-input" placeholder="ex: Savon CLARYLEX (200 g)" required>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
@@ -989,10 +1165,10 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Catégorie *</label>
+              <label class="form-label">CatÃ©gorie *</label>
               <select id="prodInputCategory" class="form-select" required>
                 <option value="savons">Savons Artisanaux</option>
-                <option value="soins-specifiques">Soins Spécifiques & Teint</option>
+                <option value="soins-specifiques">Soins SpÃ©cifiques & Teint</option>
                 <option value="soins-dermatologiques">Soins Dermatologiques</option>
                 <option value="barbe-homme">Soins Barbe & Homme</option>
                 <option value="coffrets-cadeaux">Coffrets Cadeaux & Rituels</option>
@@ -1014,29 +1190,49 @@
               <input type="text" id="prodInputWeight" class="form-input" placeholder="200 g">
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Visuel Produit *</label>
-            <select id="prodInputImage" class="form-select">
-              <option value="assets/images/products/barbe-2.png">Savon CLARYLEX (barbe-2.png)</option>
-              <option value="assets/images/products/cat-3.png">Savon Curcuma & Henné (cat-3.png)</option>
-              <option value="assets/images/products/cat-5.png">Savon Aloès (cat-5.png)</option>
-              <option value="assets/images/products/cat-6.png">Savon Carapa (cat-6.png)</option>
-              <option value="assets/images/products/cat-7.png">Savon Tétrapleura (cat-7.png)</option>
-              <option value="assets/images/products/cat-9.png">Savon Carotte (cat-9.png)</option>
-              <option value="assets/images/products/cat-10.png">Savon Karité Brut (cat-10.png)</option>
-              <option value="assets/images/products/cat-4.png">Savon Miel Pur (cat-4.png)</option>
-              <option value="assets/images/products/amabellebarbe-kit.png">Kit Barbe AMABELLEBARBE (kit.png)</option>
-              <option value="assets/images/products/barbe-3.png">Huile Barbe (barbe-3.png)</option>
-              <option value="assets/images/products/amafleurdepeau-coffret.png">Coffret AMAFLEURDEPEAU (coffret.png)</option>
-              <option value="assets/images/products/fiche-produits.png">Fiche Produits Palette Réelle</option>
-            </select>
+                    <div class="form-group">
+            <label class="form-label">Photo du Produit * (Téléversement ou Sélection)</label>
+            <div class="upload-box" onclick="document.getElementById('prodUploadInput').click()">
+              <input type="file" id="prodUploadInput" accept="image/*" style="display:none;" onchange="handleProductImageUpload(this)">
+              <div style="font-size:24px;margin-bottom:4px;">📷</div>
+              <div style="font-size:12px;font-weight:700;color:var(--color-green);">Téléverser une photo (depuis l'appareil ou la caméra)</div>
+              <div style="font-size:11px;color:var(--color-text-muted);">Cliquez pour parcourir vos fichiers (PNG, JPG, WEBP)</div>
+            </div>
+            
+            <div id="prodImagePreviewWrap" class="upload-preview-wrap" style="display:none;margin-top:10px;padding:8px 12px;background:var(--color-surface-alt);border-radius:var(--radius-md);border:1px solid rgba(201,168,76,0.3);">
+              <img id="prodImagePreview" class="upload-preview-img" src="" alt="Aperçu Photo">
+              <div style="flex:1;">
+                <div style="font-size:12px;font-weight:700;color:var(--color-green);">Photo personnalisée chargée ✓</div>
+                <div id="prodImageFileName" style="font-size:11px;color:var(--color-text-muted);">Prête pour affichage</div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" style="color:#e74c3c;font-size:11px;" onclick="removeProductUploadedImage()">Retirer</button>
+            </div>
+
+            <div style="margin-top:8px;">
+              <span style="font-size:11px;color:var(--color-text-muted);">Ou choisir un visuel existant du catalogue :</span>
+              <select id="prodInputImage" class="form-select" style="margin-top:4px;" onchange="handleProductPresetChange(this)">
+                <option value="assets/images/products/cat-1.png">Savon CLARYLEX (cat-1.png)</option>
+                <option value="assets/images/products/cat-2.png">Savon Curcuma &amp; Henné (cat-2.png)</option>
+                <option value="assets/images/products/cat-3.png">Savon Aloès (cat-3.png)</option>
+                <option value="assets/images/products/cat-4.png">Savon Carapa (cat-4.png)</option>
+                <option value="assets/images/products/cat-5.png">Savon Miel Pur (cat-5.png)</option>
+                <option value="assets/images/products/cat-6.png">Savon Karité Brut (cat-6.png)</option>
+                <option value="assets/images/products/cat-7.png">Sérum Capillaire Chébé (cat-7.png)</option>
+                <option value="assets/images/products/cat-8.png">Savon Charbon Bambou (cat-8.png)</option>
+                <option value="assets/images/products/cat-9.png">Savon Nicotinamide B3 (cat-9.png)</option>
+                <option value="assets/images/products/amabellebarbe-kit.png">Kit Barbe AMABELLEBARBE (kit.png)</option>
+                <option value="assets/images/products/barbe-1.png">Huile Barbe (barbe-1.png)</option>
+                <option value="assets/images/products/amafleurdepeau-coffret.png">Coffret AMAFLEURDEPEAU (coffret.png)</option>
+                <option value="assets/images/products/fiche-produits.png">Fiche Produits Palette Réelle</option>
+              </select>
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Composition & Ingrédients INCI</label>
-            <input type="text" id="prodInputComposition" class="form-input" placeholder="Palmiste, Karité, Miel, Parfum...">
+            <label class="form-label">Composition & IngrÃ©dients INCI</label>
+            <input type="text" id="prodInputComposition" class="form-input" placeholder="Palmiste, KaritÃ©, Miel, Parfum...">
           </div>
           <div class="form-group">
-            <label class="form-label">Vertus & Propriétés Thérapeutiques</label>
+            <label class="form-label">Vertus & PropriÃ©tÃ©s ThÃ©rapeutiques</label>
             <textarea id="prodInputVertus" class="form-textarea" rows="2" placeholder="Clarifiant, anti-taches, tonifiant, cicatrisant..."></textarea>
           </div>
         </div>
@@ -1063,7 +1259,7 @@
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">Nom du Gérant *</label>
+              <label class="form-label">Nom du GÃ©rant *</label>
               <input type="text" id="merchInputOwner" class="form-input" placeholder="ex: Amadou Bamba" required>
             </div>
             <div class="form-group">
@@ -1073,22 +1269,52 @@
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">Téléphone / WhatsApp *</label>
+              <label class="form-label">TÃ©lÃ©phone / WhatsApp *</label>
               <input type="text" id="merchInputPhone" class="form-input" placeholder="+225 07..." required>
             </div>
             <div class="form-group">
-              <label class="form-label">Numéro Reversement Wave / OM *</label>
+              <label class="form-label">NumÃ©ro Reversement Wave / OM *</label>
               <input type="text" id="merchInputWave" class="form-input" placeholder="+225 07..." required>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Catégorie Spécialisée</label>
-            <input type="text" id="merchInputCategory" class="form-input" placeholder="ex: Beurres bruts, Savons saponifiés...">
+            <label class="form-label">CatÃ©gorie SpÃ©cialisÃ©e</label>
+            <input type="text" id="merchInputCategory" class="form-input" placeholder="ex: Beurres bruts, Savons saponifiÃ©s...">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Logo de la Boutique (Icône carrée/ronde)</label>
+              <div class="upload-box" onclick="document.getElementById('merchLogoInput').click()">
+                <input type="file" id="merchLogoInput" accept="image/*" style="display:none;" onchange="handleMerchantLogoUpload(this)">
+                <div style="font-size:20px;">🏢</div>
+                <div style="font-size:11px;font-weight:700;color:var(--color-green);">Téléverser le Logo</div>
+              </div>
+              <div id="merchLogoPreviewWrap" class="upload-preview-wrap" style="display:none;margin-top:6px;">
+                <img id="merchLogoPreview" class="upload-preview-img" src="" alt="Logo">
+                <button type="button" class="btn btn-ghost btn-sm" style="color:#e74c3c;font-size:11px;" onclick="removeMerchantLogo()">Retirer</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bannière de Couverture (Hero Page)</label>
+              <div class="upload-box" onclick="document.getElementById('merchBannerInput').click()">
+                <input type="file" id="merchBannerInput" accept="image/*" style="display:none;" onchange="handleMerchantBannerUpload(this)">
+                <div style="font-size:20px;">🖼️</div>
+                <div style="font-size:11px;font-weight:700;color:var(--color-green);">Téléverser la Bannière</div>
+              </div>
+              <div id="merchBannerPreviewWrap" class="upload-preview-wrap" style="display:none;margin-top:6px;">
+                <img id="merchBannerPreview" class="upload-preview-img" style="width:100px;height:45px;" src="" alt="Bannière">
+                <button type="button" class="btn btn-ghost btn-sm" style="color:#e74c3c;font-size:11px;" onclick="removeMerchantBanner()">Retirer</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Présentation / Bio de l'Artisan</label>
+            <textarea id="merchInputDesc" class="form-textarea" rows="2" placeholder="Savoir-faire, histoire de la marque, ingrédients phares..."></textarea>
           </div>
         </div>
         <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
           <button type="button" class="btn btn-ghost btn-sm" onclick="closeMerchantModal()">Annuler</button>
-          <button type="submit" class="btn btn-primary btn-sm">Agréer le Marchand</button>
+          <button type="submit" class="btn btn-primary btn-sm">AgrÃ©er le Marchand</button>
         </div>
       </form>
     </div>
@@ -1105,12 +1331,12 @@
         <div class="admin-modal-body">
           <input type="hidden" id="payoutRepId">
           <div class="form-group">
-            <label class="form-label">Bénéficiaire</label>
+            <label class="form-label">BÃ©nÃ©ficiaire</label>
             <input type="text" id="payoutRepName" class="form-input" readonly style="background:var(--color-surface-alt);font-weight:700;">
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">Montant à Verser (XOF) *</label>
+              <label class="form-label">Montant Ã  Verser (XOF) *</label>
               <input type="number" id="payoutAmountInput" class="form-input" required>
             </div>
             <div class="form-group">
@@ -1123,7 +1349,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Référence Transaction / ID Reçu</label>
+            <label class="form-label">RÃ©fÃ©rence Transaction / ID ReÃ§u</label>
             <input type="text" id="payoutRefInput" class="form-input" placeholder="ex: WAVE-CI-998273">
           </div>
         </div>
@@ -1139,13 +1365,13 @@
   <div class="admin-modal-overlay" id="modalInfluencerOverlay">
     <div class="admin-modal">
       <div class="admin-modal-header">
-        <h3 class="admin-modal-title">Créer un Code Promo Influenceur</h3>
+        <h3 class="admin-modal-title">CrÃ©er un Code Promo Influenceur</h3>
         <button class="admin-modal-close" onclick="closeInfluencerModal()">&times;</button>
       </div>
       <form id="influencerForm" onsubmit="handleInfluencerFormSubmit(event)">
         <div class="admin-modal-body">
           <div class="form-group">
-            <label class="form-label">Code Promo Souhaité *</label>
+            <label class="form-label">Code Promo SouhaitÃ© *</label>
             <input type="text" id="infInputCode" class="form-input" placeholder="ex: GLOW2026" style="text-transform:uppercase;font-family:monospace;font-weight:700;" required>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
@@ -1178,7 +1404,84 @@
   </div>
 
   <!-- Toast Container -->
-  <div class="admin-toast-container" id="adminToastContainer"></div>
+    <!-- Modal Promotion / Vidéo / Bannière -->
+  <div class="admin-modal-overlay" id="modalPromoOverlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalPromoTitle">Nouvelle Campagne Promotionnelle</h3>
+        <button class="admin-modal-close" onclick="closePromoModal()">&times;</button>
+      </div>
+      <form id="promoForm" onsubmit="handlePromoFormSubmit(event)">
+        <div class="admin-modal-body">
+          <input type="hidden" id="editPromoId">
+          <div class="form-group">
+            <label class="form-label">Titre de la Promotion / Campagne *</label>
+            <input type="text" id="promoInputTitle" class="form-input" placeholder="ex: Spotlight : Rituel Barbe AMABELLEBARBE" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sous-titre / Accroche Promotionnelle</label>
+            <input type="text" id="promoInputSubtitle" class="form-input" placeholder="ex: Découvrez notre huile 100% naturelle en action">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Type de Campagne *</label>
+              <select id="promoInputType" class="form-select" onchange="handlePromoTypeChange(this.value)" required>
+                <option value="banner">Bannière Graphique (Image)</option>
+                <option value="video">Spot Vidéo Court / Réel</option>
+                <option value="advert">Encart Publicitaire / Offre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Badge Promotionnel</label>
+              <input type="text" id="promoInputBadge" class="form-input" placeholder="ex: Exclusivité, -10%, Démo">
+            </div>
+          </div>
+
+          <!-- Image / Poster upload -->
+          <div class="form-group" id="promoImageSection">
+            <label class="form-label">Image de la Bannière / Affiche Vidéo *</label>
+            <div class="upload-box" onclick="document.getElementById('promoMediaUpload').click()">
+              <input type="file" id="promoMediaUpload" accept="image/*" style="display:none;" onchange="handlePromoMediaUpload(this)">
+              <div style="font-size:22px;">🖼️</div>
+              <div style="font-size:12px;font-weight:700;color:var(--color-green);">Téléverser l'image (PNG, JPG, WEBP)</div>
+            </div>
+            <div id="promoMediaPreviewWrap" class="upload-preview-wrap" style="display:none;margin-top:6px;">
+              <img id="promoMediaPreview" class="upload-preview-img" style="width:90px;height:50px;" src="" alt="Aperçu">
+              <button type="button" class="btn btn-ghost btn-sm" style="color:#e74c3c;" onclick="removePromoMedia()">Retirer</button>
+            </div>
+          </div>
+
+          <!-- Video upload / URL section -->
+          <div class="form-group" id="promoVideoSection" style="display:none;">
+            <label class="form-label">Fichier Vidéo (MP4, WEBM) ou Lien Vidéo Direct</label>
+            <div class="upload-box" onclick="document.getElementById('promoVideoUpload').click()">
+              <input type="file" id="promoVideoUpload" accept="video/mp4,video/webm" style="display:none;" onchange="handlePromoVideoUpload(this)">
+              <div style="font-size:22px;">🎬</div>
+              <div style="font-size:12px;font-weight:700;color:var(--color-green);">Téléverser un court spot vidéo (max 20MB)</div>
+            </div>
+            <div id="promoVideoPreviewWrap" style="display:none;margin-top:6px;">
+              <video id="promoVideoPreview" controls style="max-width:100%;max-height:140px;border-radius:var(--radius-md);"></video>
+              <button type="button" class="btn btn-ghost btn-sm" style="color:#e74c3c;" onclick="removePromoVideo()">Retirer la vidéo</button>
+            </div>
+            <div style="margin-top:6px;">
+              <span style="font-size:11px;color:var(--color-text-muted);">Ou URL vidéo externe :</span>
+              <input type="url" id="promoInputVideoUrl" class="form-input" placeholder="https://..." style="margin-top:2px;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Lien de Destination / Clic</label>
+            <input type="text" id="promoInputTarget" class="form-input" placeholder="ex: catalogue.html?categorie=barbe ou produit.html?id=...">
+          </div>
+        </div>
+        <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="closePromoModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary btn-sm">Publier la Campagne</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<div class="admin-toast-container" id="adminToastContainer"></div>
 
   <!-- Scripts -->
   <script src="../js/products-data.js"></script>
@@ -1191,7 +1494,7 @@
       if (sessionStorage.getItem(SESSION_KEY) !== 'granted') {
         var attempt = prompt('AMABELLEPEAU Administration\n\nVeuillez saisir le mot de passe administrateur :');
         if (attempt === null || attempt !== ADMIN_PASS) {
-          alert('Mot de passe incorrect. Accès refusé.');
+          alert('Mot de passe incorrect. AccÃ¨s refusÃ©.');
           window.location.href = '../index.html';
           throw new Error('Auth failed');
         }
@@ -1203,7 +1506,7 @@
       const container = document.getElementById('adminToastContainer');
       const toast = document.createElement('div');
       toast.className = 'admin-toast';
-      toast.innerHTML = `<span>${isSuccess ? '✅' : '⚠️'}</span><span>${msg}</span>`;
+      toast.innerHTML = `<span>${isSuccess ? 'âœ…' : 'âš ï¸'}</span><span>${msg}</span>`;
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3500);
     }
@@ -1226,6 +1529,8 @@
       if (viewId === 'view-commissions') renderAdminRepresentatives();
       if (viewId === 'view-influencers') renderAdminInfluencers();
       if (viewId === 'view-orders') renderAdminOrders();
+      if (viewId === 'view-promotions') renderAdminPromotions();
+      if (viewId === 'view-subscribers') renderAdminSubscribers();
 
       window.location.hash = viewId.replace('view-', '');
     }
@@ -1308,8 +1613,8 @@
           </td>
           <td>
             <div style="display:flex;gap:4px;">
-              <button class="btn-action" onclick="editProduct('${p.id}')">✏️</button>
-              <button class="btn-action btn-action-danger" onclick="deleteProduct('${p.id}')">🗑️</button>
+              <button class="btn-action" onclick="editProduct('${p.id}')">âœï¸</button>
+              <button class="btn-action btn-action-danger" onclick="deleteProduct('${p.id}')">ðŸ—‘ï¸</button>
             </div>
           </td>
         </tr>
@@ -1324,6 +1629,7 @@
       document.getElementById('modalProductTitle').textContent = 'Ajouter un Produit';
       document.getElementById('productForm').reset();
       document.getElementById('editProdId').value = '';
+      removeProductUploadedImage();
       document.getElementById('modalProductOverlay').classList.add('active');
     }
 
@@ -1348,7 +1654,39 @@
       document.getElementById('modalProductOverlay').classList.remove('active');
     }
 
-    function handleProductFormSubmit(e) {
+        // ── Product Picture Upload State & Handlers ──
+    let uploadedProductImageBase64 = null;
+
+    function handleProductImageUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 8 * 1024 * 1024) {
+        alert("L'image dépasse la limite recommandée de 8MB. Veuillez choisir une photo plus légère.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedProductImageBase64 = e.target.result;
+        document.getElementById('prodImagePreview').src = uploadedProductImageBase64;
+        document.getElementById('prodImagePreviewWrap').style.display = 'flex';
+        document.getElementById('prodImageFileName').textContent = file.name;
+        showAdminToast('Photo personnalisée chargée ✓');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeProductUploadedImage() {
+      uploadedProductImageBase64 = null;
+      const inp = document.getElementById('prodUploadInput');
+      if (inp) inp.value = '';
+      const wrap = document.getElementById('prodImagePreviewWrap');
+      if (wrap) wrap.style.display = 'none';
+    }
+
+    function handleProductPresetChange(select) {
+      removeProductUploadedImage();
+    }
+function handleProductFormSubmit(e) {
       e.preventDefault();
       const editId = document.getElementById('editProdId').value;
       const data = {
@@ -1360,7 +1698,7 @@
         price: Number(document.getElementById('prodInputPrice').value),
         stock: Number(document.getElementById('prodInputStock').value),
         weight: document.getElementById('prodInputWeight').value || '200 g',
-        image: document.getElementById('prodInputImage').value,
+        image: uploadedProductImageBase64 || document.getElementById('prodInputImage').value,
         composition: document.getElementById('prodInputComposition').value,
         vertus: document.getElementById('prodInputVertus').value,
         status: 'in_stock'
@@ -1368,10 +1706,10 @@
 
       if (editId) {
         ProductStore.update(editId, data);
-        showAdminToast('Produit mis à jour avec succès');
+        showAdminToast('Produit mis Ã  jour avec succÃ¨s');
       } else {
         ProductStore.add(data);
-        showAdminToast('Nouveau produit ajouté au catalogue');
+        showAdminToast('Nouveau produit ajoutÃ© au catalogue');
       }
 
       closeProductModal();
@@ -1382,16 +1720,16 @@
     function deleteProduct(id) {
       if (confirm('Voulez-vous vraiment supprimer ce produit de la marketplace ?')) {
         ProductStore.remove(id);
-        showAdminToast('Produit supprimé', false);
+        showAdminToast('Produit supprimÃ©', false);
         renderAdminProducts();
         renderOverview();
       }
     }
 
     function resetProductDefaults() {
-      if (confirm('Réinitialiser le catalogue avec les 15 produits officiels ETS Marie Andrea & AMABELLEBARBE ?')) {
+      if (confirm('RÃ©initialiser le catalogue avec les 15 produits officiels ETS Marie Andrea & AMABELLEBARBE ?')) {
         ProductStore.resetDefaults();
-        showAdminToast('Catalogue officiel réinitialisé');
+        showAdminToast('Catalogue officiel rÃ©initialisÃ©');
         renderAdminProducts();
         renderOverview();
       }
@@ -1407,7 +1745,7 @@
 
       const pendingBody = document.getElementById('pendingMerchantsTableBody');
       if (pending.length === 0) {
-        pendingBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:24px;">Aucun dossier en attente d'agrément.</td></tr>`;
+        pendingBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:24px;">Aucun dossier en attente d'agrÃ©ment.</td></tr>`;
       } else {
         pendingBody.innerHTML = pending.map(m => `
           <tr>
@@ -1419,8 +1757,8 @@
             <td>${m.joinedDate}</td>
             <td>
               <div style="display:flex;gap:6px;">
-                <button class="btn-action btn-action-primary" onclick="approveMerchant('${m.id}')">✓ Agréer</button>
-                <button class="btn-action btn-action-danger" onclick="rejectMerchant('${m.id}')">✕ Refuser</button>
+                <button class="btn-action btn-action-primary" onclick="approveMerchant('${m.id}')">âœ“ AgrÃ©er</button>
+                <button class="btn-action btn-action-danger" onclick="rejectMerchant('${m.id}')">âœ• Refuser</button>
               </div>
             </td>
           </tr>
@@ -1449,7 +1787,7 @@
 
     function approveMerchant(id) {
       AdminStore.updateMerchantStatus(id, 'approved');
-      showAdminToast('Marchand agréé avec succès !');
+      showAdminToast('Marchand agrÃ©Ã© avec succÃ¨s !');
       renderAdminMerchants();
       renderOverview();
     }
@@ -1457,7 +1795,7 @@
     function rejectMerchant(id) {
       if (confirm('Rejeter la demande de ce marchand ?')) {
         AdminStore.deleteMerchant(id);
-        showAdminToast('Demande rejetée', false);
+        showAdminToast('Demande rejetÃ©e', false);
         renderAdminMerchants();
         renderOverview();
       }
@@ -1479,7 +1817,52 @@
     function closeMerchantModal() {
       document.getElementById('modalMerchantOverlay').classList.remove('active');
     }
-    function handleMerchantFormSubmit(e) {
+        // ── Merchant Logo & Banner Upload State & Handlers ──
+    let uploadedMerchantLogoBase64 = null;
+    let uploadedMerchantBannerBase64 = null;
+
+    function handleMerchantLogoUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedMerchantLogoBase64 = e.target.result;
+        document.getElementById('merchLogoPreview').src = uploadedMerchantLogoBase64;
+        document.getElementById('merchLogoPreviewWrap').style.display = 'flex';
+        showAdminToast('Logo marchand chargé ✓');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeMerchantLogo() {
+      uploadedMerchantLogoBase64 = null;
+      const inp = document.getElementById('merchLogoInput');
+      if (inp) inp.value = '';
+      const wrap = document.getElementById('merchLogoPreviewWrap');
+      if (wrap) wrap.style.display = 'none';
+    }
+
+    function handleMerchantBannerUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedMerchantBannerBase64 = e.target.result;
+        document.getElementById('merchBannerPreview').src = uploadedMerchantBannerBase64;
+        document.getElementById('merchBannerPreviewWrap').style.display = 'flex';
+        showAdminToast('Bannière marchand chargée ✓');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeMerchantBanner() {
+      uploadedMerchantBannerBase64 = null;
+      const inp = document.getElementById('merchBannerInput');
+      if (inp) inp.value = '';
+      const wrap = document.getElementById('merchBannerPreviewWrap');
+      if (wrap) wrap.style.display = 'none';
+    }
+function handleMerchantFormSubmit(e) {
       e.preventDefault();
       const m = {
         name: document.getElementById('merchInputName').value,
@@ -1487,13 +1870,16 @@
         commune: document.getElementById('merchInputCommune').value,
         phone: document.getElementById('merchInputPhone').value,
         waveNumber: document.getElementById('merchInputWave').value,
-        category: document.getElementById('merchInputCategory').value || 'Cosmétiques & Soins',
+        category: document.getElementById('merchInputCategory').value || 'CosmÃ©tiques & Soins',
         commissionRate: 15,
         status: 'approved',
-        salesVolume: 0
+        salesVolume: 0,
+        logo: uploadedMerchantLogoBase64 || null,
+        banner: uploadedMerchantBannerBase64 || null,
+        desc: (document.getElementById('merchInputDesc') ? document.getElementById('merchInputDesc').value : '')
       };
       AdminStore.addMerchant(m);
-      showAdminToast('Nouveau marchand agréé avec succès');
+      showAdminToast('Nouveau marchand agrÃ©Ã© avec succÃ¨s');
       closeMerchantModal();
       renderAdminMerchants();
       renderOverview();
@@ -1523,7 +1909,7 @@
           <td style="color:#27AE60;font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.paidAmount)} XOF</td>
           <td style="color:${r.pendingBalance > 0 ? '#E74C3C' : '#27AE60'};font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.pendingBalance)} XOF</td>
           <td>
-            <button class="btn-action btn-action-primary" onclick="openPayoutModal('${r.id}', '${r.name}', ${r.pendingBalance})">💳 Verser</button>
+            <button class="btn-action btn-action-primary" onclick="openPayoutModal('${r.id}', '${r.name}', ${r.pendingBalance})">ðŸ’³ Verser</button>
           </td>
         </tr>
       `).join('');
@@ -1531,7 +1917,7 @@
 
     function openPayoutModal(id, name, due) {
       document.getElementById('payoutRepId').value = id;
-      document.getElementById('payoutRepName').value = name + ' (Solde dû: ' + new Intl.NumberFormat('fr-FR').format(due) + ' XOF)';
+      document.getElementById('payoutRepName').value = name + ' (Solde dÃ»: ' + new Intl.NumberFormat('fr-FR').format(due) + ' XOF)';
       document.getElementById('payoutAmountInput').value = due > 0 ? due : 50000;
       document.getElementById('modalPayoutOverlay').classList.add('active');
     }
@@ -1543,7 +1929,7 @@
       const id = document.getElementById('payoutRepId').value;
       const amt = document.getElementById('payoutAmountInput').value;
       AdminStore.recordPayout(id, amt);
-      showAdminToast('Versement de ' + new Intl.NumberFormat('fr-FR').format(amt) + ' XOF enregistré !');
+      showAdminToast('Versement de ' + new Intl.NumberFormat('fr-FR').format(amt) + ' XOF enregistrÃ© !');
       closePayoutModal();
       renderAdminRepresentatives();
     }
@@ -1567,7 +1953,7 @@
           <td style="color:var(--color-gold);font-weight:700;">${new Intl.NumberFormat('fr-FR').format(inf.commissionEarned)} XOF</td>
           <td><span class="status-badge approved">${inf.status}</span></td>
           <td>
-            <button class="btn-action btn-action-danger" onclick="deleteInfluencer('${inf.id}')">✕ Retirer</button>
+            <button class="btn-action btn-action-danger" onclick="deleteInfluencer('${inf.id}')">âœ• Retirer</button>
           </td>
         </tr>
       `).join('');
@@ -1590,14 +1976,14 @@
         commissionPercent: Number(document.getElementById('infInputComm').value)
       };
       AdminStore.addInfluencer(inf);
-      showAdminToast('Code promo ' + inf.code + ' activé avec succès');
+      showAdminToast('Code promo ' + inf.code + ' activÃ© avec succÃ¨s');
       closeInfluencerModal();
       renderAdminInfluencers();
     }
     function deleteInfluencer(id) {
       if (confirm('Voulez-vous supprimer ce code promo ?')) {
         AdminStore.deleteInfluencer(id);
-        showAdminToast('Code supprimé');
+        showAdminToast('Code supprimÃ©');
         renderAdminInfluencers();
       }
     }
@@ -1620,13 +2006,13 @@
           <td>
             <select class="form-select" style="font-size:12px;padding:4px 8px;" onchange="updateOrderStatus('${o.id}', this.value)">
               <option value="pending_payment" ${o.orderStatus==='pending_payment'?'selected':''}>En attente</option>
-              <option value="preparing" ${o.orderStatus==='preparing'?'selected':''}>En préparation</option>
+              <option value="preparing" ${o.orderStatus==='preparing'?'selected':''}>En prÃ©paration</option>
               <option value="out_for_delivery" ${o.orderStatus==='out_for_delivery'?'selected':''}>En livraison</option>
-              <option value="delivered" ${o.orderStatus==='delivered'?'selected':''}>Livré</option>
+              <option value="delivered" ${o.orderStatus==='delivered'?'selected':''}>LivrÃ©</option>
             </select>
           </td>
           <td>
-            <button class="btn-action" onclick="showAdminToast('Colis ${o.id} assigné au coursier Yango Abidjan')">🛵 Dispatch</button>
+            <button class="btn-action" onclick="showAdminToast('Colis ${o.id} assignÃ© au coursier Yango Abidjan')">ðŸ›µ Dispatch</button>
           </td>
         </tr>
       `).join('');
@@ -1634,7 +2020,7 @@
 
     function updateOrderStatus(id, status) {
       AdminStore.updateOrderStatus(id, status);
-      showAdminToast('Statut de la commande ' + id + ' mis à jour');
+      showAdminToast('Statut de la commande ' + id + ' mis Ã  jour');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -1645,6 +2031,240 @@
         renderOverview();
       }
     });
-  </script>
+    // ── PROMOTIONS, BANNERS & SHORT VIDEOS LOGIC ──
+    let uploadedPromoMediaBase64 = null;
+    let uploadedPromoVideoBase64 = null;
+
+    function handlePromoTypeChange(type) {
+      const videoSection = document.getElementById('promoVideoSection');
+      if (videoSection) videoSection.style.display = (type === 'video') ? 'block' : 'none';
+      const label = document.getElementById('promoImageSection')?.querySelector('.form-label');
+      if (label) {
+        label.textContent = (type === 'video') ? "Affiche / Poster de la Vidéo (Couverture) *" : "Image de la Bannière / Encart *";
+      }
+    }
+
+    function handlePromoMediaUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedPromoMediaBase64 = e.target.result;
+        document.getElementById('promoMediaPreview').src = uploadedPromoMediaBase64;
+        document.getElementById('promoMediaPreviewWrap').style.display = 'flex';
+        showAdminToast('Visuel de campagne chargé ✓');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePromoMedia() {
+      uploadedPromoMediaBase64 = null;
+      const inp = document.getElementById('promoMediaUpload');
+      if (inp) inp.value = '';
+      const wrap = document.getElementById('promoMediaPreviewWrap');
+      if (wrap) wrap.style.display = 'none';
+    }
+
+    function handlePromoVideoUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 25 * 1024 * 1024) {
+        alert("La vidéo dépasse la taille maximale recommandée de 25MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedPromoVideoBase64 = e.target.result;
+        const v = document.getElementById('promoVideoPreview');
+        v.src = uploadedPromoVideoBase64;
+        document.getElementById('promoVideoPreviewWrap').style.display = 'block';
+        showAdminToast('Spot vidéo prêt pour diffusion ✓');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePromoVideo() {
+      uploadedPromoVideoBase64 = null;
+      const inp = document.getElementById('promoVideoUpload');
+      if (inp) inp.value = '';
+      const wrap = document.getElementById('promoVideoPreviewWrap');
+      if (wrap) wrap.style.display = 'none';
+    }
+
+    function openAddPromoModal() {
+      document.getElementById('promoForm').reset();
+      removePromoMedia();
+      removePromoVideo();
+      document.getElementById('editPromoId').value = '';
+      document.getElementById('modalPromoTitle').textContent = 'Nouvelle Campagne Promotionnelle';
+      handlePromoTypeChange('banner');
+      document.getElementById('modalPromoOverlay').classList.add('active');
+    }
+
+    function closePromoModal() {
+      document.getElementById('modalPromoOverlay').classList.remove('active');
+    }
+
+    function handlePromoFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editPromoId').value;
+      const type = document.getElementById('promoInputType').value;
+      const promo = {
+        title: document.getElementById('promoInputTitle').value,
+        subtitle: document.getElementById('promoInputSubtitle').value,
+        type: type,
+        badge: document.getElementById('promoInputBadge').value || 'Promotion',
+        mediaUrl: uploadedPromoMediaBase64 || 'assets/images/products/ets-marie-andrea-catalogue.jpg',
+        videoUrl: uploadedPromoVideoBase64 || document.getElementById('promoInputVideoUrl').value || '',
+        targetUrl: document.getElementById('promoInputTarget').value || 'catalogue.html',
+        active: true,
+        startDate: new Date().toISOString().split('T')[0]
+      };
+      if (editId) {
+        AdminStore.updatePromotion(editId, promo);
+        showAdminToast('Campagne mise à jour avec succès');
+      } else {
+        AdminStore.addPromotion(promo);
+        showAdminToast('Nouvelle campagne publiée sur la boutique !');
+      }
+      closePromoModal();
+      renderAdminPromotions();
+      renderOverview();
+    }
+
+    function renderAdminPromotions() {
+      const promos = AdminStore.getPromotions();
+      document.getElementById('statPromoTotal').textContent = promos.length;
+      document.getElementById('statPromoBanners').textContent = promos.filter(p => p.type === 'banner').length;
+      document.getElementById('statPromoVideos').textContent = promos.filter(p => p.type === 'video').length;
+      const badge = document.getElementById('badgePromoCount');
+      if (badge) badge.textContent = promos.length;
+
+      const container = document.getElementById('promotionsGridContainer');
+      if (!container) return;
+      if (promos.length === 0) {
+        container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--color-text-muted);">Aucune promotion enregistrée. Cliquez sur "+ Nouvelle Promotion" pour diffuser une bannière ou vidéo.</div>`;
+        return;
+      }
+      container.innerHTML = promos.map(p => `
+        <div class="promo-media-card">
+          <div class="promo-media-preview">
+            ${p.type === 'video' && p.videoUrl ? `
+              <video src="${p.videoUrl}" poster="${p.mediaUrl.startsWith('data:') ? p.mediaUrl : (p.mediaUrl.startsWith('http') ? p.mediaUrl : '../' + p.mediaUrl)}" style="width:100%;height:100%;object-fit:cover;" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
+              <div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">🎬 SPOT VIDÉO</div>
+            ` : `
+              <img src="${p.mediaUrl.startsWith('data:') ? p.mediaUrl : (p.mediaUrl.startsWith('http') ? p.mediaUrl : '../' + p.mediaUrl)}" alt="${p.title}" onerror="this.src='../assets/images/products/cat-1.png'">
+              <div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:#C9A84C;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">${p.type === 'banner' ? '🖼️ BANNIÈRE' : '📣 PUBLICITÉ'}</div>
+            `}
+            <div style="position:absolute;top:8px;right:8px;background:${p.active ? '#27AE60' : '#7f8c8d'};color:#fff;padding:2px 8px;border-radius:var(--radius-full);font-size:10px;font-weight:700;">
+              ${p.active ? '● EN LIGNE' : '○ EN PAUSE'}
+            </div>
+          </div>
+          <div style="padding:var(--space-4);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+              <span style="font-size:11px;color:var(--color-gold);font-weight:700;text-transform:uppercase;">${p.badge || 'PROMOTION'}</span>
+            </div>
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:4px;color:var(--color-black);line-height:1.3;">${p.title}</h3>
+            <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:10px;line-height:1.4;">${p.subtitle || ''}</p>
+            <div style="font-size:11px;color:var(--color-forest);margin-bottom:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              🔗 ${p.targetUrl || 'catalogue.html'}
+            </div>
+            <div style="display:flex;gap:6px;justify-content:flex-end;">
+              <button class="btn-action" onclick="togglePromoStatus('${p.id}')">${p.active ? '⏸️ Pause' : '▶️ Activer'}</button>
+              <button class="btn-action btn-action-danger" onclick="deletePromoItem('${p.id}')">🗑️</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function togglePromoStatus(id) {
+      AdminStore.togglePromotion(id);
+      renderAdminPromotions();
+      showAdminToast('Statut de la campagne modifié');
+    }
+
+    function deletePromoItem(id) {
+      if (confirm('Voulez-vous supprimer cette promotion ?')) {
+        AdminStore.deletePromotion(id);
+        renderAdminPromotions();
+        showAdminToast('Promotion supprimée', false);
+      }
+    }
+
+    // ── VIP NEWSLETTER SUBSCRIBERS LOGIC ──
+    function renderAdminSubscribers() {
+      const subs = AdminStore.getSubscribers();
+      const query = (document.getElementById('subSearchInput')?.value || '').toLowerCase();
+      const filtered = subs.filter(s =>
+        !query ||
+        (s.name && s.name.toLowerCase().includes(query)) ||
+        (s.email && s.email.toLowerCase().includes(query)) ||
+        (s.interest && s.interest.toLowerCase().includes(query)) ||
+        (s.phone && s.phone.includes(query))
+      );
+
+      document.getElementById('statSubTotal').textContent = subs.length;
+      document.getElementById('statSubTeint').textContent = subs.filter(s => (s.interest || '').toLowerCase().includes('teint') || (s.interest || '').toLowerCase().includes('savon')).length;
+      document.getElementById('statSubBarbe').textContent = subs.filter(s => (s.interest || '').toLowerCase().includes('barbe')).length;
+      document.getElementById('statSubWhatsapp').textContent = subs.filter(s => s.phone && s.phone.trim()).length;
+      const badge = document.getElementById('badgeSubCount');
+      if (badge) badge.textContent = subs.length;
+
+      const body = document.getElementById('subscribersTableBody');
+      if (!body) return;
+      if (filtered.length === 0) {
+        body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--color-text-muted);">Aucun abonné trouvé.</td></tr>`;
+        return;
+      }
+      body.innerHTML = filtered.map(s => `
+        <tr>
+          <td><strong style="color:var(--color-black);">${s.name || 'Membre VIP'}</strong></td>
+          <td><a href="mailto:${s.email}" style="color:var(--color-green);font-weight:600;text-decoration:none;">${s.email}</a></td>
+          <td><strong style="color:var(--color-gold);">${s.phone || 'Non renseigné'}</strong></td>
+          <td><span class="status-badge in_stock">${s.interest || 'Catalogue complet'}</span></td>
+          <td style="font-size:12px;color:var(--color-text-muted);">${s.subscribedAt || 'Récemment'}</td>
+          <td><span class="status-badge approved">Actif ✓</span></td>
+          <td>
+            <button class="btn-action btn-action-danger" onclick="deleteSubscriberItem('${s.id}')" title="Désabonner">✕</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function deleteSubscriberItem(id) {
+      if (confirm('Retirer cet abonné du Cercle Beauté ?')) {
+        AdminStore.deleteSubscriber(id);
+        renderAdminSubscribers();
+        renderOverview();
+        showAdminToast('Abonné retiré');
+      }
+    }
+
+    function copyAllSubscriberEmails() {
+      const subs = AdminStore.getSubscribers();
+      const emails = subs.map(s => s.email).filter(Boolean).join(', ');
+      navigator.clipboard.writeText(emails).then(() => {
+        showAdminToast(subs.length + ' emails copiés dans le presse-papiers !');
+      });
+    }
+
+    function exportSubscribersCSV() {
+      const subs = AdminStore.getSubscribers();
+      let csv = "Nom;Email;Telephone;Interet;DateInscription;Statut\n";
+      subs.forEach(s => {
+        csv += `"${s.name || ''}";"${s.email || ''}";"${s.phone || ''}";"${s.interest || ''}";"${s.subscribedAt || ''}";"${s.status || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `amabellepeau-abonnes-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showAdminToast('Fichier CSV exporté avec succès');
+    }
+
+    </script>
 </body>
 </html>

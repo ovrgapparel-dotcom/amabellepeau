@@ -248,6 +248,7 @@
 
 <script src="js/cart.js"></script>
 <script src="js/products-data.js"></script>
+<script src="js/admin-store.js"></script>
 <script>
   // ── Merchant data catalogue ──
   var MERCHANTS = {
@@ -381,20 +382,41 @@
   };
 
   // ── Read URL param ──
-  var slug = new URLSearchParams(window.location.search).get('id') || 'maison-botanique';
-  var m = MERCHANTS[slug] || MERCHANTS['maison-botanique'];
+  var slug = new URLSearchParams(window.location.search).get('id') || 'ets-marie-andrea';
+  var m = MERCHANTS[slug] || MERCHANTS['ets-marie-andrea'] || MERCHANTS['maison-botanique'];
 
-  // ── Populate hero ──
+  // Look up also in AdminStore for dynamic/uploaded merchant data
+  if (typeof AdminStore !== 'undefined') {
+    var adminMerchants = AdminStore.getMerchants();
+    var foundAdmin = adminMerchants.find(function(x) {
+      return x.slug === slug || x.id === slug || (x.name && x.name.toLowerCase().includes(slug.replace(/-/g, ' ')));
+    });
+    if (foundAdmin) {
+      m = Object.assign({}, m, foundAdmin);
+    }
+  }
+
+  // Populate hero with Banner & Logo if available
+  var heroEl = document.querySelector('.merchant-hero');
+  if (heroEl && m.banner) {
+    heroEl.style.background = "linear-gradient(rgba(13, 26, 13, 0.82), rgba(27, 77, 30, 0.88)), url('" + m.banner + "') center/cover no-repeat";
+  }
+
   var avatarEl = document.getElementById('merchantAvatar');
-  avatarEl.textContent = m.initials;
-  avatarEl.style.background = m.gradient;
+  if (m.logo) {
+    avatarEl.innerHTML = '<img src="' + m.logo + '" alt="' + m.name + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid var(--color-gold,#C9A84C);">';
+    avatarEl.style.background = 'transparent';
+  } else {
+    avatarEl.textContent = m.initials || 'MA';
+    avatarEl.style.background = m.gradient || 'linear-gradient(135deg, #1B4D1E, #2D6B32)';
+  }
 
   document.getElementById('merchantName').textContent      = m.name;
   document.getElementById('merchantCategory').textContent  = m.category;
   document.getElementById('merchantDesc').textContent      = m.desc;
-  document.getElementById('merchantRating').textContent    = m.rating;
-  document.getElementById('merchantReviews').textContent   = m.reviews;
-  document.getElementById('merchantProducts').textContent  = m.products;
+  document.getElementById('merchantRating').textContent    = m.rating || '★ 4.9';
+  document.getElementById('merchantReviews').textContent   = m.reviews || '120';
+  document.getElementById('merchantProducts').textContent  = m.products || '15';
   document.getElementById('productsHeading').textContent   = 'Produits de ' + m.name;
   document.title = m.name + ' — AMABELLEPEAU';
 
