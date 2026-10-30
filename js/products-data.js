@@ -1357,6 +1357,14 @@ const ProductStore = {
           const customUserProducts = parsed.filter(p => !DEFAULT_PRODUCTS.some(d => d.id === p.id || String(d.id) === String(p.id)));
           const finalList = [...merged, ...customUserProducts];
           
+          // Re-hydrate any images stored in high-capacity IndexedDB
+          if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
+            finalList.forEach(p => {
+              const cached = ABPStorage.getImage('prod_img_' + p.id);
+              if (cached) p.image = cached;
+            });
+          }
+
           // Keep version tag in sync without wiping custom data
           localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
           return finalList;
@@ -1380,20 +1388,33 @@ const ProductStore = {
   },
 
   getById: function(id) {
-    return this.getAll().find(p => p.id === id || String(p.id) === String(id));
+    const p = this.getAll().find(prod => prod.id === id || String(prod.id) === String(id));
+    if (p && typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
+      const cached = ABPStorage.getImage('prod_img_' + p.id);
+      if (cached) p.image = cached;
+    }
+    return p;
   },
 
   save: function(products) {
     try {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(products));
+      if (typeof ABPStorage !== 'undefined') {
+        // Persist heavy images to IndexedDB
+        products.forEach(p => {
+          if (p.image && p.image.startsWith('data:')) {
+            ABPStorage.setImage('prod_img_' + p.id, p.image);
+          }
+        });
+        ABPStorage.safeSetItem(this.STORAGE_KEY, JSON.stringify(products));
+      } else {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(products));
+      }
+
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('abp_products_updated', { detail: products }));
       }
     } catch(e) {
       console.error('Failed to save products', e);
-      if (e.name === 'QuotaExceededError' && typeof alert !== 'undefined') {
-        alert('Erreur: Mémoire de stockage local saturée. Utilisez des photos optimisées.');
-      }
     }
   },
 
@@ -1401,6 +1422,9 @@ const ProductStore = {
     const products = this.getAll();
     if (!product.id) {
       product.id = 'prod-' + Date.now();
+    }
+    if (product.image && product.image.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+      ABPStorage.setImage('prod_img_' + product.id, product.image);
     }
     products.unshift(product);
     this.save(products);
@@ -1411,6 +1435,9 @@ const ProductStore = {
     const products = this.getAll();
     const idx = products.findIndex(p => p.id === id || String(p.id) === String(id));
     if (idx !== -1) {
+      if (data.image && data.image.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+        ABPStorage.setImage('prod_img_' + id, data.image);
+      }
       products[idx] = { ...products[idx], ...data };
       this.save(products);
       return products[idx];

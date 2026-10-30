@@ -452,67 +452,106 @@ const AdminStore = {
 
   // ── Promotions, Banners & Short Videos ──
   getPromotions: function() {
+    let list = null;
     try {
       const s = localStorage.getItem('abp_admin_promotions');
-      if (s) return JSON.parse(s);
+      if (s) list = JSON.parse(s);
     } catch(e){}
-    const defaultPromos = [
-      {
-        id: 'promo-1',
-        title: 'Offre Découverte de Bienvenue : -10% sur tout le catalogue',
-        subtitle: 'Utilisez le code promo exclusif AMABELLE10 lors de votre commande.',
-        type: 'banner', // 'banner', 'video', 'advert'
-        mediaUrl: 'assets/images/products/ets-marie-andrea-catalogue.jpg',
-        badge: 'Offre Spéciale',
-        targetUrl: 'catalogue.html',
-        active: true,
-        startDate: '2026-10-01',
-        endDate: '2026-12-31'
-      },
-      {
-        id: 'promo-2',
-        title: 'Spotlight : AMABELLEBARBE Huile 100% Naturelle',
-        subtitle: 'Découvrez la vidéo exclusive du rituel d\'entretien de barbe haut de gamme.',
-        type: 'video',
-        mediaUrl: 'assets/images/products/amabellebarbe-homme.jpg',
-        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-barber-massaging-and-grooming-a-beard-43048-large.mp4',
-        badge: 'Vidéo & Démo',
-        targetUrl: 'produit.html?id=prod-kit-barbe-amabellebarbe',
-        active: true,
-        startDate: '2026-10-15',
-        endDate: '2026-12-31'
-      },
-      {
-        id: 'promo-3',
-        title: 'Coffret Signature AMAFLEURDEPEAU Édition Limitée',
-        subtitle: 'L\'alliance du beurre de karité, du miel sauvage et du curcuma d\'exception.',
-        type: 'advert',
-        mediaUrl: 'assets/images/products/amafleurdepeau-coffret.png',
-        badge: 'Édition Prestige',
-        targetUrl: 'produit.html?id=prod-coffret-signature',
-        active: true,
-        startDate: '2026-10-20',
-        endDate: '2026-12-31'
-      }
-    ];
-    localStorage.setItem('abp_admin_promotions', JSON.stringify(defaultPromos));
-    return defaultPromos;
+
+    if (!Array.isArray(list) || list.length === 0) {
+      const defaultPromos = [
+        {
+          id: 'promo-1',
+          title: 'Offre Découverte de Bienvenue : -10% sur tout le catalogue',
+          subtitle: 'Utilisez le code promo exclusif AMABELLE10 lors de votre commande.',
+          type: 'banner', // 'banner', 'video', 'advert'
+          mediaUrl: 'assets/images/products/ets-marie-andrea-catalogue.jpg',
+          badge: 'Offre Spéciale',
+          targetUrl: 'catalogue.html',
+          active: true,
+          startDate: '2026-10-01',
+          endDate: '2026-12-31'
+        },
+        {
+          id: 'promo-2',
+          title: 'Spotlight : AMABELLEBARBE Huile 100% Naturelle',
+          subtitle: 'Découvrez la vidéo exclusive du rituel d\'entretien de barbe haut de gamme.',
+          type: 'video',
+          mediaUrl: 'assets/images/products/amabellebarbe-homme.jpg',
+          videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-barber-massaging-and-grooming-a-beard-43048-large.mp4',
+          badge: 'Vidéo & Démo',
+          targetUrl: 'produit.html?id=prod-kit-barbe-amabellebarbe',
+          active: true,
+          startDate: '2026-10-15',
+          endDate: '2026-12-31'
+        },
+        {
+          id: 'promo-3',
+          title: 'Coffret Signature AMAFLEURDEPEAU Édition Limitée',
+          subtitle: 'L\'alliance du beurre de karité, du miel sauvage et du curcuma d\'exception.',
+          type: 'advert',
+          mediaUrl: 'assets/images/products/amafleurdepeau-coffret.png',
+          badge: 'Édition Prestige',
+          targetUrl: 'produit.html?id=prod-coffret-signature',
+          active: true,
+          startDate: '2026-10-20',
+          endDate: '2026-12-31'
+        }
+      ];
+      this.savePromotions(defaultPromos);
+      return defaultPromos;
+    }
+
+    // Hydrate any images from IndexedDB
+    if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
+      list.forEach(pr => {
+        const cached = ABPStorage.getImage('promo_img_' + pr.id);
+        if (cached) pr.mediaUrl = cached;
+      });
+    }
+
+    return list;
   },
+
   savePromotions: function(data) {
-    localStorage.setItem('abp_admin_promotions', JSON.stringify(data));
+    try {
+      if (typeof ABPStorage !== 'undefined') {
+        data.forEach(pr => {
+          if (pr.mediaUrl && pr.mediaUrl.startsWith('data:')) {
+            ABPStorage.setImage('promo_img_' + pr.id, pr.mediaUrl);
+          }
+        });
+        ABPStorage.safeSetItem('abp_admin_promotions', JSON.stringify(data));
+      } else {
+        localStorage.setItem('abp_admin_promotions', JSON.stringify(data));
+      }
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('abp_promotions_updated', { detail: data }));
+      }
+    } catch (err) {
+      console.warn('savePromotions error:', err);
+    }
   },
+
   addPromotion: function(promo) {
     const list = this.getPromotions();
     if (!promo.id) promo.id = 'promo-' + Date.now();
     promo.active = promo.active !== false;
+    if (promo.mediaUrl && promo.mediaUrl.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+      ABPStorage.setImage('promo_img_' + promo.id, promo.mediaUrl);
+    }
     list.unshift(promo);
     this.savePromotions(list);
     return promo;
   },
+
   updatePromotion: function(id, data) {
     const list = this.getPromotions();
     const idx = list.findIndex(p => p.id === id);
     if (idx !== -1) {
+      if (data.mediaUrl && data.mediaUrl.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+        ABPStorage.setImage('promo_img_' + id, data.mediaUrl);
+      }
       list[idx] = { ...list[idx], ...data };
       this.savePromotions(list);
     }

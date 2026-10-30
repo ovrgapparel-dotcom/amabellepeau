@@ -1549,6 +1549,7 @@
 <div class="admin-toast-container" id="adminToastContainer"></div>
 
   <!-- Scripts -->
+  <script src="../js/storage-db.js"></script>
   <script src="../js/products-data.js"></script>
   <script src="../js/admin-store.js"></script>
   <script>
@@ -1656,8 +1657,11 @@
       return '../' + src;
     }
 
-    // High-performance client-side image compressor (converts 5MB+ to ultra-crisp ~50KB for local storage)
-    function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.85) {
+    // High-performance client-side image compressor (converts 5MB+ to ultra-crisp ~25KB for storage)
+    function compressImage(file, maxWidth = 640, maxHeight = 640, quality = 0.72) {
+      if (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) {
+        return ABPStorage.compressImage(file, maxWidth, maxHeight, quality);
+      }
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onerror = reject;
@@ -1680,6 +1684,8 @@
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, width, height);
             ctx.drawImage(img, 0, 0, width, height);
             const dataUrl = canvas.toDataURL('image/jpeg', quality);
             resolve(dataUrl);
@@ -1845,13 +1851,15 @@
       previewWrap.style.display = 'flex';
 
       try {
-        const compressed = await compressImage(file, 800, 800, 0.85);
+        const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
+          await ABPStorage.compressImage(file, 640, 640, 0.72) :
+          await compressImage(file, 640, 640, 0.72);
         uploadedProductImageBase64 = compressed;
         previewImg.src = compressed;
         fileNameEl.textContent = `${file.name} (Prête & optimisée)`;
         showAdminToast('Photo personnalisée chargée & optimisée ✓');
       } catch(err) {
-        console.error('Image compression fallback', err);
+        console.error('Image compression error', err);
         const reader = new FileReader();
         reader.onload = function(e) {
           uploadedProductImageBase64 = e.target.result;
@@ -1923,10 +1931,16 @@
       };
 
       if (editId) {
+        if (chosenImage.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+          ABPStorage.setImage('prod_img_' + editId, chosenImage);
+        }
         ProductStore.update(editId, data);
         showAdminToast('Produit mis à jour avec succès ✓');
       } else {
-        ProductStore.add(data);
+        const newP = ProductStore.add(data);
+        if (chosenImage.startsWith('data:') && typeof ABPStorage !== 'undefined' && newP && newP.id) {
+          ABPStorage.setImage('prod_img_' + newP.id, chosenImage);
+        }
         showAdminToast('Nouveau produit ajouté au catalogue ✓');
       }
 
@@ -2266,12 +2280,15 @@ function handleMerchantFormSubmit(e) {
       const file = input.files[0];
       if (!file) return;
       try {
-        const compressed = await compressImage(file, 1200, 600, 0.82);
+        const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
+          await ABPStorage.compressImage(file, 800, 420, 0.72) :
+          await compressImage(file, 800, 420, 0.72);
         uploadedPromoMediaBase64 = compressed;
         document.getElementById('promoMediaPreview').src = compressed;
         document.getElementById('promoMediaPreviewWrap').style.display = 'flex';
         showAdminToast('Visuel de campagne chargé & optimisé ✓');
       } catch(err) {
+        console.warn('Promo upload compression error', err);
         const reader = new FileReader();
         reader.onload = function(e) {
           uploadedPromoMediaBase64 = e.target.result;
@@ -2387,10 +2404,16 @@ function handleMerchantFormSubmit(e) {
         startDate: currentPromo ? (currentPromo.startDate || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0]
       };
       if (editId) {
+        if (promo.mediaUrl && promo.mediaUrl.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+          ABPStorage.setImage('promo_img_' + editId, promo.mediaUrl);
+        }
         AdminStore.updatePromotion(editId, promo);
         showAdminToast('Campagne mise à jour avec succès ✓');
       } else {
-        AdminStore.addPromotion(promo);
+        const newPromo = AdminStore.addPromotion(promo);
+        if (promo.mediaUrl && promo.mediaUrl.startsWith('data:') && typeof ABPStorage !== 'undefined' && newPromo && newPromo.id) {
+          ABPStorage.setImage('promo_img_' + newPromo.id, promo.mediaUrl);
+        }
         showAdminToast('Nouvelle campagne publiée sur la boutique !');
       }
       closePromoModal();
