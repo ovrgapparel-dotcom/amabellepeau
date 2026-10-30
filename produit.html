@@ -548,18 +548,33 @@
     const thumbsContainer = document.getElementById('galleryThumbsContainer');
     thumbsContainer.innerHTML = '';
 
-    // Build gallery thumbs - always start with the product's own image.
-    // Only add generic gallery fallbacks when there is NO custom/uploaded image.
-    const hasCustomImage = p.image && (p.image.startsWith('data:') || p.image.startsWith('http'));
-    const hasRelativeImage = p.image && !hasCustomImage;
-    const genericGallery = [
-      'assets/images/products/ets-marie-andrea-catalogue.jpg',
-      'assets/images/products/fiche-produits.png'
-    ];
-    const thumbs = [
-      p.image || 'assets/images/products/savon-clarylex.jpg',
-      ...genericGallery
-    ].filter(Boolean);
+    // Helper to safely format product image
+    function getProdImgSrc(src) {
+      if (!src) return 'assets/images/products/savon-clarylex.jpg';
+      if (typeof ABPStorage !== 'undefined' && ABPStorage.resolveImage) {
+        return ABPStorage.resolveImage(src, 'assets/images/products/savon-clarylex.jpg');
+      }
+      if (typeof src === 'string' && src.includes('data:image')) {
+        return src.substring(src.indexOf('data:image'));
+      }
+      return src;
+    }
+
+    const realImageSrc = getProdImgSrc(p.image);
+    mainImg.src = realImageSrc;
+
+    // Build gallery thumbs: if multiple images exist in p.images, use them.
+    // Otherwise show the product's authentic photo without forcing generic brochure sheets.
+    let thumbs = [];
+    if (Array.isArray(p.images) && p.images.length > 0) {
+      thumbs = p.images.map(getProdImgSrc);
+    } else {
+      thumbs = [realImageSrc];
+      // Only include certificate badge / brochure thumbnail if not already present
+      if (p.catalogBrochure) {
+        thumbs.push(p.catalogBrochure);
+      }
+    }
 
     thumbs.forEach((src, idx) => {
       const thumb = document.createElement('div');
@@ -762,6 +777,14 @@
   // Init
   document.addEventListener('DOMContentLoaded', () => {
     initProductPage();
+
+    // Re-render when IndexedDB high-resolution media cache is ready
+    window.addEventListener('abp_storage_ready', () => {
+      initProductPage();
+    });
+    window.addEventListener('abp_products_updated', () => {
+      initProductPage();
+    });
 
     // Discrete Admin Access Double-Click Handler
     const adminBtn = document.getElementById('adminDiscreteBtn');

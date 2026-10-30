@@ -2980,6 +2980,12 @@
 
     // ── 15. INITIALIZATION ON DOM READY ─────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('abp_storage_ready', () => {
+      if (typeof renderProducts === 'function') renderProducts();
+    });
+    window.addEventListener('abp_products_updated', () => {
+      if (typeof renderProducts === 'function') renderProducts();
+    });
       readURLParams();
       setupEventListeners();
       renderCatalogue();

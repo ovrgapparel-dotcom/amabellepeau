@@ -50,6 +50,12 @@
                 } else {
                   ABPStorage.ready = true;
                   window.dispatchEvent(new CustomEvent('abp_storage_ready'));
+                  // Notify stores that media cache is ready for re-hydration
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('abp_products_updated'));
+                    window.dispatchEvent(new CustomEvent('abp_promotions_updated'));
+                    window.dispatchEvent(new CustomEvent('abp_merchants_updated'));
+                  }
                   resolve();
                 }
               };
@@ -97,8 +103,35 @@
     },
 
     getImage: function(key) {
-      if (this.cache[key]) return this.cache[key];
+      if (!key) return null;
+      const cleanKey = key.startsWith('idb:') ? key.replace('idb:', '') : key;
+      if (this.cache[cleanKey]) return this.cache[cleanKey];
       return null;
+    },
+
+    /**
+     * Resolves an image source safely: handles idb: keys, data URLs (stripping accidental / prefixes),
+     * and normal URL paths without flashing or throwing errors.
+     */
+    resolveImage: function(src, fallback) {
+      const fb = fallback || 'assets/icons/brand-logo.png';
+      if (!src) return fb;
+
+      // Handle accidental leading slashes or prefixes before data:
+      if (typeof src === 'string' && src.includes('data:image')) {
+        const idx = src.indexOf('data:image');
+        return src.substring(idx);
+      }
+
+      // Handle idb: pointer
+      if (typeof src === 'string' && src.startsWith('idb:')) {
+        const key = src.replace('idb:', '');
+        const cached = this.getImage(key);
+        if (cached) return cached;
+        return fallback || fb;
+      }
+
+      return src;
     },
 
     removeImage: function(key) {

@@ -1313,11 +1313,12 @@
   <div class="admin-modal-overlay" id="modalMerchantOverlay">
     <div class="admin-modal">
       <div class="admin-modal-header">
-        <h3 class="admin-modal-title">Ajouter un Marchand</h3>
+        <h3 class="admin-modal-title" id="modalMerchantTitle">Ajouter un Marchand</h3>
         <button class="admin-modal-close" onclick="closeMerchantModal()">&times;</button>
       </div>
       <form id="merchantForm" onsubmit="handleMerchantFormSubmit(event)">
         <div class="admin-modal-body">
+          <input type="hidden" id="editMerchantId">
           <div class="form-group">
             <label class="form-label">Nom de la Boutique / Raison Sociale *</label>
             <input type="text" id="merchInputName" class="form-input" placeholder="ex: Botanica San Pedro" required>
@@ -1379,7 +1380,7 @@
         </div>
         <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
           <button type="button" class="btn btn-ghost btn-sm" onclick="closeMerchantModal()">Annuler</button>
-          <button type="submit" class="btn btn-primary btn-sm">Agréer le Marchand</button>
+          <button type="submit" class="btn btn-primary btn-sm" id="modalMerchantSubmitBtn">Agréer le Marchand</button>
         </div>
       </form>
     </div>
@@ -1645,9 +1646,28 @@
     // Helper: Safely format image URL in admin (handles base64, http, and relative ../ paths)
     function getAdminImgSrc(src) {
       if (!src) return '../assets/icons/brand-logo.png';
-      if (src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http://') || src.startsWith('https://')) {
+
+      // 1. Check for data:image anywhere in string (cleans accidental leading slash or ../)
+      if (typeof src === 'string' && src.includes('data:image')) {
+        const idx = src.indexOf('data:image');
+        return src.substring(idx);
+      }
+
+      // 2. Resolve idb: key from ABPStorage
+      if (typeof src === 'string' && src.startsWith('idb:')) {
+        if (typeof ABPStorage !== 'undefined') {
+          const cached = ABPStorage.getImage(src.replace('idb:', ''));
+          if (cached) return cached;
+        }
+        return '../assets/icons/brand-logo.png';
+      }
+
+      // 3. Absolute URLs or blobs
+      if (src.startsWith('blob:') || src.startsWith('http://') || src.startsWith('https://')) {
         return src;
       }
+
+      // 4. Relative paths
       if (src.startsWith('../')) {
         return src;
       }
@@ -2001,8 +2021,15 @@
       activeBody.innerHTML = active.map(m => `
         <tr>
           <td>
-            <strong>${m.name}</strong>
-            ${m.isOfficial ? '<span class="status-badge approved" style="margin-left:6px;font-size:9px;">Boutique Officielle</span>' : ''}
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:6px;overflow:hidden;background:#faf7f2;border:1px solid rgba(201,168,76,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                <img src="${getAdminImgSrc(m.logo || 'assets/icons/brand-logo.png')}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='../assets/icons/brand-logo.png'">
+              </div>
+              <div>
+                <strong>${m.name}</strong>
+                ${m.isOfficial ? '<span class="status-badge approved" style="margin-left:6px;font-size:9px;">Boutique Officielle</span>' : ''}
+              </div>
+            </div>
           </td>
           <td>${m.owner}</td>
           <td>${m.category}</td>
@@ -2011,7 +2038,11 @@
           <td><span class="status-badge approved">15% plateforme</span></td>
           <td><span class="status-badge approved">Actif</span></td>
           <td>
-            <button class="btn-action btn-action-danger" onclick="suspendMerchant('${m.id}')">Suspendre</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-action" title="Modifier le profil, logo & bannière" onclick="editMerchant('${m.id}')">✏️ Modifier</button>
+              <a href="../marchand.html?id=${m.slug || m.id.replace('merch-', '')}" target="_blank" class="btn-action" title="Voir la vitrine publique du marchand">👁️ Vitrine</a>
+              <button class="btn-action btn-action-danger" onclick="suspendMerchant('${m.id}')">Suspendre</button>
+            </div>
           </td>
         </tr>
       `).join('');
@@ -2044,26 +2075,81 @@
 
     function openAddMerchantModal() {
       document.getElementById('merchantForm').reset();
+      document.getElementById('editMerchantId').value = '';
+      document.getElementById('modalMerchantTitle').textContent = 'Ajouter un Marchand';
+      document.getElementById('modalMerchantSubmitBtn').textContent = 'Agréer le Marchand';
+      removeMerchantLogo();
+      removeMerchantBanner();
       document.getElementById('modalMerchantOverlay').classList.add('active');
     }
+
+    function editMerchant(id) {
+      const merchants = AdminStore.getMerchants();
+      const m = merchants.find(item => item.id === id || item.slug === id);
+      if (!m) return;
+
+      document.getElementById('editMerchantId').value = m.id;
+      document.getElementById('modalMerchantTitle').textContent = 'Modifier le Profil Marchand';
+      document.getElementById('modalMerchantSubmitBtn').textContent = 'Enregistrer les Modifications';
+
+      document.getElementById('merchInputName').value = m.name || '';
+      document.getElementById('merchInputOwner').value = m.owner || '';
+      document.getElementById('merchInputCommune').value = m.commune || '';
+      document.getElementById('merchInputPhone').value = m.phone || '';
+      document.getElementById('merchInputWave').value = m.waveNumber || '';
+      document.getElementById('merchInputCategory').value = m.category || '';
+      if (document.getElementById('merchInputDesc')) {
+        document.getElementById('merchInputDesc').value = m.desc || '';
+      }
+
+      if (m.logo) {
+        uploadedMerchantLogoBase64 = m.logo;
+        document.getElementById('merchLogoPreview').src = getAdminImgSrc(m.logo);
+        document.getElementById('merchLogoPreviewWrap').style.display = 'flex';
+      } else {
+        removeMerchantLogo();
+      }
+
+      if (m.banner) {
+        uploadedMerchantBannerBase64 = m.banner;
+        document.getElementById('merchBannerPreview').src = getAdminImgSrc(m.banner);
+        document.getElementById('merchBannerPreviewWrap').style.display = 'flex';
+      } else {
+        removeMerchantBanner();
+      }
+
+      document.getElementById('modalMerchantOverlay').classList.add('active');
+    }
+
     function closeMerchantModal() {
       document.getElementById('modalMerchantOverlay').classList.remove('active');
     }
-        // ── Merchant Logo & Banner Upload State & Handlers ──
+
+    // ── Merchant Logo & Banner Upload State & Handlers ──
     let uploadedMerchantLogoBase64 = null;
     let uploadedMerchantBannerBase64 = null;
 
-    function handleMerchantLogoUpload(input) {
+    async function handleMerchantLogoUpload(input) {
       const file = input.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        uploadedMerchantLogoBase64 = e.target.result;
-        document.getElementById('merchLogoPreview').src = uploadedMerchantLogoBase64;
+      try {
+        const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
+          await ABPStorage.compressImage(file, 400, 400, 0.75) :
+          await compressImage(file, 400, 400, 0.75);
+        uploadedMerchantLogoBase64 = compressed;
+        document.getElementById('merchLogoPreview').src = compressed;
         document.getElementById('merchLogoPreviewWrap').style.display = 'flex';
-        showAdminToast('Logo marchand chargé ✓');
-      };
-      reader.readAsDataURL(file);
+        showAdminToast('Logo marchand chargé & optimisé ✓');
+      } catch(err) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedMerchantLogoBase64 = e.target.result;
+          document.getElementById('merchLogoPreview').src = uploadedMerchantLogoBase64;
+          document.getElementById('merchLogoPreviewWrap').style.display = 'flex';
+          showAdminToast('Logo marchand chargé ✓');
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
     function removeMerchantLogo() {
@@ -2074,17 +2160,27 @@
       if (wrap) wrap.style.display = 'none';
     }
 
-    function handleMerchantBannerUpload(input) {
+    async function handleMerchantBannerUpload(input) {
       const file = input.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        uploadedMerchantBannerBase64 = e.target.result;
-        document.getElementById('merchBannerPreview').src = uploadedMerchantBannerBase64;
+      try {
+        const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
+          await ABPStorage.compressImage(file, 1000, 450, 0.75) :
+          await compressImage(file, 1000, 450, 0.75);
+        uploadedMerchantBannerBase64 = compressed;
+        document.getElementById('merchBannerPreview').src = compressed;
         document.getElementById('merchBannerPreviewWrap').style.display = 'flex';
-        showAdminToast('Bannière marchand chargée ✓');
-      };
-      reader.readAsDataURL(file);
+        showAdminToast('Bannière marchand chargée & optimisée ✓');
+      } catch(err) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedMerchantBannerBase64 = e.target.result;
+          document.getElementById('merchBannerPreview').src = uploadedMerchantBannerBase64;
+          document.getElementById('merchBannerPreviewWrap').style.display = 'flex';
+          showAdminToast('Bannière marchand chargée ✓');
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
     function removeMerchantBanner() {
@@ -2094,24 +2190,50 @@
       const wrap = document.getElementById('merchBannerPreviewWrap');
       if (wrap) wrap.style.display = 'none';
     }
-function handleMerchantFormSubmit(e) {
+
+    function handleMerchantFormSubmit(e) {
       e.preventDefault();
-      const m = {
-        name: document.getElementById('merchInputName').value,
-        owner: document.getElementById('merchInputOwner').value,
-        commune: document.getElementById('merchInputCommune').value,
-        phone: document.getElementById('merchInputPhone').value,
-        waveNumber: document.getElementById('merchInputWave').value,
-        category: document.getElementById('merchInputCategory').value || 'Cosmétiques & Soins',
-        commissionRate: 15,
-        status: 'approved',
-        salesVolume: 0,
-        logo: uploadedMerchantLogoBase64 || null,
-        banner: uploadedMerchantBannerBase64 || null,
-        desc: (document.getElementById('merchInputDesc') ? document.getElementById('merchInputDesc').value : '')
+      const editId = document.getElementById('editMerchantId').value;
+      const currentM = editId ? AdminStore.getMerchants().find(x => x.id === editId) : null;
+
+      const logoVal = uploadedMerchantLogoBase64 || (currentM ? currentM.logo : null);
+      const bannerVal = uploadedMerchantBannerBase64 || (currentM ? currentM.banner : null);
+
+      const mData = {
+        name: document.getElementById('merchInputName').value.trim(),
+        owner: document.getElementById('merchInputOwner').value.trim(),
+        commune: document.getElementById('merchInputCommune').value.trim(),
+        phone: document.getElementById('merchInputPhone').value.trim(),
+        waveNumber: document.getElementById('merchInputWave').value.trim(),
+        category: document.getElementById('merchInputCategory').value.trim() || 'Cosmétiques & Soins',
+        desc: (document.getElementById('merchInputDesc') ? document.getElementById('merchInputDesc').value.trim() : ''),
+        logo: logoVal,
+        banner: bannerVal
       };
-      AdminStore.addMerchant(m);
-      showAdminToast('Nouveau marchand agréé avec succès');
+
+      if (editId) {
+        if (logoVal && logoVal.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+          ABPStorage.setImage('merch_logo_' + editId, logoVal);
+        }
+        if (bannerVal && bannerVal.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+          ABPStorage.setImage('merch_banner_' + editId, bannerVal);
+        }
+        AdminStore.updateMerchant(editId, mData);
+        showAdminToast('Profil marchand mis à jour avec succès ✓');
+      } else {
+        mData.commissionRate = 15;
+        mData.status = 'approved';
+        mData.salesVolume = 0;
+        const newM = AdminStore.addMerchant(mData);
+        if (logoVal && logoVal.startsWith('data:') && typeof ABPStorage !== 'undefined' && newM) {
+          ABPStorage.setImage('merch_logo_' + newM.id, logoVal);
+        }
+        if (bannerVal && bannerVal.startsWith('data:') && typeof ABPStorage !== 'undefined' && newM) {
+          ABPStorage.setImage('merch_banner_' + newM.id, bannerVal);
+        }
+        showAdminToast('Nouveau marchand agréé avec succès ✓');
+      }
+
       closeMerchantModal();
       renderAdminMerchants();
       renderOverview();

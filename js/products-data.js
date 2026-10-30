@@ -1367,7 +1367,19 @@ const ProductStore = {
 
           // Keep version tag in sync without wiping custom data
           localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
-          return finalList;
+          // Hydrate any idb: pointer images from IndexedDB cache
+    if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
+      finalList.forEach(p => {
+        if (p.image && p.image.startsWith('idb:')) {
+          const cached = ABPStorage.getImage(p.image.replace('idb:', ''));
+          if (cached) p.image = cached;
+        } else {
+          const cached = ABPStorage.getImage('prod_img_' + p.id);
+          if (cached) p.image = cached;
+        }
+      });
+    }
+    return finalList;
         }
       }
     } catch(e) {
@@ -1389,9 +1401,18 @@ const ProductStore = {
 
   getById: function(id) {
     const p = this.getAll().find(prod => prod.id === id || String(prod.id) === String(id));
-    if (p && typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
-      const cached = ABPStorage.getImage('prod_img_' + p.id);
-      if (cached) p.image = cached;
+    if (p) {
+      if (typeof ABPStorage !== 'undefined') {
+        const idbKey = (p.image && p.image.startsWith('idb:')) ? p.image.replace('idb:', '') : ('prod_img_' + p.id);
+        const cached = ABPStorage.getImage(idbKey);
+        if (cached) {
+          p.image = cached;
+        } else if (p.image && p.image.startsWith('idb:')) {
+          p.image = p.fallbackImage || 'assets/images/products/1.png';
+        }
+      } else if (p.image && p.image.startsWith('idb:')) {
+        p.image = p.fallbackImage || 'assets/images/products/1.png';
+      }
     }
     return p;
   },
@@ -1399,13 +1420,16 @@ const ProductStore = {
   save: function(products) {
     try {
       if (typeof ABPStorage !== 'undefined') {
-        // Persist heavy images to IndexedDB
-        products.forEach(p => {
+        // 1. Move ALL base64 blobs to IndexedDB; replace with lightweight idb: key in JSON
+        const slim = products.map(p => {
           if (p.image && p.image.startsWith('data:')) {
             ABPStorage.setImage('prod_img_' + p.id, p.image);
+            return Object.assign({}, p, { image: 'idb:prod_img_' + p.id });
           }
+          return p;
         });
-        ABPStorage.safeSetItem(this.STORAGE_KEY, JSON.stringify(products));
+        // 2. Save lean JSON (no base64) so localStorage never hits quota
+        ABPStorage.safeSetItem(this.STORAGE_KEY, JSON.stringify(slim));
       } else {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(products));
       }

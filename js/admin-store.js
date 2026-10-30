@@ -6,6 +6,7 @@
 const DEFAULT_MERCHANTS = [
   {
     id: 'merch-marie-andrea',
+    slug: 'ets-marie-andrea',
     name: 'ETS Marie Andrea',
     owner: 'Marie Andrea',
     category: 'Savonnerie Artisanale & Soins',
@@ -14,13 +15,17 @@ const DEFAULT_MERCHANTS = [
     waveNumber: '+225 07 09 72 40 96',
     commissionRate: 15,
     status: 'approved',
-    productsCount: 12,
+    productsCount: 15,
     salesVolume: 3450000,
     isOfficial: true,
+    logo: 'assets/images/products/ets-marie-andrea-catalogue.jpg',
+    banner: 'assets/images/products/ets-marie-andrea-catalogue.jpg',
+    desc: 'Maître savonnier, formateur et consultant. Spécialiste du traitement des problèmes dermatologiques à base de plantes. Fondatrice de la gamme AMABELLEPEAU avec plus de 20 ans d\'expertise en savonnerie artisanale à base de plantes africaines.',
     joinedDate: '15 Jan 2026'
   },
   {
     id: 'merch-amabellebarbe',
+    slug: 'amabellebarbe',
     name: 'AMABELLEBARBE Homme',
     owner: 'Direction AMABELLEPEAU',
     category: 'Grooming & Soins Barbe',
@@ -32,10 +37,14 @@ const DEFAULT_MERCHANTS = [
     productsCount: 4,
     salesVolume: 1850000,
     isOfficial: true,
+    logo: 'assets/images/products/amabellebarbe-homme.jpg',
+    banner: 'assets/images/products/amabellebarbe-homme.jpg',
+    desc: 'Gamme exclusive de soins pour la barbe 100% naturels. L\'huile de barbe AMABELLEBARBE est une révolution dans le monde des cosmétiques masculins.',
     joinedDate: '01 Fév 2026'
   },
   {
     id: 'merch-amafleurdepeau',
+    slug: 'amafleurdepeau',
     name: 'AMAFLEURDEPEAU Rituels',
     owner: 'Direction AMABELLEPEAU',
     category: 'Coffrets Cadeaux & Rituels',
@@ -47,10 +56,14 @@ const DEFAULT_MERCHANTS = [
     productsCount: 3,
     salesVolume: 2200000,
     isOfficial: true,
+    logo: 'assets/images/products/amafleurdepeau-coffret.png',
+    banner: 'assets/images/products/amafleurdepeau-coffret.png',
+    desc: 'Plongez dans l\'univers d\'AMAFLEURDEPEAU, où chaque soin a été conçu pour vous envelopper d\'une délicatesse sans pareille.',
     joinedDate: '10 Fév 2026'
   },
   {
     id: 'merch-maison-botanique',
+    slug: 'maison-botanique',
     name: 'Maison Botanique',
     owner: 'Koffi Yao',
     category: 'Savonnerie Artisanale',
@@ -62,10 +75,14 @@ const DEFAULT_MERCHANTS = [
     productsCount: 8,
     salesVolume: 1120000,
     isOfficial: false,
+    logo: 'assets/images/products/1.png',
+    banner: 'assets/images/products/1.png',
+    desc: 'Spécialiste de la saponification à froid et des huiles essentielles d\'Afrique de l\'Ouest.',
     joinedDate: '20 Fév 2026'
   },
   {
     id: 'merch-ivoire-naturals',
+    slug: 'ivoire-naturals',
     name: 'Ivoire Naturals',
     owner: 'Awa Diop',
     category: 'Soins Éco-certifiés',
@@ -77,10 +94,14 @@ const DEFAULT_MERCHANTS = [
     productsCount: 6,
     salesVolume: 890000,
     isOfficial: false,
+    logo: 'assets/images/products/2.png',
+    banner: 'assets/images/products/2.png',
+    desc: 'Huiles pures de première pression à froid et eaux florales distillées sur le littoral.',
     joinedDate: '05 Mar 2026'
   },
   {
     id: 'merch-aura-noire',
+    slug: 'aura-noire',
     name: 'Aura Noire Cosmetics',
     owner: 'Salif Traoré',
     category: 'Beurres Rares d’Afrique',
@@ -92,10 +113,14 @@ const DEFAULT_MERCHANTS = [
     productsCount: 5,
     salesVolume: 940000,
     isOfficial: false,
+    logo: 'assets/images/products/3.png',
+    banner: 'assets/images/products/3.png',
+    desc: 'Chantillys fouettées à la main, karité bio de Korhogo et beurres de mangue sauvages.',
     joinedDate: '12 Mar 2026'
   },
   {
     id: 'merch-bioclat-ci',
+    slug: 'bioclat-ci',
     name: 'BioÉclat CI',
     owner: 'Gisèle Konan',
     category: 'Botanique & Aloe Vera',
@@ -103,14 +128,18 @@ const DEFAULT_MERCHANTS = [
     phone: '+225 07 55 66 77 88',
     waveNumber: '+225 07 55 66 77 88',
     commissionRate: 15,
-    status: 'pending',
+    status: 'approved',
     productsCount: 4,
-    salesVolume: 0,
+    salesVolume: 320000,
     isOfficial: false,
+    logo: 'assets/images/products/4.png',
+    banner: 'assets/images/products/4.png',
+    desc: 'Formules à haute teneur en aloe vera frais cultivé biologiquement en Côte d\'Ivoire.',
     joinedDate: '24 Oct 2026'
   },
   {
     id: 'merch-botanica-sp',
+    slug: 'botanica-san-pedro',
     name: 'Botanica San Pedro',
     owner: 'Éric Beugré',
     category: 'Soins Détox Marins',
@@ -118,10 +147,13 @@ const DEFAULT_MERCHANTS = [
     phone: '+225 05 99 88 77 66',
     waveNumber: '+225 05 99 88 77 66',
     commissionRate: 15,
-    status: 'pending',
+    status: 'approved',
     productsCount: 3,
-    salesVolume: 0,
+    salesVolume: 410000,
     isOfficial: false,
+    logo: 'assets/images/products/5.png',
+    banner: 'assets/images/products/5.png',
+    desc: 'Savons noirs purifiants au charbon de bambou et gommages minéraux marins.',
     joinedDate: '26 Oct 2026'
   }
 ];
@@ -321,32 +353,120 @@ const DEFAULT_ORDERS = [
 const AdminStore = {
   // ── Merchants ──
   getMerchants: function() {
+    let list = null;
     try {
       const s = localStorage.getItem('abp_admin_merchants');
-      if (s) return JSON.parse(s);
+      if (s) {
+        const parsed = JSON.parse(s);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          list = DEFAULT_MERCHANTS.map(defM => {
+            const saved = parsed.find(sm => sm.id === defM.id || sm.slug === defM.slug);
+            if (!saved) return defM;
+            return {
+              ...defM,
+              ...saved,
+              logo: saved.logo || defM.logo,
+              banner: saved.banner || defM.banner,
+              desc: saved.desc || defM.desc
+            };
+          });
+          const customMerchants = parsed.filter(pm => !DEFAULT_MERCHANTS.some(dm => dm.id === pm.id));
+          list = [...list, ...customMerchants];
+        }
+      }
     } catch(e){}
-    localStorage.setItem('abp_admin_merchants', JSON.stringify(DEFAULT_MERCHANTS));
-    return DEFAULT_MERCHANTS;
+
+    if (!list || list.length === 0) {
+      list = DEFAULT_MERCHANTS;
+      this.saveMerchants(list);
+    }
+
+    // Hydrate any logos/banners stored in IndexedDB (handles both direct keys and idb: pointers)
+    if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
+      list.forEach(m => {
+        const logoKey = m.logo && m.logo.startsWith('idb:') ? m.logo.replace('idb:', '') : 'merch_logo_' + m.id;
+        const logo = ABPStorage.getImage(logoKey);
+        if (logo) m.logo = logo;
+        const bannerKey = m.banner && m.banner.startsWith('idb:') ? m.banner.replace('idb:', '') : 'merch_banner_' + m.id;
+        const banner = ABPStorage.getImage(bannerKey);
+        if (banner) m.banner = banner;
+      });
+    }
+
+    return list;
   },
+
+  getMerchantById: function(idOrSlug) {
+    if (!idOrSlug) return null;
+    const all = this.getMerchants();
+    const clean = String(idOrSlug).toLowerCase().trim();
+    return all.find(m => 
+      m.id === idOrSlug || 
+      m.slug === clean || 
+      (m.id && m.id.toLowerCase().replace('merch-', '') === clean) ||
+      (m.name && m.name.toLowerCase().includes(clean.replace(/-/g, ' ')))
+    ) || null;
+  },
+
   saveMerchants: function(data) {
-    localStorage.setItem('abp_admin_merchants', JSON.stringify(data));
+    try {
+      if (typeof ABPStorage !== 'undefined') {
+        const slimMerch = data.map(m => {
+          const out = Object.assign({}, m);
+          if (out.logo && out.logo.startsWith('data:')) {
+            ABPStorage.setImage('merch_logo_' + m.id, out.logo);
+            out.logo = 'idb:merch_logo_' + m.id;
+          }
+          if (out.banner && out.banner.startsWith('data:')) {
+            ABPStorage.setImage('merch_banner_' + m.id, out.banner);
+            out.banner = 'idb:merch_banner_' + m.id;
+          }
+          return out;
+        });
+        ABPStorage.safeSetItem('abp_admin_merchants', JSON.stringify(slimMerch));
+      } else {
+        localStorage.setItem('abp_admin_merchants', JSON.stringify(data));
+      }
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('abp_merchants_updated', { detail: data }));
+      }
+    } catch (e) {
+      console.warn('saveMerchants error:', e);
+    }
   },
+
   addMerchant: function(m) {
     const list = this.getMerchants();
-    m.id = 'merch-' + Date.now();
+    if (!m.id) m.id = 'merch-' + Date.now();
+    if (!m.slug) m.slug = (m.name || 'marchand').toLowerCase().replace(/[^a-z0-9]+/g, '-');
     m.joinedDate = 'Aujourd’hui';
+    if (m.logo && m.logo.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+      ABPStorage.setImage('merch_logo_' + m.id, m.logo);
+    }
+    if (m.banner && m.banner.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+      ABPStorage.setImage('merch_banner_' + m.id, m.banner);
+    }
     list.unshift(m);
     this.saveMerchants(list);
     return m;
   },
+
   updateMerchant: function(id, data) {
     const list = this.getMerchants();
     const idx = list.findIndex(m => m.id === id || m.slug === id);
     if (idx !== -1) {
+      const targetId = list[idx].id;
+      if (data.logo && data.logo.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+        ABPStorage.setImage('merch_logo_' + targetId, data.logo);
+      }
+      if (data.banner && data.banner.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+        ABPStorage.setImage('merch_banner_' + targetId, data.banner);
+      }
       list[idx] = { ...list[idx], ...data };
       this.saveMerchants(list);
+      return list[idx];
     }
-    return list;
+    return null;
   },
   updateMerchantStatus: function(id, status) {
     const list = this.getMerchants();
@@ -505,7 +625,8 @@ const AdminStore = {
     // Hydrate any images from IndexedDB
     if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
       list.forEach(pr => {
-        const cached = ABPStorage.getImage('promo_img_' + pr.id);
+        const idbKey = pr.mediaUrl && pr.mediaUrl.startsWith('idb:') ? pr.mediaUrl.replace('idb:', '') : 'promo_img_' + pr.id;
+        const cached = ABPStorage.getImage(idbKey);
         if (cached) pr.mediaUrl = cached;
       });
     }
@@ -516,12 +637,14 @@ const AdminStore = {
   savePromotions: function(data) {
     try {
       if (typeof ABPStorage !== 'undefined') {
-        data.forEach(pr => {
+        const slimPromo = data.map(pr => {
           if (pr.mediaUrl && pr.mediaUrl.startsWith('data:')) {
             ABPStorage.setImage('promo_img_' + pr.id, pr.mediaUrl);
+            return Object.assign({}, pr, { mediaUrl: 'idb:promo_img_' + pr.id });
           }
+          return pr;
         });
-        ABPStorage.safeSetItem('abp_admin_promotions', JSON.stringify(data));
+        ABPStorage.safeSetItem('abp_admin_promotions', JSON.stringify(slimPromo));
       } else {
         localStorage.setItem('abp_admin_promotions', JSON.stringify(data));
       }

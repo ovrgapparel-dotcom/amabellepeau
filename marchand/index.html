@@ -8,6 +8,11 @@
   <link rel="icon" type="image/png" href="../assets/icons/brand-logo.png">
   <link rel="stylesheet" href="../css/main.css">
 
+  <!-- Core Data Stores -->
+  <script src="../js/storage-db.js"></script>
+  <script src="../js/products-data.js"></script>
+  <script src="../js/admin-store.js"></script>
+
   <style>
     /* ── Styles spécifiques Portail Marchand ── */
     :root {
@@ -1445,7 +1450,7 @@
       <div class="tab-view-content" id="tab-products">
         <div class="dashboard-header">
           <div>
-            <h1>Mes Produits (34)</h1>
+            <h1 id="merchantProductsTitle">Mes Produits</h1>
             <p>Catalogue de votre boutique en ligne sur la marketplace AMABELLEPEAU</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Nouveau Produit</button>
@@ -1667,34 +1672,100 @@
       <div class="tab-view-content" id="tab-profile">
         <div class="dashboard-header">
           <div>
-            <h1>Mon Profil Marchand</h1>
-            <p>Coordonnées de l'Atelier Nanan, identifiants de paiement et adresse d'expédition</p>
+            <h1 id="profHeaderTitle">Mon Profil Marchand</h1>
+            <p id="profHeaderSubtitle">Paramètres de la boutique, visuels (logo & bannière), coordonnées et informations de paiement</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="showToast('Modifications enregistrées avec succès !', 'success')">Enregistrer les modifications</button>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <a id="btnViewPublicStore" href="../marchand.html" target="_blank" class="btn btn-outline btn-sm">👁️ Voir la vitrine publique</a>
+            <button class="btn btn-primary btn-sm" onclick="saveMerchantProfile()">Enregistrer les modifications</button>
+          </div>
         </div>
 
-        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-8); max-width: 800px;">
+        <!-- Sélecteur de Marchand (pour switcher rapidement entre boutiques partenaires) -->
+        <div style="background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-6); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+          <div>
+            <strong style="color:var(--color-black);">Boutique Active en Gestion :</strong>
+            <span id="activeMerchantBadgeName" style="color:var(--color-forest);font-weight:700;margin-left:8px;">ETS Marie Andrea</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label style="font-size:12px;color:var(--color-text-muted);">Changer de boutique :</label>
+            <select id="merchantPortalSelector" class="form-select" style="font-size:12px;padding:4px 8px;max-width:260px;" onchange="switchMerchantPortal(this.value)">
+              <!-- Rempli dynamiquement -->
+            </select>
+          </div>
+        </div>
+
+        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-8); max-width: 860px;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6);">
             <div class="form-group">
-              <label class="form-label">Nom de la Boutique / Marque</label>
-              <input type="text" class="form-input" value="Atelier Nanan">
+              <label class="form-label">Nom de la Boutique / Enseigne *</label>
+              <input type="text" id="profInputName" class="form-input" placeholder="Ex: ETS Marie Andrea">
             </div>
             <div class="form-group">
-              <label class="form-label">Responsable Légal</label>
-              <input type="text" class="form-input" value="Awa Ouattara">
+              <label class="form-label">Responsable Légal / Gérant *</label>
+              <input type="text" id="profInputOwner" class="form-input" placeholder="Prénom & Nom">
             </div>
             <div class="form-group">
-              <label class="form-label">Téléphone (Wave & Orange Money)</label>
-              <input type="text" class="form-input" value="+225 07 48 99 21 00">
+              <label class="form-label">Téléphone Officiel (WhatsApp / Appels)</label>
+              <input type="text" id="profInputPhone" class="form-input" placeholder="+225 07 00 00 00 00">
             </div>
             <div class="form-group">
-              <label class="form-label">Adresse de Retrait des Colis</label>
-              <input type="text" class="form-input" value="Cocody Deux-Plateaux Vallons, Rue des Jardins">
+              <label class="form-label">Numéro Wave & Orange Money (Versements 15%)</label>
+              <input type="text" id="profInputWave" class="form-input" placeholder="+225 07 00 00 00 00">
             </div>
+            <div class="form-group">
+              <label class="form-label">Commune & Adresse d'expédition *</label>
+              <input type="text" id="profInputCommune" class="form-input" placeholder="Ex: Cocody Deux-Plateaux, Rue des Jardins">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Catégorie Principale</label>
+              <input type="text" id="profInputCategory" class="form-input" placeholder="Ex: Cosmétiques & Savonnerie Artisanale">
+            </div>
+
+            <!-- Description / Bio -->
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label class="form-label">Description de la Marque (affichée aux acheteurs)</label>
-              <textarea class="form-textarea" rows="3">Spécialiste de la saponification à froid en Côte d'Ivoire. Nous transformons les beurres de karité et de cacao issus de coopératives de femmes ivoiriennes en soins d'exception.</textarea>
+              <label class="form-label">Description & Présentation de la Marque (affichée aux acheteurs)</label>
+              <textarea id="profInputDesc" class="form-textarea" rows="3" placeholder="Présentez l'histoire de votre marque, les bienfaits de vos formules naturelles..."></textarea>
             </div>
+
+            <!-- Logo Upload -->
+            <div class="form-group">
+              <label class="form-label">Logo de la Boutique (Format Carré)</label>
+              <div style="display:flex;gap:14px;align-items:center;background:#faf7f2;padding:12px;border-radius:8px;border:1px dashed var(--color-border);">
+                <div id="profLogoPreviewWrap" style="width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid rgba(201,168,76,0.4);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <img id="profLogoPreview" src="../assets/icons/brand-logo.png" alt="Logo" style="width:100%;height:100%;object-fit:cover;">
+                </div>
+                <div style="flex:1;">
+                  <label class="btn btn-outline btn-sm" style="cursor:pointer;display:inline-block;">
+                    📷 Choisir un Logo
+                    <input type="file" id="profLogoInput" accept="image/*" style="display:none;" onchange="handleProfileLogoUpload(this)">
+                  </label>
+                  <div style="font-size:11px;color:var(--color-text-muted);margin-top:4px;">PNG, JPG, WEBP (auto-optimisé &lt;30 Ko)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Banner Upload -->
+            <div class="form-group">
+              <label class="form-label">Bannière En-tête Vitrine (Format Large)</label>
+              <div style="display:flex;flex-direction:column;gap:10px;background:#faf7f2;padding:12px;border-radius:8px;border:1px dashed var(--color-border);">
+                <div id="profBannerPreviewWrap" style="width:100%;height:72px;border-radius:8px;overflow:hidden;border:1px solid rgba(201,168,76,0.4);background:#fff;display:flex;align-items:center;justify-content:center;">
+                  <img id="profBannerPreview" src="../assets/images/banner-hero-cosmetics.jpg" alt="Bannière" style="width:100%;height:100%;object-fit:cover;">
+                </div>
+                <div>
+                  <label class="btn btn-outline btn-sm" style="cursor:pointer;display:inline-block;">
+                    🖼️ Choisir une Bannière
+                    <input type="file" id="profBannerInput" accept="image/*" style="display:none;" onchange="handleProfileBannerUpload(this)">
+                  </label>
+                  <span style="font-size:11px;color:var(--color-text-muted);margin-left:8px;">Format paysage recommandé (1000×450)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:var(--space-6);padding-top:var(--space-4);border-top:1px solid var(--color-border);display:flex;justify-content:flex-end;gap:12px;">
+            <button type="button" class="btn btn-ghost" onclick="loadProfileTab()">Réinitialiser</button>
+            <button type="button" class="btn btn-primary" onclick="saveMerchantProfile()">Enregistrer les modifications</button>
           </div>
         </div>
       </div>
@@ -2157,6 +2228,429 @@
 
     window.addEventListener('resize', checkResponsive);
     checkResponsive();
-  </script>
+  
+    /* ═══════════════════════════════════════════════════
+       MERCHANT PORTAL DYNAMIC LOGIC — AMABELLEPEAU
+       Full dynamic synchronization with AdminStore & ProductStore
+       ═══════════════════════════════════════════════════ */
+
+    let _currentMerchantId = (new URLSearchParams(window.location.search)).get('merchant') ||
+                             (new URLSearchParams(window.location.search)).get('id') || 'ets-marie-andrea';
+
+    let _activeMerchant = null;
+    let _uploadedLogo = null;
+    let _uploadedBanner = null;
+    let _uploadedModalProdImage = null;
+
+    function getActiveMerchant() {
+      if (typeof AdminStore !== 'undefined') {
+        const found = AdminStore.getMerchantById(_currentMerchantId);
+        if (found) return found;
+        const official = AdminStore.getMerchants().find(m => m.isOfficial);
+        if (official) return official;
+        return AdminStore.getMerchants()[0] || null;
+      }
+      return null;
+    }
+
+    function getMerchantImgSrc(src) {
+      if (!src) return '';
+      if (src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http://') || src.startsWith('https://')) return src;
+      if (src.startsWith('../')) return src;
+      if (src.startsWith('/')) return '..' + src;
+      return '../' + src;
+    }
+
+    /* ── Switch Active Merchant ── */
+    function switchMerchantPortal(newId) {
+      if (!newId) return;
+      _currentMerchantId = newId;
+      _uploadedLogo = null;
+      _uploadedBanner = null;
+      // Update browser URL without reloading
+      const url = new URL(window.location);
+      url.searchParams.set('merchant', newId);
+      window.history.replaceState({}, '', url);
+
+      _activeMerchant = getActiveMerchant();
+      loadProfileTab();
+      renderMerchantProducts();
+      updateSidebarAndGreeting();
+      showToast('Boutique sélectionnée : ' + (_activeMerchant ? _activeMerchant.name : newId), 'success');
+    }
+
+    function updateSidebarAndGreeting() {
+      const m = _activeMerchant;
+      if (!m) return;
+
+      // Sidebar header
+      const nameEl = document.querySelector('.merchant-name');
+      if (nameEl) nameEl.textContent = m.name;
+
+      const avatarEl = document.querySelector('.merchant-avatar');
+      if (avatarEl) {
+        if (m.logo) {
+          avatarEl.innerHTML = '<img src="' + getMerchantImgSrc(m.logo) + '" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" alt="Logo">';
+        } else {
+          const initials = m.name.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'MB';
+          avatarEl.textContent = initials;
+        }
+      }
+
+      const tagEl = document.querySelector('.merchant-status-tag');
+      if (tagEl) {
+        tagEl.innerHTML = '<span class="status-indicator-dot"></span> ' + (m.commune ? 'Boutique Agréée · ' + m.commune : 'Boutique Agréée · Côte d\'Ivoire');
+      }
+
+      // Greeting on overview tab
+      const greetH1 = document.querySelector('.dashboard-greeting h1');
+      if (greetH1) greetH1.textContent = 'Bonjour, ' + (m.owner || m.name) + ' 👋';
+
+      const greetP = document.querySelector('.dashboard-greeting p');
+      if (greetP) {
+        const dateStr = document.getElementById('currentDateDisplay') ? document.getElementById('currentDateDisplay').textContent : 'Aujourd\'hui';
+        greetP.innerHTML = '<strong>' + m.name + '</strong> · ' + (m.category || 'Cosmétiques & Soins') + ' · ' + (m.commune || 'Abidjan') + ' · <span id="currentDateDisplay">' + dateStr + '</span>';
+      }
+    }
+
+    /* ── Profile Maintenance Tab ── */
+    function loadProfileTab() {
+      const m = _activeMerchant = getActiveMerchant();
+      if (!m) return;
+
+      const el = (id) => document.getElementById(id);
+
+      // Populate merchant selector
+      const selector = el('merchantPortalSelector');
+      if (selector && typeof AdminStore !== 'undefined') {
+        const merchants = AdminStore.getMerchants();
+        selector.innerHTML = merchants.map(item => 
+          '<option value="' + (item.slug || item.id) + '" ' + (item.id === m.id || item.slug === m.slug ? 'selected' : '') + '>' +
+            item.name + (item.isOfficial ? ' (Boutique Officielle)' : '') +
+          '</option>'
+        ).join('');
+      }
+
+      const badgeName = el('activeMerchantBadgeName');
+      if (badgeName) badgeName.textContent = m.name;
+
+      if (el('profInputName'))     el('profInputName').value     = m.name || '';
+      if (el('profInputOwner'))    el('profInputOwner').value    = m.owner || '';
+      if (el('profInputPhone'))    el('profInputPhone').value    = m.phone || '';
+      if (el('profInputWave'))     el('profInputWave').value     = m.waveNumber || m.phone || '';
+      if (el('profInputCommune'))  el('profInputCommune').value  = m.commune || '';
+      if (el('profInputCategory')) el('profInputCategory').value = m.category || 'Cosmétiques & Soins';
+      if (el('profInputDesc'))     el('profInputDesc').value     = m.desc || '';
+
+      const btnStore = el('btnViewPublicStore');
+      if (btnStore) {
+        btnStore.href = '../marchand.html?id=' + (m.slug || m.id.replace('merch-', ''));
+      }
+
+      // Previews
+      if (m.logo) {
+        _uploadedLogo = m.logo;
+        if (el('profLogoPreview')) el('profLogoPreview').src = getMerchantImgSrc(m.logo);
+      } else {
+        _uploadedLogo = null;
+        if (el('profLogoPreview')) el('profLogoPreview').src = '../assets/icons/brand-logo.png';
+      }
+
+      if (m.banner) {
+        _uploadedBanner = m.banner;
+        if (el('profBannerPreview')) el('profBannerPreview').src = getMerchantImgSrc(m.banner);
+      } else {
+        _uploadedBanner = null;
+        if (el('profBannerPreview')) el('profBannerPreview').src = '../assets/images/banner-hero-cosmetics.jpg';
+      }
+
+      updateSidebarAndGreeting();
+    }
+
+    async function handleProfileLogoUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      try {
+        const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
+          await ABPStorage.compressImage(file, 400, 400, 0.75) :
+          await new Promise((res, rej) => {
+            const r = new FileReader();
+            r.onerror = rej;
+            r.onload = e => res(e.target.result);
+            r.readAsDataURL(file);
+          });
+        _uploadedLogo = compressed;
+        const preview = document.getElementById('profLogoPreview');
+        if (preview) preview.src = compressed;
+        showToast('Logo chargé et optimisé avec succès ✓', 'success');
+      } catch(e) {
+        console.error(e);
+        showToast('Erreur lors de l\'optimisation du logo', 'error');
+      }
+    }
+
+    async function handleProfileBannerUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      try {
+        const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
+          await ABPStorage.compressImage(file, 1000, 450, 0.75) :
+          await new Promise((res, rej) => {
+            const r = new FileReader();
+            r.onerror = rej;
+            r.onload = e => res(e.target.result);
+            r.readAsDataURL(file);
+          });
+        _uploadedBanner = compressed;
+        const preview = document.getElementById('profBannerPreview');
+        if (preview) preview.src = compressed;
+        showToast('Bannière chargée et optimisée avec succès ✓', 'success');
+      } catch(e) {
+        console.error(e);
+        showToast('Erreur lors de l\'optimisation de la bannière', 'error');
+      }
+    }
+
+    function saveMerchantProfile() {
+      const m = _activeMerchant || getActiveMerchant();
+      if (!m || typeof AdminStore === 'undefined') {
+        showToast('Erreur : profil marchand introuvable.', 'error');
+        return;
+      }
+      const el = (id) => document.getElementById(id);
+      const updates = {
+        name:       (el('profInputName')     ? el('profInputName').value.trim()     : m.name),
+        owner:      (el('profInputOwner')    ? el('profInputOwner').value.trim()    : m.owner),
+        phone:      (el('profInputPhone')    ? el('profInputPhone').value.trim()    : m.phone),
+        waveNumber: (el('profInputWave')     ? el('profInputWave').value.trim()     : (m.waveNumber || m.phone)),
+        commune:    (el('profInputCommune')  ? el('profInputCommune').value.trim()  : m.commune),
+        category:   (el('profInputCategory') ? el('profInputCategory').value.trim() : m.category),
+        desc:       (el('profInputDesc')     ? el('profInputDesc').value.trim()     : m.desc)
+      };
+
+      if (_uploadedLogo)   updates.logo = _uploadedLogo;
+      if (_uploadedBanner) updates.banner = _uploadedBanner;
+
+      AdminStore.updateMerchant(m.id, updates);
+      _activeMerchant = Object.assign({}, m, updates);
+
+      updateSidebarAndGreeting();
+      showToast('Profil marchand enregistré & synchronisé avec la vitrine ✓', 'success');
+    }
+
+    /* ── Products Tab ── */
+    function getMerchantProducts() {
+      if (typeof ProductStore === 'undefined') return [];
+      const m = _activeMerchant || getActiveMerchant();
+      if (!m) return ProductStore.getAll();
+      const mId = (m.id || '').replace('merch-', '').toLowerCase();
+      const mSlug = (m.slug || '').toLowerCase();
+      const mName = (m.name || '').toLowerCase();
+
+      return ProductStore.getAll().filter(p => {
+        const pMId = (p.merchantId || '').toLowerCase();
+        const pBrand = (p.brand || '').toLowerCase();
+        const pMerch = (p.merchant || '').toLowerCase();
+
+        return pMId === mId ||
+               pMId === mSlug ||
+               pMId.includes(mSlug) ||
+               pBrand.includes(mSlug) ||
+               mName.includes(pBrand) ||
+               pMerch.includes(mName) ||
+               (mSlug.includes('marie') && (pBrand.includes('marie') || pMId.includes('marie') || pBrand.includes('amabellepeau')));
+      });
+    }
+
+    function renderMerchantProducts() {
+      const tbody = document.getElementById('merchantProductsTableBody');
+      const titleEl = document.getElementById('merchantProductsTitle');
+      if (!tbody) return;
+
+      const searchQ = (document.getElementById('prodSearchInput') ? document.getElementById('prodSearchInput').value : '').toLowerCase().trim();
+      const catFilter = (document.getElementById('prodCatSelect') ? document.getElementById('prodCatSelect').value : '').toLowerCase();
+
+      let products = getMerchantProducts();
+      if (searchQ) {
+        products = products.filter(p =>
+          (p.name && p.name.toLowerCase().includes(searchQ)) ||
+          (p.composition && p.composition.toLowerCase().includes(searchQ)) ||
+          (p.vertus && p.vertus.toLowerCase().includes(searchQ)) ||
+          (p.brand && p.brand.toLowerCase().includes(searchQ))
+        );
+      }
+      if (catFilter) {
+        products = products.filter(p => 
+          (p.category && p.category.toLowerCase().includes(catFilter)) || 
+          (p.categoryName && p.categoryName.toLowerCase().includes(catFilter))
+        );
+      }
+
+      if (titleEl) titleEl.textContent = 'Mes Produits (' + products.length + ')';
+
+      if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--color-text-muted);">Aucun produit pour cette sélection. Cliquez sur "+ Nouveau Produit" pour publier vos articles.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = products.map(p => {
+        const imgSrc = getMerchantImgSrc(p.image) || '../assets/icons/brand-logo.png';
+        const stock = p.stock || 0;
+        const stockClass = stock > 10 ? 'status status-delivered' : (stock > 0 ? 'status status-pending' : 'status status-cancelled');
+        const stockLabel = stock > 10 ? 'En stock (' + stock + ')' : (stock > 0 ? 'Stock bas (' + stock + ')' : 'Rupture');
+
+        return '<tr>' +
+          '<td><div style="display:flex;align-items:center;gap:10px;">' +
+          '<div style="width:40px;height:40px;border-radius:6px;overflow:hidden;border:1px solid rgba(201,168,76,0.3);background:#faf7f2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+            '<img src="' + imgSrc + '" onerror="this.onerror=null;this.src=\'../assets/icons/brand-logo.png\'" style="width:100%;height:100%;object-fit:cover;" alt="' + (p.name || '') + '">' +
+          '</div>' +
+          '<div>' +
+            '<strong>' + (p.name || '') + '</strong>' +
+            '<div style="font-size:11px;color:var(--color-text-muted);">' + (p.weight || '200 g') + '</div>' +
+          '</div></div></td>' +
+          '<td>' + (p.categoryName || p.category || '') + '</td>' +
+          '<td><strong style="color:var(--color-forest);">' + new Intl.NumberFormat('fr-FR').format(p.price) + ' XOF</strong></td>' +
+          '<td><span class="' + stockClass + '">' + stockLabel + '</span></td>' +
+          '<td><span class="status status-delivered">En ligne</span></td>' +
+          '<td style="text-align:right;">' +
+            '<div style="display:flex;gap:6px;justify-content:flex-end;">' +
+              '<button class="btn btn-ghost btn-sm" title="Modifier le produit" onclick="openEditProductModal(\'' + p.id + '\')">✏️ Modifier</button>' +
+              '<a href="../produit.html?id=' + p.id + '" target="_blank" class="btn btn-ghost btn-sm" title="Voir la fiche client">👁️</a>' +
+            '</div>' +
+          '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function filterMerchantProducts() { renderMerchantProducts(); }
+
+    /* ── Product Add & Edit Modal Logic ── */
+    let _editingProductId = null;
+
+    function openAddProductModal() {
+      _editingProductId = null;
+      _uploadedModalProdImage = null;
+      document.getElementById('addProductForm').reset();
+      const title = document.querySelector('#addProductModal .modal-head h3');
+      if (title) title.textContent = '🌿 Ajouter un Nouveau Produit';
+      const btn = document.querySelector('#addProductForm button[type="submit"]');
+      if (btn) btn.textContent = 'Publier le Produit';
+
+      // Reset image preview if present
+      const prev = document.getElementById('modalProdImagePreview');
+      if (prev) prev.src = '../assets/images/products/1.png';
+
+      document.getElementById('addProductModal').classList.add('active');
+    }
+
+    function openEditProductModal(id) {
+      if (typeof ProductStore === 'undefined') return;
+      const p = ProductStore.getById(id);
+      if (!p) return;
+
+      _editingProductId = p.id;
+      _uploadedModalProdImage = p.image || null;
+
+      const title = document.querySelector('#addProductModal .modal-head h3');
+      if (title) title.textContent = '✏️ Modifier le Produit';
+      const btn = document.querySelector('#addProductForm button[type="submit"]');
+      if (btn) btn.textContent = 'Enregistrer les modifications';
+
+      const el = (id) => document.getElementById(id);
+      if (el('newProdName'))   el('newProdName').value   = p.name || '';
+      if (el('newProdPrice'))  el('newProdPrice').value  = p.price || 3000;
+      if (el('newProdStock'))  el('newProdStock').value  = p.stock || 25;
+      if (el('newProdFormat')) el('newProdFormat').value = p.weight || '200 g';
+      if (el('newProdDesc'))   el('newProdDesc').value   = p.vertus || p.description || '';
+
+      const catSelect = el('newProdCat');
+      if (catSelect && p.category) {
+        catSelect.value = p.category;
+      }
+
+      document.getElementById('addProductModal').classList.add('active');
+    }
+
+    function closeAddProductModal() {
+      document.getElementById('addProductModal').classList.remove('active');
+      document.getElementById('addProductForm').reset();
+      _editingProductId = null;
+      _uploadedModalProdImage = null;
+    }
+
+    function handleCreateProduct(event) {
+      event.preventDefault();
+      if (typeof ProductStore === 'undefined') {
+        showToast('Erreur : données catalogue inaccessibles.', 'error');
+        return;
+      }
+      const m = _activeMerchant || getActiveMerchant();
+      const brand = m ? (m.name || 'AMABELLEPEAU') : 'AMABELLEPEAU';
+      const mId   = m ? (m.id || '').replace('merch-', '') : 'ets-marie-andrea';
+
+      const nameVal = document.getElementById('newProdName').value.trim();
+      if (!nameVal) {
+        showToast('Le nom du produit est obligatoire.', 'error');
+        return;
+      }
+
+      const catSelect = document.getElementById('newProdCat');
+      const catVal = catSelect ? catSelect.value : 'savons';
+      const catName = catSelect && catSelect.selectedOptions[0] ? catSelect.selectedOptions[0].text : 'Savons';
+
+      const productPayload = {
+        name:         nameVal,
+        category:     catVal,
+        categoryName: catName,
+        price:        Number(document.getElementById('newProdPrice').value) || 3000,
+        stock:        Number(document.getElementById('newProdStock').value) || 25,
+        weight:       document.getElementById('newProdFormat').value.trim() || '200 g',
+        description:  document.getElementById('newProdDesc').value.trim(),
+        vertus:       document.getElementById('newProdDesc').value.trim(),
+        composition:  document.getElementById('newProdDesc').value.trim(),
+        brand:        brand,
+        merchant:     brand,
+        merchantId:   mId,
+        status:       'in_stock',
+        _customized:  true
+      };
+
+      if (_uploadedModalProdImage) {
+        productPayload.image = _uploadedModalProdImage;
+      }
+
+      if (_editingProductId) {
+        ProductStore.update(_editingProductId, productPayload);
+        showToast('Produit mis à jour avec succès ✓', 'success');
+      } else {
+        if (!productPayload.image) {
+          productPayload.image = 'assets/images/products/1.png';
+        }
+        ProductStore.add(productPayload);
+        showToast('Nouveau produit publié sur la marketplace ✓', 'success');
+      }
+
+      closeAddProductModal();
+      renderMerchantProducts();
+    }
+
+    /* ── Initialization ── */
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof ABPStorage !== 'undefined' && !ABPStorage.ready) {
+        window.addEventListener('abp_storage_ready', function() {
+          _activeMerchant = getActiveMerchant();
+          loadProfileTab();
+          renderMerchantProducts();
+          updateSidebarAndGreeting();
+        });
+      } else {
+        _activeMerchant = getActiveMerchant();
+        loadProfileTab();
+        renderMerchantProducts();
+        updateSidebarAndGreeting();
+      }
+    });
+
+</script>
 </body>
 </html>
