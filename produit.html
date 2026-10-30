@@ -530,29 +530,60 @@
     document.getElementById('bcCategory').textContent = p.categoryName || 'Savons Artisanaux';
     document.getElementById('bcTitle').textContent = p.name;
 
-    // Gallery
     const mainImg = document.getElementById('mainProductPhoto');
-    mainImg.src = p.image || 'assets/images/products/savon-clarylex.jpg';
+    const primarySrc = p.image || 'assets/images/products/savon-clarylex.jpg';
+    mainImg.src = primarySrc;
     mainImg.alt = p.name;
+    // Only attach onerror fallback when image is a relative path (not base64)
+    if (!primarySrc.startsWith('data:')) {
+      mainImg.onerror = function() {
+        this.onerror = null;
+        this.src = 'assets/images/products/savon-clarylex.jpg';
+      };
+    } else {
+      mainImg.onerror = null;
+    }
 
     const thumbsContainer = document.getElementById('galleryThumbsContainer');
     thumbsContainer.innerHTML = '';
 
-    const thumbs = [
-      p.image,
+    // Build gallery thumbs - always start with the product's own image.
+    // Only add generic gallery fallbacks when there is NO custom/uploaded image.
+    const hasCustomImage = p.image && (p.image.startsWith('data:') || p.image.startsWith('http'));
+    const hasRelativeImage = p.image && !hasCustomImage;
+    const genericGallery = [
       'assets/images/products/ets-marie-andrea-catalogue.jpg',
-      'assets/images/products/fiche-produits.png',
-      'assets/images/products/amafleurdepeau-coffret.png'
+      'assets/images/products/fiche-produits.png'
+    ];
+    const thumbs = [
+      p.image || 'assets/images/products/savon-clarylex.jpg',
+      ...genericGallery
     ].filter(Boolean);
 
     thumbs.forEach((src, idx) => {
       const thumb = document.createElement('div');
       thumb.className = `gallery-thumb ${idx === 0 ? 'active' : ''}`;
-      thumb.innerHTML = `<img src="${src}" alt="${p.name} vue ${idx+1}">`;
+      const tImg = document.createElement('img');
+      tImg.alt = `${p.name} vue ${idx+1}`;
+      tImg.src = src;
+      // Only set onerror for non-base64 sources
+      if (!src.startsWith('data:')) {
+        tImg.onerror = function() {
+          this.onerror = null;
+          // Hide thumb if it fails
+          this.closest('.gallery-thumb').style.display = 'none';
+        };
+      }
+      thumb.appendChild(tImg);
       thumb.addEventListener('click', () => {
         document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
         thumb.classList.add('active');
         mainImg.src = src;
+        if (!src.startsWith('data:')) {
+          mainImg.onerror = function() { this.onerror = null; this.src = 'assets/images/products/savon-clarylex.jpg'; };
+        } else {
+          mainImg.onerror = null;
+        }
       });
       thumbsContainer.appendChild(thumb);
     });
@@ -571,7 +602,7 @@
     document.getElementById('productBrandText').textContent = `${p.brand} · ${p.categoryName || 'Cosmétique Bio'}`;
     document.getElementById('productTitle').textContent = p.name;
       // Dynamically sync social share meta tags
-      const fullImg = p.image ? (p.image.startsWith('http') ? p.image : (window.location.origin + '/' + p.image.replace(/^\//, ''))) : 'https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png';
+      const fullImg = (p.image && !p.image.startsWith('data:')) ? (p.image.startsWith('http') ? p.image : (window.location.origin + '/' + p.image.replace(/^\//, ''))) : 'https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png';
       document.title = p.name + ' — AMABELLEPEAU';
       const mDesc = p.shortDesc || p.description || 'Cosmétique artisanal 100% naturel confectionné en Côte d\'Ivoire.';
       const elOgTitle = document.getElementById('ogTitle'); if (elOgTitle) elOgTitle.content = p.name + ' — AMABELLEPEAU';

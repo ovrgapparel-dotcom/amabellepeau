@@ -2554,6 +2554,7 @@
        CLIENT JAVASCRIPT LOGIC
        ===================================================== -->
   <script src="js/products-data.js"></script>
+  <script src="js/cart.js"></script>
   <script src="js/admin-store.js"></script>
   <script>
     /* ── AMABELLEPEAU Storefront Engine ── */
@@ -2586,7 +2587,7 @@
               <span class="price-main">${new Intl.NumberFormat('fr-FR').format(p.price)} XOF</span>
               ${p.oldPrice ? `<span class="price-old">${new Intl.NumberFormat('fr-FR').format(p.oldPrice)} XOF</span>` : ''}
             </div>
-            <button class="btn-quick-add" onclick="event.stopPropagation(); addToCart('${p.name}', ${p.price}, event)">
+            <button class="btn-quick-add" onclick="event.stopPropagation(); addToCart('${p.id}', event)">
               <span>Ajouter au panier</span>
               <span>🛒</span>
             </button>
@@ -2614,6 +2615,13 @@
     ];
 
     // Dynamic Render of Active Promotions & Videos from AdminStore
+    function getPromoImgSrc(src) {
+      if (!src) return 'assets/images/products/ets-marie-andrea-catalogue.jpg';
+      if (src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http://') || src.startsWith('https://')) return src;
+      if (src.startsWith('/')) return src;
+      return src; // relative paths resolve fine from root index.html
+    }
+
     function renderStorefrontPromotions() {
       const container = document.getElementById('storefrontPromotionsContainer');
       if (!container || typeof AdminStore === 'undefined') return;
@@ -2626,12 +2634,12 @@
         <div class="promo-card" style="background:#fff;border-radius:var(--radius-xl);overflow:hidden;border:1px solid rgba(201,168,76,0.3);box-shadow:0 10px 28px rgba(0,0,0,0.06);transition:transform 0.3s ease;">
           <div style="height:210px;background:#0D1A0D;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
             ${p.type === 'video' && p.videoUrl ? `
-              <video src="${p.videoUrl}" poster="${p.mediaUrl || ''}" controls style="width:100%;height:100%;object-fit:cover;"></video>
+              <video src="${p.videoUrl}" poster="${getPromoImgSrc(p.mediaUrl)}" controls style="width:100%;height:100%;object-fit:cover;"></video>
               <div style="position:absolute;top:12px;left:12px;background:rgba(13,26,13,0.8);color:#fff;padding:3px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;">
                 <span>🎬</span> ${p.badge || 'Vidéo Démo'}
               </div>
             ` : `
-              <img src="${p.mediaUrl}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='assets/images/products/ets-marie-andrea-catalogue.jpg'">
+              <img src="${getPromoImgSrc(p.mediaUrl)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='assets/images/products/ets-marie-andrea-catalogue.jpg'">
               <div style="position:absolute;top:12px;left:12px;background:var(--color-gold);color:#0D1A0D;padding:3px 12px;border-radius:var(--radius-full);font-size:11px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;">
                 ${p.badge || 'Offre Exclusivité'}
               </div>
@@ -2682,7 +2690,7 @@
     }
 
     // State Variables
-    let cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
+    let cart = (typeof Cart !== 'undefined') ? Cart.getItems() : JSON.parse(localStorage.getItem('abp_cart') || '[]');
     let wishlist = JSON.parse(localStorage.getItem('amabelle_wishlist') || '[]');
 
     // DOM Elements
