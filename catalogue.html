@@ -1544,6 +1544,132 @@
         aspect-ratio: 1.2;
       }
     }
+  
+    /* ══════════════════════════════════════════════════════════════════
+       MOBILE VIEW OPTIMIZATIONS & FOLD CLARITY (AMABELLEPEAU)
+       ══════════════════════════════════════════════════════════════════ */
+    .mobile-category-chips-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 0 6px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 12px;
+    }
+    .mobile-category-chips-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .cat-chip {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      color: var(--color-cream);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .cat-chip:hover, .cat-chip.active {
+      background: var(--color-gold);
+      color: #0D1A0D;
+      border-color: var(--color-gold);
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .catalogue-hero {
+        padding: var(--space-8) 0 var(--space-6);
+      }
+      .catalogue-hero-title {
+        font-size: 28px !important;
+        margin-bottom: 6px !important;
+      }
+      .catalogue-hero-subtitle {
+        font-size: 13px !important;
+        margin-bottom: 14px !important;
+        line-height: 1.4 !important;
+      }
+      .hero-search-wrapper {
+        margin-bottom: 6px;
+      }
+      /* Clean 2-column mobile fold layout */
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        margin-bottom: var(--space-8) !important;
+      }
+      .product-card {
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+      .product-card-body {
+        padding: 8px 10px 10px !important;
+      }
+      .product-brand-tag {
+        font-size: 10px !important;
+        margin-bottom: 2px !important;
+      }
+      .product-title {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        height: 32px !important;
+        overflow: hidden !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        margin-bottom: 4px !important;
+      }
+      .product-rating {
+        font-size: 11px !important;
+        margin-bottom: 4px !important;
+      }
+      .product-card-desc {
+        display: none !important; /* Hide long text on mobile to maximize fold clarity */
+      }
+      .product-pricing .current-price {
+        font-size: 13px !important;
+        font-weight: 800 !important;
+      }
+      .product-pricing .original-price {
+        font-size: 10px !important;
+      }
+      .product-card-footer {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-top: 6px !important;
+        padding-top: 6px !important;
+        border-top: 1px dashed rgba(0,0,0,0.06) !important;
+      }
+      .hover-add-cart-wrap {
+        display: none !important;
+      }
+      .mobile-card-add-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: var(--color-forest);
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(27,77,30,0.25);
+        white-space: nowrap;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-card-add-btn {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
@@ -1658,6 +1784,17 @@
         <div class="active-filter-tags" id="activeFilterTags">
           <!-- Dynamically populated tags appear here -->
         </div>
+      </div>
+      <!-- Quick Category Chips (Optimized for Mobile Fold & Fast Navigation) -->
+      <div class="mobile-category-chips-bar" id="mobileCatChipsBar">
+        <button type="button" class="cat-chip active" data-cat="all">✨ Tous (<span id="chipCountAll">49</span>)</button>
+        <button type="button" class="cat-chip" data-cat="savons">🧼 Savons Saponifiés à Froid</button>
+        <button type="button" class="cat-chip" data-cat="visage">✨ Soins Visage</button>
+        <button type="button" class="cat-chip" data-cat="huiles">🌿 Huiles & Sérums</button>
+        <button type="button" class="cat-chip" data-cat="corps">🧴 Soins Corps</button>
+        <button type="button" class="cat-chip" data-cat="barbe">🧔 Soins Barbe</button>
+        <button type="button" class="cat-chip" data-cat="coffrets">🎁 Coffrets Rituels</button>
+        <button type="button" class="cat-chip" data-cat="cheveux">🌱 Capillaires</button>
       </div>
     </div>
   </section>
@@ -2184,23 +2321,33 @@
   <script>
     /**
      * AMABELLEPEAU — Catalogue Engine
-     * Full interactive browsing, filtering, sorting, responsive drawers,
-     * quick view, wishlist, and deep-link query parameter synchronization.
+     * Full interactive browsing, responsive 2-column mobile view,
+     * quick category chips, high-res IndexedDB media support,
+     * deep-link query parameter synchronization, and instant cart integration.
      */
 
-    // ── 1. MASTER PRODUCTS DATASET ───────────────────────────────────
-    const PRODUCTS = (typeof ProductStore !== 'undefined') ? ProductStore.getAll() : (typeof DEFAULT_PRODUCTS !== 'undefined' ? DEFAULT_PRODUCTS : []);
+    // ── 1. MASTER PRODUCTS DATASET RETRIEVAL ──────────────────────────
+    function getProductsList() {
+      if (typeof ProductStore !== 'undefined' && typeof ProductStore.getAll === 'function') {
+        const list = ProductStore.getAll();
+        if (list && list.length > 0) return list;
+      }
+      if (typeof DEFAULT_PRODUCTS !== 'undefined') {
+        return DEFAULT_PRODUCTS;
+      }
+      return [];
+    }
 
     // ── 2. STATE MANAGEMENT ─────────────────────────────────────────
     const state = {
       searchQuery: '',
       category: 'all',
       selectedBrands: [],
-      maxPrice: 25000,
+      maxPrice: 50000,
       minRating: 0,
-      stockOnly: true,
+      stockOnly: false, // Default to showing all available catalog items
       sortBy: 'populaire',
-      viewMode: 'grid', // 'grid' or 'list'
+      viewMode: 'grid',
       currentPage: 1,
       itemsPerPage: 12,
       wishlist: JSON.parse(localStorage.getItem('abp_wishlist') || '[]'),
@@ -2254,9 +2401,7 @@
       qtyMinus: document.getElementById('qtyMinus'),
       qtyPlus: document.getElementById('qtyPlus'),
       modalAddToCartBtn: document.getElementById('modalAddToCartBtn'),
-      // Toast
       toastContainer: document.getElementById('toastContainer'),
-      // Pagination buttons
       prevPageBtn: document.getElementById('prevPageBtn'),
       nextPageBtn: document.getElementById('nextPageBtn'),
       paginationContainer: document.getElementById('cataloguePagination')
@@ -2276,49 +2421,80 @@
     }
 
     function renderStarString(rating) {
-      const fullStars = Math.floor(rating);
-      const hasHalf = rating - fullStars >= 0.5;
+      const r = Number(rating) || 4.9;
+      const fullStars = Math.floor(r);
+      const hasHalf = r - fullStars >= 0.5;
       let stars = '★'.repeat(fullStars);
       if (hasHalf && fullStars < 5) stars += '★';
       while (stars.length < 5) stars += '☆';
       return stars;
     }
 
+    function resolveProductImg(src) {
+      if (!src) return 'assets/images/products/1.png';
+      if (typeof ABPStorage !== 'undefined' && typeof ABPStorage.resolveImage === 'function') {
+        return ABPStorage.resolveImage(src, 'assets/images/products/1.png');
+      }
+      if (typeof src === 'string' && src.includes('data:image')) {
+        return src.substring(src.indexOf('data:image'));
+      }
+      return src;
+    }
+
     // ── 5. FILTER & SORT CORE ───────────────────────────────────────
     function getFilteredProducts() {
-      return PRODUCTS.filter(prod => {
+      const all = getProductsList();
+      return all.filter(prod => {
         // Search query
-        if (state.searchQuery.trim() !== '') {
+        if (state.searchQuery && state.searchQuery.trim() !== '') {
           const query = state.searchQuery.toLowerCase().trim();
-          const matchName = prod.name.toLowerCase().includes(query);
-          const matchBrand = prod.brand.toLowerCase().includes(query);
-          const matchDesc = prod.description.toLowerCase().includes(query);
-          const matchCat = prod.categoryName.toLowerCase().includes(query);
-          if (!matchName && !matchBrand && !matchDesc && !matchCat) return false;
+          const matchName = (prod.name || '').toLowerCase().includes(query);
+          const matchBrand = (prod.brand || '').toLowerCase().includes(query);
+          const matchDesc = (prod.description || prod.shortDesc || prod.vertus || '').toLowerCase().includes(query);
+          const matchCat = (prod.categoryName || prod.category || '').toLowerCase().includes(query);
+          const matchComp = (prod.composition || '').toLowerCase().includes(query);
+          if (!matchName && !matchBrand && !matchDesc && !matchCat && !matchComp) return false;
         }
 
-        // Category filter
-        if (state.category !== 'all' && prod.category !== state.category) {
-          return false;
+        // Category filter (with alias resolution)
+        if (state.category && state.category !== 'all') {
+          const c = state.category.toLowerCase().trim();
+          const pCat = (prod.category || '').toLowerCase();
+          const pCatName = (prod.categoryName || '').toLowerCase();
+
+          const matchesCat = pCat === c ||
+            pCatName.includes(c) ||
+            (c === 'visage' && (pCat === 'soins-specifiques' || pCat === 'visage')) ||
+            (c === 'soins' && (pCat === 'visage' || pCat === 'huiles' || pCat === 'corps')) ||
+            (c === 'huiles' && (pCat === 'soins-dermatologiques' || pCat === 'huiles')) ||
+            (c === 'barbe' && (pCat === 'barbe-homme' || pCat === 'barbe')) ||
+            (c === 'coffrets' && (pCat === 'coffrets-cadeaux' || pCat === 'coffrets')) ||
+            (c === 'cheveux' && (pCat === 'soins-capillaires' || pCat === 'cheveux')) ||
+            (c === 'corps' && (pCat === 'beurres' || pCat === 'corps')) ||
+            (c === 'beurres' && (pCat === 'corps' || pCat === 'beurres'));
+
+          if (!matchesCat) return false;
         }
 
-        // Brand filter (if brands selected)
-        if (state.selectedBrands.length > 0) {
-          if (!state.selectedBrands.includes(prod.brand)) return false;
+        // Brand filter
+        if (state.selectedBrands && state.selectedBrands.length > 0) {
+          const pBrand = (prod.brand || '').toLowerCase();
+          const hasMatch = state.selectedBrands.some(b => pBrand.includes(b.toLowerCase()) || b.toLowerCase().includes(pBrand));
+          if (!hasMatch) return false;
         }
 
         // Max price filter
-        if (prod.price > state.maxPrice) {
+        if (state.maxPrice && prod.price && prod.price > state.maxPrice) {
           return false;
         }
 
         // Min rating filter
-        if (prod.rating < state.minRating) {
+        if (state.minRating > 0 && prod.rating && prod.rating < state.minRating) {
           return false;
         }
 
         // Stock availability
-        if (state.stockOnly && !prod.stock) {
+        if (state.stockOnly && prod.status === 'out_of_stock') {
           return false;
         }
 
@@ -2330,42 +2506,48 @@
       const sorted = [...list];
       switch (state.sortBy) {
         case 'prix-croissant':
-          return sorted.sort((a, b) => a.price - b.price);
+          return sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
         case 'prix-decroissant':
-          return sorted.sort((a, b) => b.price - a.price);
+          return sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
         case 'nouveautes':
           return sorted.sort((a, b) => (b.badge === 'new' ? 1 : 0) - (a.badge === 'new' ? 1 : 0));
         case 'mieux-notes':
-          return sorted.sort((a, b) => b.rating - a.rating);
+          return sorted.sort((a, b) => (b.rating || 4.9) - (a.rating || 4.9));
         case 'populaire':
         default:
-          return sorted.sort((a, b) => b.reviewsCount - a.reviewsCount);
+          return sorted.sort((a, b) => (b.reviewsCount || b.reviews || 95) - (a.reviewsCount || a.reviews || 95));
       }
     }
 
     // ── 6. RENDER PRODUCTS ──────────────────────────────────────────
     function renderCatalogue() {
+      const all = getProductsList();
+      const chipCountAll = document.getElementById('chipCountAll');
+      if (chipCountAll) chipCountAll.textContent = all.length;
+
       const filtered = getFilteredProducts();
       const sorted = sortProducts(filtered);
 
       // Update count display
-      els.productsFoundCount.textContent = sorted.length;
+      if (els.productsFoundCount) els.productsFoundCount.textContent = sorted.length;
       updateActiveFilterPills();
       updateMobileBadge();
+      updateActiveChips();
 
       // Clear grid
+      if (!els.productsGrid) return;
       els.productsGrid.innerHTML = '';
 
       if (sorted.length === 0) {
         els.productsGrid.innerHTML = `
-          <div class="catalogue-empty-state">
-            <div class="empty-state-icon">🌿</div>
-            <h3 class="empty-state-title">Aucun produit trouvé</h3>
-            <p class="empty-state-text">
-              Nous n'avons trouvé aucun produit correspondant à vos critères actuels. Essayez d'ajuster ou de réinitialiser vos filtres.
+          <div class="catalogue-empty-state" style="grid-column: 1 / -1; text-align:center; padding: 48px 16px;">
+            <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 12px;">🌿</div>
+            <h3 class="empty-state-title" style="font-family: var(--font-display); font-size: 20px; color: var(--color-black); margin-bottom: 8px;">Aucun produit trouvé</h3>
+            <p class="empty-state-text" style="color: var(--color-text-muted); font-size: 14px; max-width: 440px; margin: 0 auto 20px;">
+              Nous n'avons trouvé aucun produit correspondant à vos filtres actuels. Réinitialisez les filtres pour découvrir tout notre catalogue.
             </p>
             <button type="button" class="btn btn-primary" onclick="resetAllFilters()">
-              Réinitialiser les filtres
+              Voir tous les produits (49)
             </button>
           </div>
         `;
@@ -2392,12 +2574,14 @@
           ? `<span class="original-price">${formatXOF(product.oldPrice)}</span>`
           : '';
 
+        const realImg = resolveProductImg(product.image);
+
         card.innerHTML = `
           <div class="product-card-visual" style="background: #FAF7F2; overflow: hidden; position: relative; cursor: pointer;">
             ${badgeHtml}
-            <img src="${product.image || 'assets/images/products/1.png'}" alt="${product.name}" class="product-card-img" onerror="this.onerror=null;this.src='assets/images/products/1.png';" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
+            <img src="${realImg}" alt="${product.name}" class="product-card-img" onerror="this.onerror=null;this.src='assets/images/products/1.png';" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
 
-            <!-- Action icons: wishlist & quick view -->
+            <!-- Desktop action icons -->
             <div class="product-hover-actions" onclick="event.stopPropagation()">
               <button type="button" class="action-icon-btn ${isWishlisted ? 'wishlist-active' : ''}" data-wishlist="${product.id}" title="${isWishlisted ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="${isWishlisted ? '#E74C3C' : 'none'}" stroke="${isWishlisted ? '#E74C3C' : 'currentColor'}" stroke-width="2">
@@ -2412,7 +2596,7 @@
               </button>
             </div>
 
-            <!-- Slide-up Add to Cart -->
+            <!-- Slide-up Add to Cart for Desktop -->
             <div class="hover-add-cart-wrap" onclick="event.stopPropagation()">
               <button type="button" class="hover-add-btn" data-addcart="${product.id}">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -2428,7 +2612,7 @@
           <div class="product-card-body">
             <div class="product-brand-tag">
               <span class="brand-dot"></span>
-              ${product.brand}
+              ${product.brand || 'AMABELLEPEAU'}
             </div>
             <h3 class="product-title" title="${product.name}">
               <a href="produit.html?id=${product.id}" style="color: inherit; text-decoration: none;">${product.name}</a>
@@ -2436,10 +2620,10 @@
 
             <div class="product-rating">
               <span class="product-stars">${renderStarString(product.rating)}</span>
-              <span class="product-reviews-count">${product.rating} (${product.reviewsCount || product.reviews || 95})</span>
+              <span class="product-reviews-count">${product.rating || 4.9} (${product.reviewsCount || product.reviews || 95})</span>
             </div>
 
-            <p class="product-card-desc">${product.shortDesc || product.description}</p>
+            <p class="product-card-desc">${product.shortDesc || product.description || ''}</p>
 
             <div class="product-card-footer">
               <div class="product-pricing">
@@ -2447,8 +2631,13 @@
                 ${oldPriceHtml}
               </div>
 
+              <!-- Direct Touch Add to Cart for Mobile screens -->
+              <button type="button" class="mobile-card-add-btn" data-addcart="${product.id}" onclick="event.stopPropagation()">
+                + Ajouter
+              </button>
+
               <!-- List view CTA -->
-              <button type="button" class="list-add-btn" data-addcart="${product.id}">
+              <button type="button" class="list-add-btn" data-addcart="${product.id}" onclick="event.stopPropagation()">
                 Ajouter au panier
               </button>
             </div>
@@ -2467,16 +2656,17 @@
 
     // ── 7. ACTIVE FILTER PILLS DISPLAY ──────────────────────────────
     function updateActiveFilterPills() {
+      if (!els.activeFilterTags) return;
       els.activeFilterTags.innerHTML = '';
       let hasFilters = false;
 
       // Search Query tag
-      if (state.searchQuery.trim()) {
+      if (state.searchQuery && state.searchQuery.trim()) {
         hasFilters = true;
         const tag = createFilterTag(`Recherche: "${state.searchQuery}"`, () => {
           state.searchQuery = '';
-          els.catalogueSearchInput.value = '';
-          els.clearSearchBtn.style.display = 'none';
+          if (els.catalogueSearchInput) els.catalogueSearchInput.value = '';
+          if (els.clearSearchBtn) els.clearSearchBtn.style.display = 'none';
           syncURL();
           renderCatalogue();
         });
@@ -2484,20 +2674,22 @@
       }
 
       // Category tag
-      if (state.category !== 'all') {
+      if (state.category && state.category !== 'all') {
         hasFilters = true;
         const catMap = {
-          'savons': 'Savons Artisanaux',
+          'savons': 'Savons Saponifiés',
           'visage': 'Soins Visage',
           'corps': 'Soins Corps',
-          'parfums': 'Parfums Naturels',
+          'huiles': 'Huiles & Sérums',
           'cheveux': 'Soins Cheveux',
-          'bien-etre': 'Bien-être'
+          'barbe': 'Soins Barbe',
+          'coffrets': 'Coffrets Rituels'
         };
         const catName = catMap[state.category] || state.category;
         const tag = createFilterTag(`Catégorie: ${catName}`, () => {
           state.category = 'all';
-          document.querySelector('input[name="categoryFilter"][value="all"]').checked = true;
+          const r = document.querySelector('input[name="categoryFilter"][value="all"]');
+          if (r) r.checked = true;
           syncURL();
           renderCatalogue();
         });
@@ -2505,45 +2697,48 @@
       }
 
       // Brand tags
-      state.selectedBrands.forEach(brand => {
-        hasFilters = true;
-        const tag = createFilterTag(`Marque: ${brand}`, () => {
-          state.selectedBrands = state.selectedBrands.filter(b => b !== brand);
-          const chk = document.querySelector(`.brand-checkbox[value="${brand}"]`);
-          if (chk) chk.checked = false;
-          syncURL();
-          renderCatalogue();
+      if (state.selectedBrands) {
+        state.selectedBrands.forEach(brand => {
+          hasFilters = true;
+          const tag = createFilterTag(`Marque: ${brand}`, () => {
+            state.selectedBrands = state.selectedBrands.filter(b => b !== brand);
+            const chk = document.querySelector(`.brand-checkbox[value="${brand}"]`);
+            if (chk) chk.checked = false;
+            syncURL();
+            renderCatalogue();
+          });
+          els.activeFilterTags.appendChild(tag);
         });
-        els.activeFilterTags.appendChild(tag);
-      });
+      }
 
-      // Price tag if less than max
+      // Price tag
       if (state.maxPrice < 50000) {
         hasFilters = true;
         const tag = createFilterTag(`Max: ${formatXOF(state.maxPrice)}`, () => {
           state.maxPrice = 50000;
-          els.priceMaxSlider.value = 50000;
-          els.priceMaxDisplay.textContent = formatXOF(50000);
-          els.sliderFill.style.right = '0%';
+          if (els.priceMaxSlider) els.priceMaxSlider.value = 50000;
+          if (els.priceMaxDisplay) els.priceMaxDisplay.textContent = formatXOF(50000);
+          if (els.sliderFill) els.sliderFill.style.right = '0%';
           syncURL();
           renderCatalogue();
         });
         els.activeFilterTags.appendChild(tag);
       }
 
-      // Rating tag if > 0
+      // Rating tag
       if (state.minRating > 0) {
         hasFilters = true;
         const tag = createFilterTag(`Note: ≥ ${state.minRating} ★`, () => {
           state.minRating = 0;
-          document.querySelector('input[name="ratingFilter"][value="0"]').checked = true;
+          const r = document.querySelector('input[name="ratingFilter"][value="0"]');
+          if (r) r.checked = true;
           syncURL();
           renderCatalogue();
         });
         els.activeFilterTags.appendChild(tag);
       }
 
-      // Clear all button if any active
+      // Clear all button
       if (hasFilters) {
         const clearBtn = document.createElement('button');
         clearBtn.type = 'button';
@@ -2559,7 +2754,7 @@
       span.className = 'filter-tag-pill';
       span.innerHTML = `
         ${label}
-        <span class="remove-tag" title="Supprimer ce filtre">&times;</span>
+        <button type="button" class="remove-tag" aria-label="Supprimer ce filtre">&times;</button>
       `;
       span.querySelector('.remove-tag').addEventListener('click', onRemove);
       return span;
@@ -2568,117 +2763,125 @@
     function updateMobileBadge() {
       let count = 0;
       if (state.category !== 'all') count++;
-      if (state.selectedBrands.length > 0) count += state.selectedBrands.length;
+      if (state.selectedBrands && state.selectedBrands.length) count += state.selectedBrands.length;
       if (state.maxPrice < 50000) count++;
       if (state.minRating > 0) count++;
+      if (state.stockOnly) count++;
       if (state.searchQuery.trim()) count++;
-      els.mobileActiveFiltersCount.textContent = count;
+      if (els.mobileActiveFiltersCount) {
+        els.mobileActiveFiltersCount.textContent = count;
+        els.mobileActiveFiltersCount.style.display = count > 0 ? 'inline-flex' : 'none';
+      }
     }
 
-    // ── 8. TOAST NOTIFICATION UTILITY ───────────────────────────────
-    function showToast(message, type = 'success') {
-      const toast = document.createElement('div');
-      toast.className = `toast ${type === 'error' ? 'toast-error' : 'toast-success'}`;
-
-      const icon = type === 'error' ? '⚠️' : '✨';
-      toast.innerHTML = `
-        <span style="font-size: 20px;">${icon}</span>
-        <div style="flex: 1; font-size: var(--text-sm);">${message}</div>
-      `;
-
-      els.toastContainer.appendChild(toast);
-
-      setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.35s ease forwards';
-        setTimeout(() => toast.remove(), 350);
-      }, 3500);
-    }
-
-    // ── 9. ADD TO CART HANDLER (Unified) ─────────────────────────────
-    function handleAddToCart(productId, qty = 1) {
-      const product = PRODUCTS.find(p => p.id === productId || String(p.id) === String(productId));
-      if (!product) return;
-
-      if (typeof Cart !== 'undefined' && Cart.add) {
-        const res = Cart.add({
-          merchantId: product.merchantId || 'ets-marie-andrea',
-          productId: product.id,
-          id: product.id,
-          name: product.name,
-          brand: product.brand,
-          price: product.price,
-          image: product.image || 'assets/images/products/1.png',
-          variant: product.weight || 'Format standard',
-          qty: qty,
-          quantity: qty
-        });
-
-        if (res && res.success === false) {
-          showToast(res.message, 'error');
-          return;
+    function updateActiveChips() {
+      const chips = document.querySelectorAll('.cat-chip');
+      chips.forEach(chip => {
+        const cat = chip.getAttribute('data-cat');
+        if (cat === state.category || (cat === 'all' && (!state.category || state.category === 'all'))) {
+          chip.classList.add('active');
+        } else {
+          chip.classList.remove('active');
         }
-
-        showToast(`<strong>${product.name}</strong> (${qty}) ajouté au panier !`, 'success');
-      } else {
-        showToast(`<strong>${product.name}</strong> ajouté au panier !`, 'success');
-      }
+      });
     }
 
-    // ── 10. WISHLIST TOGGLE ─────────────────────────────────────────
-    function toggleWishlist(productId) {
-      const idx = state.wishlist.indexOf(productId);
-      const product = PRODUCTS.find(p => p.id === productId);
-      const name = product ? product.name : 'Produit';
-
-      if (idx > -1) {
+    // ── 8. WISHLIST TOGGLE ──────────────────────────────────────────
+    function toggleWishlist(pid) {
+      if (!pid) return;
+      const idx = state.wishlist.indexOf(pid);
+      if (idx !== -1) {
         state.wishlist.splice(idx, 1);
-        showToast(`${name} retiré de vos favoris.`, 'info');
+        showToast('Produit retiré de vos favoris.', 'info');
       } else {
-        state.wishlist.push(productId);
-        showToast(`${name} ajouté à vos favoris ❤️`, 'success');
+        state.wishlist.push(pid);
+        showToast('Produit ajouté à vos favoris ❤️', 'success');
       }
-
       localStorage.setItem('abp_wishlist', JSON.stringify(state.wishlist));
       renderCatalogue();
     }
 
-    // ── 11. QUICK VIEW MODAL LOGIC ──────────────────────────────────
-    function openQuickView(productId) {
-      const product = PRODUCTS.find(p => p.id === productId);
+    // ── 9. ADD TO CART HANDLER ──────────────────────────────────────
+    function handleAddToCart(pid, qty = 1) {
+      const product = getProductsList().find(p => p.id === pid || String(p.id) === String(pid));
       if (!product) return;
 
-      activeModalProduct = product;
-      els.modalTag.textContent = product.categoryName;
-      els.modalBrand.textContent = product.brand;
-      els.modalTitle.textContent = product.name;
-      els.modalStars.textContent = renderStarString(product.rating);
-      els.modalRatingText.textContent = `${product.rating} (${product.reviewsCount} avis vérifiés)`;
-      els.modalPrice.textContent = formatXOF(product.price);
-
-      if (product.oldPrice) {
-        els.modalOldPrice.textContent = formatXOF(product.oldPrice);
-        els.modalOldPrice.style.display = 'inline';
+      if (typeof Cart !== 'undefined' && typeof Cart.add === 'function') {
+        Cart.add({
+          id: product.id,
+          name: product.name,
+          brand: product.brand,
+          price: product.price,
+          image: resolveProductImg(product.image),
+          quantity: qty,
+          merchantId: product.merchantId || 'ets-marie-andrea',
+          merchant: product.merchant || 'ETS Marie Andrea'
+        });
       } else {
-        els.modalOldPrice.style.display = 'none';
+        // Fallback local cart
+        const cart = JSON.parse(localStorage.getItem('abp_cart') || '[]');
+        const existing = cart.find(item => item.id === product.id);
+        if (existing) {
+          existing.quantity = (existing.quantity || 1) + qty;
+        } else {
+          cart.push({
+            id: product.id,
+            name: product.name,
+            brand: product.brand,
+            price: product.price,
+            image: resolveProductImg(product.image),
+            quantity: qty
+          });
+        }
+        localStorage.setItem('abp_cart', JSON.stringify(cart));
+        window.dispatchEvent(new CustomEvent('abp_cart_updated'));
       }
 
-      els.modalDesc.textContent = product.description;
-      els.modalIngredients.innerHTML = `<strong>Composition & Vertus :</strong> ${product.composition || product.ingredients || 'Beurre de karité pur, palmiste pressé, extraits végétaux ivoiriens.'}`;
+      showToast(`${product.name} ajouté au panier !`, 'success');
+    }
 
-      els.modalImageBox.style.background = '#FAF7F2';
-      els.modalImageBox.innerHTML = '<img src="' + (product.image || 'assets/images/products/1.png') + '" alt="' + product.name + '" onerror="this.onerror=null;this.src=\'assets/images/products/1.png\';" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-xl);">';
-      
-      const modalViewMoreBtn = document.getElementById('modalViewFullProductBtn');
-      if (modalViewMoreBtn) {
-        modalViewMoreBtn.onclick = () => window.location.href = 'produit.html?id=' + product.id;
+    // ── 10. TOAST NOTIFICATIONS ─────────────────────────────────────
+    function showToast(message, type = 'success') {
+      const container = els.toastContainer || document.body;
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.style.cssText = 'position:fixed;bottom:80px;right:20px;z-index:99999;padding:12px 20px;border-radius:10px;background:#1B4D1E;color:#fff;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.2);animation:fadeIn 0.25s ease;';
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // ── 11. QUICK VIEW MODAL ────────────────────────────────────────
+    function openQuickView(pid) {
+      const p = getProductsList().find(prod => prod.id === pid || String(prod.id) === String(pid));
+      if (!p) return;
+      activeModalProduct = p;
+
+      if (els.modalTag) els.modalTag.textContent = p.badgeText || (p.categoryName || 'Cosmétique Bio');
+      if (els.modalBrand) els.modalBrand.textContent = p.brand;
+      if (els.modalTitle) els.modalTitle.textContent = p.name;
+      if (els.modalStars) els.modalStars.textContent = renderStarString(p.rating);
+      if (els.modalRatingText) els.modalRatingText.textContent = `${p.rating || 4.9} (${p.reviewsCount || 95} avis vérifiés)`;
+      if (els.modalPrice) els.modalPrice.textContent = formatXOF(p.price);
+      if (els.modalOldPrice) els.modalOldPrice.textContent = p.oldPrice ? formatXOF(p.oldPrice) : '';
+      if (els.modalDesc) els.modalDesc.textContent = p.description || p.shortDesc || p.vertus || '';
+      if (els.modalIngredients) els.modalIngredients.textContent = p.composition || 'Ingrédients naturels formulés à froid en Côte d\'Ivoire.';
+      if (els.modalQtyInput) els.modalQtyInput.value = '1';
+
+      if (els.modalImageBox) {
+        const realImg = resolveProductImg(p.image);
+        els.modalImageBox.innerHTML = `<img src="${realImg}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.onerror=null;this.src='assets/images/products/1.png';">`;
       }
 
-      els.modalQtyInput.value = '1';
-      els.quickViewOverlay.classList.add('active');
+      if (els.quickViewOverlay) els.quickViewOverlay.classList.add('active');
     }
 
     function closeQuickView() {
-      els.quickViewOverlay.classList.remove('active');
+      if (els.quickViewOverlay) els.quickViewOverlay.classList.remove('active');
       activeModalProduct = null;
     }
 
@@ -2686,37 +2889,46 @@
     function readURLParams() {
       const params = new URLSearchParams(window.location.search);
 
-      // Category (?categorie=savons)
-      const catParam = params.get('categorie');
+      // Category (?categorie=savons or ?cat=savons or ?c=savons)
+      const catParam = params.get('categorie') || params.get('cat') || params.get('c');
       if (catParam) {
-        state.category = catParam;
-        const rad = document.querySelector(`input[name="categoryFilter"][value="${catParam}"]`);
+        let cleanCat = catParam.toLowerCase().trim();
+        if (cleanCat === 'soins' || cleanCat === 'soins-visage') cleanCat = 'visage';
+        else if (cleanCat === 'beurres') cleanCat = 'corps';
+        else if (cleanCat === 'barbe-homme') cleanCat = 'barbe';
+        else if (cleanCat === 'coffrets-cadeaux') cleanCat = 'coffrets';
+        else if (cleanCat === 'soins-capillaires') cleanCat = 'cheveux';
+        else if (cleanCat === 'soins-dermatologiques') cleanCat = 'huiles';
+
+        state.category = cleanCat;
+        const rad = document.querySelector(`input[name="categoryFilter"][value="${cleanCat}"]`);
         if (rad) rad.checked = true;
       }
 
       // Brand (?marque=amabellepeau)
-      const brandParam = params.get('marque');
+      const brandParam = params.get('marque') || params.get('brand');
       if (brandParam) {
-        const foundBrand = PRODUCTS.find(p => p.brand.toLowerCase() === brandParam.toLowerCase());
-        const brandName = foundBrand ? foundBrand.brand : brandParam;
-        state.selectedBrands = [brandName];
-        const chk = document.querySelector(`.brand-checkbox[value="${brandName}"]`);
+        const all = getProductsList();
+        const found = all.find(p => (p.brand || '').toLowerCase().includes(brandParam.toLowerCase()));
+        const bName = found ? found.brand : brandParam;
+        state.selectedBrands = [bName];
+        const chk = document.querySelector(`.brand-checkbox[value="${bName}"]`);
         if (chk) chk.checked = true;
       }
 
-      // Search (?search=karite)
+      // Search (?search=karite or ?q=karite)
       const searchParam = params.get('search') || params.get('q');
       if (searchParam) {
         state.searchQuery = searchParam;
-        els.catalogueSearchInput.value = searchParam;
-        els.clearSearchBtn.style.display = 'block';
+        if (els.catalogueSearchInput) els.catalogueSearchInput.value = searchParam;
+        if (els.clearSearchBtn) els.clearSearchBtn.style.display = 'block';
       }
 
       // Sort (?tri=prix-croissant)
       const sortParam = params.get('tri');
       if (sortParam) {
         state.sortBy = sortParam;
-        els.sortSelect.value = sortParam;
+        if (els.sortSelect) els.sortSelect.value = sortParam;
       }
 
       // Price (?maxPrice=15000)
@@ -2725,10 +2937,10 @@
         const p = parseInt(priceParam, 10);
         if (!isNaN(p)) {
           state.maxPrice = p;
-          els.priceMaxSlider.value = p;
-          els.priceMaxDisplay.textContent = formatXOF(p);
+          if (els.priceMaxSlider) els.priceMaxSlider.value = p;
+          if (els.priceMaxDisplay) els.priceMaxDisplay.textContent = formatXOF(p);
           const percent = ((p - 500) / (50000 - 500)) * 100;
-          els.sliderFill.style.right = `${100 - percent}%`;
+          if (els.sliderFill) els.sliderFill.style.right = `${100 - percent}%`;
         }
       }
     }
@@ -2736,8 +2948,8 @@
     function syncURL() {
       const params = new URLSearchParams();
       if (state.category !== 'all') params.set('categorie', state.category);
-      if (state.selectedBrands.length === 1) params.set('marque', state.selectedBrands[0].toLowerCase());
-      if (state.searchQuery.trim()) params.set('search', state.searchQuery.trim());
+      if (state.selectedBrands && state.selectedBrands.length === 1) params.set('marque', state.selectedBrands[0].toLowerCase());
+      if (state.searchQuery && state.searchQuery.trim()) params.set('search', state.searchQuery.trim());
       if (state.sortBy !== 'populaire') params.set('tri', state.sortBy);
       if (state.maxPrice < 50000) params.set('maxPrice', state.maxPrice);
 
@@ -2750,251 +2962,296 @@
       state.searchQuery = '';
       state.category = 'all';
       state.selectedBrands = [];
-      state.maxPrice = 25000;
+      state.maxPrice = 50000;
       state.minRating = 0;
-      state.stockOnly = true;
+      state.stockOnly = false;
       state.sortBy = 'populaire';
 
       // Reset DOM elements
-      els.catalogueSearchInput.value = '';
-      els.clearSearchBtn.style.display = 'none';
-      document.querySelector('input[name="categoryFilter"][value="all"]').checked = true;
+      if (els.catalogueSearchInput) els.catalogueSearchInput.value = '';
+      if (els.clearSearchBtn) els.clearSearchBtn.style.display = 'none';
+
+      const radAll = document.querySelector('input[name="categoryFilter"][value="all"]');
+      if (radAll) radAll.checked = true;
+
       document.querySelectorAll('.brand-checkbox').forEach(cb => cb.checked = false);
-      els.brandSearchInput.value = '';
+      if (els.brandSearchInput) els.brandSearchInput.value = '';
       document.querySelectorAll('.brand-item').forEach(el => el.style.display = 'flex');
 
-      els.priceMaxSlider.value = 25000;
-      els.priceMaxDisplay.textContent = formatXOF(25000);
-      els.sliderFill.style.right = '50%';
+      if (els.priceMaxSlider) els.priceMaxSlider.value = 50000;
+      if (els.priceMaxDisplay) els.priceMaxDisplay.textContent = formatXOF(50000);
+      if (els.sliderFill) els.sliderFill.style.right = '0%';
 
-      document.querySelector('input[name="ratingFilter"][value="0"]').checked = true;
-      els.stockOnlyCheckbox.checked = true;
-      els.sortSelect.value = 'populaire';
+      const r0 = document.querySelector('input[name="ratingFilter"][value="0"]');
+      if (r0) r0.checked = true;
+
+      if (els.stockOnlyCheckbox) els.stockOnlyCheckbox.checked = false;
+      if (els.sortSelect) els.sortSelect.value = 'populaire';
 
       syncURL();
       renderCatalogue();
-      showToast('Filtres réinitialisés.', 'info');
+      showToast('Tous les filtres sont réinitialisés.', 'info');
     }
 
     // ── 14. EVENT LISTENERS SETUP ───────────────────────────────────
     function setupEventListeners() {
+      // Mobile Category Chips clicks
+      const chipsBar = document.getElementById('mobileCatChipsBar');
+      if (chipsBar) {
+        chipsBar.addEventListener('click', (e) => {
+          const chip = e.target.closest('.cat-chip');
+          if (chip) {
+            const cat = chip.getAttribute('data-cat');
+            state.category = cat;
+            const rad = document.querySelector(`input[name="categoryFilter"][value="${cat}"]`);
+            if (rad) rad.checked = true;
+            syncURL();
+            renderCatalogue();
+          }
+        });
+      }
+
       // Accordion toggle
       document.querySelectorAll('.filter-accordion .accordion-trigger').forEach(trigger => {
         trigger.addEventListener('click', () => {
           const accordion = trigger.closest('.filter-accordion');
-          accordion.classList.toggle('collapsed');
+          if (accordion) accordion.classList.toggle('collapsed');
         });
       });
 
       // Search Inputs
-      els.catalogueSearchInput.addEventListener('input', (e) => {
-        state.searchQuery = e.target.value;
-        els.clearSearchBtn.style.display = state.searchQuery ? 'block' : 'none';
-        syncURL();
-        renderCatalogue();
-      });
+      if (els.catalogueSearchInput) {
+        els.catalogueSearchInput.addEventListener('input', (e) => {
+          state.searchQuery = e.target.value;
+          if (els.clearSearchBtn) els.clearSearchBtn.style.display = state.searchQuery ? 'block' : 'none';
+          syncURL();
+          renderCatalogue();
+        });
+      }
 
-      els.clearSearchBtn.addEventListener('click', () => {
-        state.searchQuery = '';
-        els.catalogueSearchInput.value = '';
-        els.clearSearchBtn.style.display = 'none';
-        syncURL();
-        renderCatalogue();
-      });
+      if (els.clearSearchBtn) {
+        els.clearSearchBtn.addEventListener('click', () => {
+          state.searchQuery = '';
+          if (els.catalogueSearchInput) els.catalogueSearchInput.value = '';
+          els.clearSearchBtn.style.display = 'none';
+          syncURL();
+          renderCatalogue();
+        });
+      }
 
-      els.triggerSearchBtn.addEventListener('click', () => {
-        state.searchQuery = els.catalogueSearchInput.value;
-        syncURL();
-        renderCatalogue();
-      });
+      if (els.triggerSearchBtn) {
+        els.triggerSearchBtn.addEventListener('click', () => {
+          if (els.catalogueSearchInput) state.searchQuery = els.catalogueSearchInput.value;
+          syncURL();
+          renderCatalogue();
+        });
+      }
 
       // Category radios
-      els.categoryFilterList.addEventListener('change', (e) => {
-        if (e.target.name === 'categoryFilter') {
-          state.category = e.target.value;
-          syncURL();
-          renderCatalogue();
-        }
-      });
+      if (els.categoryFilterList) {
+        els.categoryFilterList.addEventListener('change', (e) => {
+          if (e.target.name === 'categoryFilter') {
+            state.category = e.target.value;
+            syncURL();
+            renderCatalogue();
+          }
+        });
+      }
 
       // Brand checkboxes
-      els.brandFilterList.addEventListener('change', (e) => {
-        if (e.target.classList.contains('brand-checkbox')) {
-          const checked = Array.from(document.querySelectorAll('.brand-checkbox:checked')).map(cb => cb.value);
-          state.selectedBrands = checked;
-          syncURL();
-          renderCatalogue();
-        }
-      });
+      if (els.brandFilterList) {
+        els.brandFilterList.addEventListener('change', (e) => {
+          if (e.target.classList.contains('brand-checkbox')) {
+            const checked = Array.from(document.querySelectorAll('.brand-checkbox:checked')).map(cb => cb.value);
+            state.selectedBrands = checked;
+            syncURL();
+            renderCatalogue();
+          }
+        });
+      }
 
       // Brand list internal search
-      els.brandSearchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase().trim();
-        document.querySelectorAll('.brand-item').forEach(item => {
-          const b = item.getAttribute('data-brand').toLowerCase();
-          item.style.display = b.includes(term) ? 'flex' : 'none';
+      if (els.brandSearchInput) {
+        els.brandSearchInput.addEventListener('input', (e) => {
+          const term = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('.brand-item').forEach(item => {
+            const b = (item.getAttribute('data-brand') || '').toLowerCase();
+            item.style.display = b.includes(term) ? 'flex' : 'none';
+          });
         });
-      });
+      }
 
       // Price Slider
-      els.priceMaxSlider.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        state.maxPrice = val;
-        els.priceMaxDisplay.textContent = formatXOF(val);
-        const percent = ((val - 500) / (50000 - 500)) * 100;
-        els.sliderFill.style.right = `${100 - percent}%`;
-        syncURL();
-        renderCatalogue();
-      });
-
-      // Rating radios
-      els.ratingFilterList.addEventListener('change', (e) => {
-        if (e.target.name === 'ratingFilter') {
-          state.minRating = parseFloat(e.target.value);
+      if (els.priceMaxSlider) {
+        els.priceMaxSlider.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value, 10);
+          state.maxPrice = val;
+          if (els.priceMaxDisplay) els.priceMaxDisplay.textContent = formatXOF(val);
+          const percent = ((val - 500) / (50000 - 500)) * 100;
+          if (els.sliderFill) els.sliderFill.style.right = `${100 - percent}%`;
           syncURL();
           renderCatalogue();
-        }
-      });
+        });
+      }
+
+      // Rating radios
+      if (els.ratingFilterList) {
+        els.ratingFilterList.addEventListener('change', (e) => {
+          if (e.target.name === 'ratingFilter') {
+            state.minRating = parseFloat(e.target.value) || 0;
+            syncURL();
+            renderCatalogue();
+          }
+        });
+      }
 
       // Stock checkbox
-      els.stockOnlyCheckbox.addEventListener('change', (e) => {
-        state.stockOnly = e.target.checked;
-        renderCatalogue();
-      });
+      if (els.stockOnlyCheckbox) {
+        els.stockOnlyCheckbox.addEventListener('change', (e) => {
+          state.stockOnly = e.target.checked;
+          renderCatalogue();
+        });
+      }
 
       // Sort Select
-      els.sortSelect.addEventListener('change', (e) => {
-        state.sortBy = e.target.value;
-        syncURL();
-        renderCatalogue();
-      });
+      if (els.sortSelect) {
+        els.sortSelect.addEventListener('change', (e) => {
+          state.sortBy = e.target.value;
+          syncURL();
+          renderCatalogue();
+        });
+      }
 
       // Grid / List View Toggle
-      els.gridModeBtn.addEventListener('click', () => {
-        state.viewMode = 'grid';
-        els.gridModeBtn.classList.add('active');
-        els.listModeBtn.classList.remove('active');
-        els.productsGrid.classList.remove('view-list');
-      });
+      if (els.gridModeBtn) {
+        els.gridModeBtn.addEventListener('click', () => {
+          state.viewMode = 'grid';
+          els.gridModeBtn.classList.add('active');
+          if (els.listModeBtn) els.listModeBtn.classList.remove('active');
+          if (els.productsGrid) els.productsGrid.classList.remove('view-list');
+        });
+      }
 
-      els.listModeBtn.addEventListener('click', () => {
-        state.viewMode = 'list';
-        els.listModeBtn.classList.add('active');
-        els.gridModeBtn.classList.remove('active');
-        els.productsGrid.classList.add('view-list');
-      });
+      if (els.listModeBtn) {
+        els.listModeBtn.addEventListener('click', () => {
+          state.viewMode = 'list';
+          els.listModeBtn.classList.add('active');
+          if (els.gridModeBtn) els.gridModeBtn.classList.remove('active');
+          if (els.productsGrid) els.productsGrid.classList.add('view-list');
+        });
+      }
 
       // Reset All button
-      els.resetAllFiltersBtn.addEventListener('click', resetAllFilters);
-      els.applyFiltersBtn.addEventListener('click', () => {
-        closeMobileSidebar();
-        renderCatalogue();
-      });
+      if (els.resetAllFiltersBtn) els.resetAllFiltersBtn.addEventListener('click', resetAllFilters);
+      if (els.applyFiltersBtn) {
+        els.applyFiltersBtn.addEventListener('click', () => {
+          closeMobileSidebar();
+          renderCatalogue();
+        });
+      }
 
       // Products Grid Action Delegations (Wishlist, QuickView, AddToCart)
-      els.productsGrid.addEventListener('click', (e) => {
-        const wishlistBtn = e.target.closest('[data-wishlist]');
-        if (wishlistBtn) {
-          e.stopPropagation();
-          const pid = wishlistBtn.getAttribute('data-wishlist');
-          toggleWishlist(pid);
-          return;
-        }
+      if (els.productsGrid) {
+        els.productsGrid.addEventListener('click', (e) => {
+          const wishlistBtn = e.target.closest('[data-wishlist]');
+          if (wishlistBtn) {
+            e.stopPropagation();
+            toggleWishlist(wishlistBtn.getAttribute('data-wishlist'));
+            return;
+          }
 
-        const quickviewBtn = e.target.closest('[data-quickview]');
-        if (quickviewBtn) {
-          e.stopPropagation();
-          const pid = quickviewBtn.getAttribute('data-quickview');
-          openQuickView(pid);
-          return;
-        }
+          const quickviewBtn = e.target.closest('[data-quickview]');
+          if (quickviewBtn) {
+            e.stopPropagation();
+            openQuickView(quickviewBtn.getAttribute('data-quickview'));
+            return;
+          }
 
-        const addCartBtn = e.target.closest('[data-addcart]');
-        if (addCartBtn) {
-          e.stopPropagation();
-          const pid = addCartBtn.getAttribute('data-addcart');
-          handleAddToCart(pid, 1);
-          return;
-        }
-      });
+          const addCartBtn = e.target.closest('[data-addcart]');
+          if (addCartBtn) {
+            e.stopPropagation();
+            handleAddToCart(addCartBtn.getAttribute('data-addcart'), 1);
+            return;
+          }
+        });
+      }
 
       // Quick View Modal events
-      els.closeQuickViewBtn.addEventListener('click', closeQuickView);
-      els.quickViewOverlay.addEventListener('click', (e) => {
-        if (e.target === els.quickViewOverlay) closeQuickView();
-      });
+      if (els.closeQuickViewBtn) els.closeQuickViewBtn.addEventListener('click', closeQuickView);
+      if (els.quickViewOverlay) {
+        els.quickViewOverlay.addEventListener('click', (e) => {
+          if (e.target === els.quickViewOverlay) closeQuickView();
+        });
+      }
 
-      els.qtyMinus.addEventListener('click', () => {
-        let val = parseInt(els.modalQtyInput.value, 10);
-        if (val > 1) els.modalQtyInput.value = val - 1;
-      });
+      if (els.qtyMinus) {
+        els.qtyMinus.addEventListener('click', () => {
+          let val = parseInt(els.modalQtyInput.value, 10);
+          if (val > 1) els.modalQtyInput.value = val - 1;
+        });
+      }
 
-      els.qtyPlus.addEventListener('click', () => {
-        let val = parseInt(els.modalQtyInput.value, 10);
-        if (val < 20) els.modalQtyInput.value = val + 1;
-      });
+      if (els.qtyPlus) {
+        els.qtyPlus.addEventListener('click', () => {
+          let val = parseInt(els.modalQtyInput.value, 10);
+          if (val < 20) els.modalQtyInput.value = val + 1;
+        });
+      }
 
-      els.modalAddToCartBtn.addEventListener('click', () => {
-        if (!activeModalProduct) return;
-        const qty = parseInt(els.modalQtyInput.value, 10) || 1;
-        handleAddToCart(activeModalProduct.id, qty);
-        closeQuickView();
-      });
+      if (els.modalAddToCartBtn) {
+        els.modalAddToCartBtn.addEventListener('click', () => {
+          if (!activeModalProduct) return;
+          const qty = parseInt(els.modalQtyInput.value, 10) || 1;
+          handleAddToCart(activeModalProduct.id, qty);
+          closeQuickView();
+        });
+      }
 
       // Mobile Sidebar Open / Close
-      els.openMobileFilterBtn.addEventListener('click', openMobileSidebar);
-      els.closeMobileSidebarBtn.addEventListener('click', closeMobileSidebar);
-      els.sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+      if (els.openMobileFilterBtn) els.openMobileFilterBtn.addEventListener('click', openMobileSidebar);
+      if (els.closeMobileSidebarBtn) els.closeMobileSidebarBtn.addEventListener('click', closeMobileSidebar);
+      if (els.sidebarBackdrop) els.sidebarBackdrop.addEventListener('click', closeMobileSidebar);
 
       // Mobile Nav Menu Open / Close
-      els.mobileMenuBtn.addEventListener('click', () => {
-        els.mobileNav.classList.add('active');
-      });
-      els.closeMobileNav.addEventListener('click', () => {
-        els.mobileNav.classList.remove('active');
-      });
-
-      // Pagination clicks
-      els.paginationContainer.addEventListener('click', (e) => {
-        const pageBtn = e.target.closest('.pagination-btn[data-page]');
-        if (pageBtn) {
-          document.querySelectorAll('.pagination-btn').forEach(b => b.classList.remove('active'));
-          pageBtn.classList.add('active');
-          window.scrollTo({ top: 350, behavior: 'smooth' });
-          showToast(`Page ${pageBtn.getAttribute('data-page')} chargée.`, 'info');
-        }
-      });
+      if (els.mobileMenuBtn && els.mobileNav) {
+        els.mobileMenuBtn.addEventListener('click', () => els.mobileNav.classList.add('active'));
+      }
+      if (els.closeMobileNav && els.mobileNav) {
+        els.closeMobileNav.addEventListener('click', () => els.mobileNav.classList.remove('active'));
+      }
     }
 
     function openMobileSidebar() {
-      els.catalogueSidebar.classList.add('active');
-      els.sidebarBackdrop.classList.add('active');
+      if (els.catalogueSidebar) els.catalogueSidebar.classList.add('active');
+      if (els.sidebarBackdrop) els.sidebarBackdrop.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
     function closeMobileSidebar() {
-      els.catalogueSidebar.classList.remove('active');
-      els.sidebarBackdrop.classList.remove('active');
+      if (els.catalogueSidebar) els.catalogueSidebar.classList.remove('active');
+      if (els.sidebarBackdrop) els.sidebarBackdrop.classList.remove('active');
       document.body.style.overflow = '';
     }
 
     // ── 15. INITIALIZATION ON DOM READY ─────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-    window.addEventListener('abp_storage_ready', () => {
-      if (typeof renderProducts === 'function') renderProducts();
-    });
-    window.addEventListener('abp_products_updated', () => {
-      if (typeof renderProducts === 'function') renderProducts();
-    });
       readURLParams();
       setupEventListeners();
       renderCatalogue();
+
+      // Listen for IndexedDB high-res media cache readiness
+      window.addEventListener('abp_storage_ready', () => {
+        renderCatalogue();
+      });
+      window.addEventListener('abp_products_updated', () => {
+        renderCatalogue();
+      });
 
       // Initialize Cart badge
       if (typeof Cart !== 'undefined' && Cart.init) {
         Cart.init();
       }
     });
-  </script>
+</script>
 </body>
 </html>

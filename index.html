@@ -1849,7 +1849,46 @@
     <!-- =====================================================
          4. FEATURED CATEGORIES (Grid of 6)
          ===================================================== -->
-        <section class="categories-section" id="categories">
+        <section class="promotions-showcase-section" id="promotions-vedettes" style="padding:var(--space-16) 0;background:linear-gradient(180deg,#F5F0E8 0%,#EDE7DC 100%);border-top:1px solid rgba(201,168,76,0.2);border-bottom:1px solid rgba(201,168,76,0.2);">
+      <div class="container">
+        
+        <div class="section-header" style="margin-bottom:var(--space-8);">
+          <div class="section-label" style="display:inline-flex;align-items:center;gap:6px;">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#e74c3c;animation:pulse 1.5s infinite;"></span>
+            À l'Affiche · Vidéos &amp; Offres Exclusives
+          </div>
+          <h2 class="section-title">Découvertes &amp; Campagnes du Moment</h2>
+          <div class="divider"></div>
+          <p class="section-subtitle">
+            Visionnez nos rituels de soins en vidéo et profitez des promotions exclusives gérées par nos artisans.
+          </p>
+        </div>
+
+        <div id="storefrontPromotionsContainer" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--space-6);">
+          <!-- Rendered dynamically from AdminStore.getPromotions() -->
+        </div>
+
+      </div>
+    </section>
+
+    <section class="products-section" id="catalogue">
+      <div class="container">
+        
+        <div class="section-header">
+          <div class="section-label">Sélection Exclusive</div>
+          <h2 class="section-title">Nos Produits Phares</h2>
+          <div class="divider"></div>
+          <p class="section-subtitle">
+            Les créations les plus appréciées par nos clientes à Abidjan pour leur pureté et leur efficacité.
+          </p>
+        </div>
+
+        <div class="product-grid-container" id="storefrontProductsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories-section" id="categories">
       <div class="container">
         
         <div class="section-header">
@@ -1988,50 +2027,6 @@
 
         </div>
 
-      </div>
-    </section>
-
-    <!-- =====================================================
-         5. FEATURED PRODUCTS (8 Products, 4-col desktop, scroll mobile)
-         ===================================================== -->
-        <!-- =====================================================
-         PROMOTIONS, SPOTS VIDÉO & BANNIÈRES EN VEDETTE
-         ===================================================== -->
-    <section class="promotions-showcase-section" id="promotions-vedettes" style="padding:var(--space-16) 0;background:linear-gradient(180deg,#F5F0E8 0%,#EDE7DC 100%);border-top:1px solid rgba(201,168,76,0.2);border-bottom:1px solid rgba(201,168,76,0.2);">
-      <div class="container">
-        
-        <div class="section-header" style="margin-bottom:var(--space-8);">
-          <div class="section-label" style="display:inline-flex;align-items:center;gap:6px;">
-            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#e74c3c;animation:pulse 1.5s infinite;"></span>
-            À l'Affiche · Vidéos &amp; Offres Exclusives
-          </div>
-          <h2 class="section-title">Découvertes &amp; Campagnes du Moment</h2>
-          <div class="divider"></div>
-          <p class="section-subtitle">
-            Visionnez nos rituels de soins en vidéo et profitez des promotions exclusives gérées par nos artisans.
-          </p>
-        </div>
-
-        <div id="storefrontPromotionsContainer" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--space-6);">
-          <!-- Rendered dynamically from AdminStore.getPromotions() -->
-        </div>
-
-      </div>
-    </section>
-<section class="products-section" id="catalogue">
-      <div class="container">
-        
-        <div class="section-header">
-          <div class="section-label">Sélection Exclusive</div>
-          <h2 class="section-title">Nos Produits Phares</h2>
-          <div class="divider"></div>
-          <p class="section-subtitle">
-            Les créations les plus appréciées par nos clientes à Abidjan pour leur pureté et leur efficacité.
-          </p>
-        </div>
-
-        <div class="product-grid-container" id="storefrontProductsGrid"></div>
-        </div>
       </div>
     </section>
 
