@@ -3,10 +3,34 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Détails du Produit — AMABELLEPEAU Savons Naturels</title>
-  <meta name="description" content="Savon artisanal naturel et cosmétique d'exception. Fabriqué avec amour en Côte d'Ivoire."/>
+
+  <!-- Primary SEO Meta Tags -->
+  <title id="pageTitle">Détails du Produit — AMABELLEPEAU Savons Naturels</title>
+  <meta name="title" id="pageMetaTitle" content="Détails du Produit — AMABELLEPEAU Savons Naturels"/>
+  <meta name="description" id="pageMetaDesc" content="Savon artisanal naturel et cosmétique d'exception. Fabriqué avec amour en Côte d'Ivoire."/>
+  <link rel="canonical" href="https://amabellepeau.vercel.app/produit.html"/>
+
+  <!-- Open Graph / WhatsApp / Facebook -->
+  <meta property="og:type" content="product"/>
+  <meta property="og:url" content="https://amabellepeau.vercel.app/produit.html"/>
+  <meta property="og:site_name" content="AMABELLEPEAU"/>
+  <meta property="og:title" id="ogTitle" content="Détails du Produit — AMABELLEPEAU"/>
+  <meta property="og:description" id="ogDesc" content="Cosmétique artisanal 100% naturel confectionné en Côte d'Ivoire."/>
+  <meta property="og:image" id="ogImage" content="https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png"/>
+  <meta property="og:image:secure_url" id="ogImageSecure" content="https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png"/>
+  <meta property="og:locale" content="fr_CI"/>
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" id="twTitle" content="Détails du Produit — AMABELLEPEAU"/>
+  <meta name="twitter:description" id="twDesc" content="Cosmétique artisanal 100% naturel confectionné en Côte d'Ivoire."/>
+  <meta name="twitter:image" id="twImage" content="https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png"/>
+
+  <!-- Icons & Theme -->
+  <meta name="theme-color" content="#1B4D1E"/>
   <link rel="manifest" href="manifest.json"/>
   <link rel="icon" href="assets/icons/brand-logo.png"/>
+  <link rel="apple-touch-icon" href="https://amabellepeau.vercel.app/assets/icons/brand-logo.png"/>
   <link rel="stylesheet" href="css/main.css"/>
   <style>
     .product-page { padding: var(--space-8) 0 var(--space-16); }
@@ -546,6 +570,16 @@
     brandLink.href = `marchand.html?id=${p.merchantId || 'ets-marie-andrea'}`;
     document.getElementById('productBrandText').textContent = `${p.brand} · ${p.categoryName || 'Cosmétique Bio'}`;
     document.getElementById('productTitle').textContent = p.name;
+      // Dynamically sync social share meta tags
+      const fullImg = p.image ? (p.image.startsWith('http') ? p.image : (window.location.origin + '/' + p.image.replace(/^\//, ''))) : 'https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png';
+      document.title = p.name + ' — AMABELLEPEAU';
+      const mDesc = p.shortDesc || p.description || 'Cosmétique artisanal 100% naturel confectionné en Côte d\'Ivoire.';
+      const elOgTitle = document.getElementById('ogTitle'); if (elOgTitle) elOgTitle.content = p.name + ' — AMABELLEPEAU';
+      const elOgDesc = document.getElementById('ogDesc'); if (elOgDesc) elOgDesc.content = mDesc;
+      const elOgImg = document.getElementById('ogImage'); if (elOgImg) elOgImg.content = fullImg;
+      const elTwTitle = document.getElementById('twTitle'); if (elTwTitle) elTwTitle.content = p.name + ' — AMABELLEPEAU';
+      const elTwDesc = document.getElementById('twDesc'); if (elTwDesc) elTwDesc.content = mDesc;
+      const elTwImg = document.getElementById('twImage'); if (elTwImg) elTwImg.content = fullImg;
 
     // Rating
     document.getElementById('productRatingNum').textContent = p.rating || '4.9';
