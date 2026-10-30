@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Administration | AMABELLEPEAU - Back-Office Marketplace</title>
-  <meta name="description" content="Panneau d'administration global de la marketplace AMABELLEPEAU. Gestion des marchands, modÃ©ration des cosmÃ©tiques, dispatch livraison et suivi des commissions en CÃ´te d'Ivoire.">
+  <meta name="description" content="Panneau d'administration global de la marketplace AMABELLEPEAU. Gestion des marchands, modération des cosmétiques, dispatch livraison et suivi des commissions en Côte d'Ivoire.">
   <link rel="icon" type="image/png" href="../assets/icons/brand-logo.png">
   <link rel="stylesheet" href="../css/main.css">
 
@@ -587,11 +587,11 @@
     <div class="container flex-between">
       <div style="display: flex; align-items: center; gap: var(--space-3);">
         <img src="../assets/icons/brand-logo.png" alt="AMABELLEPEAU" class="navbar-logo" style="width: 38px; height: 38px; object-fit: contain;">
-        <span class="navbar-brand-text">AMABELLE<span>PEAU</span> Â· <small style="font-size: 13px; color: var(--color-gold); font-weight: 600;">Back-Office</small></span>
+        <span class="navbar-brand-text">AMABELLE<span>PEAU</span> · <small style="font-size: 13px; color: var(--color-gold); font-weight: 600;">Back-Office</small></span>
       </div>
       <div style="display: flex; align-items: center; gap: var(--space-4);">
-        <a href="../index.html" class="btn btn-ghost btn-sm" target="_blank">ðŸŒ Voir la boutique</a>
-        <a href="../marchand/index.html" class="btn btn-ghost btn-sm">ðŸª Espace Marchand</a>
+        <a href="../index.html" class="btn btn-ghost btn-sm" target="_blank">🌐  Voir la boutique</a>
+        <a href="../marchand/index.html" class="btn btn-ghost btn-sm">🏪  Espace Marchand</a>
       </div>
     </div>
   </header>
@@ -604,7 +604,7 @@
         <div class="admin-profile-badge">
           <div class="admin-avatar">AP</div>
           <div class="admin-meta">
-            <div class="admin-name">Superviseur GÃ©nÃ©ral</div>
+            <div class="admin-name">Superviseur Général</div>
             <div class="admin-status-tag">
               <span class="status-indicator-dot"></span>
               Marketplace Abidjan CI
@@ -630,11 +630,11 @@
             <span class="sidebar-badge" id="badgeProdCount">15</span>
           </button>
 
-          <div class="sidebar-section-title">MARCHANDS & AGRÃ‰MENTS</div>
+          <div class="sidebar-section-title">MARCHANDS & AGRÉMENTS</div>
           <button class="sidebar-item-btn" data-view="view-merchants" onclick="switchAdminTab('view-merchants')">
             <div class="sidebar-item-content">
               <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              <span>Marchands AgrÃ©Ã©s</span>
+              <span>Marchands Agréés</span>
             </div>
             <span class="sidebar-badge alert" id="badgePendingMerch">2</span>
           </button>
@@ -643,7 +643,7 @@
           <button class="sidebar-item-btn" data-view="view-commissions" onclick="switchAdminTab('view-commissions')">
             <div class="sidebar-item-content">
               <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              <span>RÃ©seau & Commissions</span>
+              <span>Réseau & Commissions</span>
             </div>
             <span class="sidebar-badge">15%</span>
           </button>
@@ -689,7 +689,7 @@
       <div class="sidebar-footer">
         <div class="server-status-pill">
           <span>Passerelles Wave & OM</span>
-          <span style="color:var(--color-success);font-weight:700;">â— En ligne</span>
+          <span style="color:var(--color-success);font-weight:700;">●  En ligne</span>
         </div>
       </div>
     </aside>
@@ -702,7 +702,7 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Tableau de Bord & Supervision</h1>
-            <p>Vue consolidÃ©e des ventes, commissions (15%), marchands et flux logistiques Ã  Abidjan.</p>
+            <p>Vue consolidée des ventes, commissions (15%), marchands et flux logistiques à Abidjan.</p>
           </div>
           <div style="display: flex; gap: var(--space-2);">
             <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Nouveau Produit</button>
@@ -712,32 +712,32 @@
 
         <div class="stats-grid-6">
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Ventes Globales</span><span>ðŸ’°</span></div>
+            <div class="stat-admin-label"><span>Ventes Globales</span><span>💰</span></div>
             <div class="stat-admin-value" id="statOverviewSales">11 850 000 XOF</div>
-            <div class="stat-admin-sub green">â†‘ 18.4% ce mois</div>
+            <div class="stat-admin-sub green">↑ 18.4% ce mois</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Commissions (15%)</span><span>ðŸ’Ž</span></div>
+            <div class="stat-admin-label"><span>Commissions (15%)</span><span>💎</span></div>
             <div class="stat-admin-value" style="color:var(--color-gold);" id="statOverviewComm">1 777 500 XOF</div>
             <div class="stat-admin-sub green">Revenu net plateforme</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Commandes</span><span>ðŸ“¦</span></div>
+            <div class="stat-admin-label"><span>Commandes</span><span>📦</span></div>
             <div class="stat-admin-value" id="statOverviewOrders">147</div>
-            <div class="stat-admin-sub blue">En CÃ´te d'Ivoire</div>
+            <div class="stat-admin-sub blue">En Côte d'Ivoire</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Marchands Actifs</span><span>ðŸª</span></div>
+            <div class="stat-admin-label"><span>Marchands Actifs</span><span>🏪 </span></div>
             <div class="stat-admin-value" id="statOverviewMerchants">6</div>
-            <div class="stat-admin-sub green">Boutiques certifiÃ©es</div>
+            <div class="stat-admin-sub green">Boutiques certifiées</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>En Attente KYC</span><span>â³</span></div>
+            <div class="stat-admin-label"><span>En Attente KYC</span><span>⏳ </span></div>
             <div class="stat-admin-value" style="color:#E67E22;" id="statOverviewPending">2</div>
-            <div class="stat-admin-sub orange">Dossiers Ã  agrÃ©er</div>
+            <div class="stat-admin-sub orange">Dossiers à agréer</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Produits Actifs</span><span>ðŸŒ¿</span></div>
+            <div class="stat-admin-label"><span>Produits Actifs</span><span>🌐 ¿</span></div>
             <div class="stat-admin-value" id="statOverviewProds">15</div>
             <div class="stat-admin-sub green">Savonnerie & Soins</div>
           </div>
@@ -748,13 +748,13 @@
           <div class="admin-card-header">
             <h2 class="admin-card-title" style="color:var(--color-gold);">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              Calculateur Automatique de RÃ©partition (15% Commission)
+              Calculateur Automatique de Répartition (15% Commission)
             </h2>
-            <span style="font-size:12px;color:rgba(255,255,255,0.7);">RÃ¨gle commerciale MVP validÃ©e</span>
+            <span style="font-size:12px;color:rgba(255,255,255,0.7);">Règle commerciale MVP validée</span>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4);align-items:center;">
             <div>
-              <label class="form-label" style="color:rgba(255,255,255,0.8);">Volume de Vente Ã  Simuler (XOF)</label>
+              <label class="form-label" style="color:rgba(255,255,255,0.8);">Volume de Vente à Simuler (XOF)</label>
               <input type="number" id="calcInputVolume" class="form-input" value="1000000" step="50000" oninput="calculateCommissionBreakdown()" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(201,168,76,0.5);">
             </div>
             <div style="background:rgba(0,0,0,0.3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);border:1px solid rgba(201,168,76,0.3);">
@@ -771,14 +771,14 @@
         <!-- Recent Activity Quick Tables -->
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">ðŸ“¦ DerniÃ¨res Commandes TraitÃ©es</h2>
-            <button class="btn-action" onclick="switchAdminTab('view-orders')">Voir toutes les commandes â†’</button>
+            <h2 class="admin-card-title">📦 Dernières Commandes Traitées</h2>
+            <button class="btn-action" onclick="switchAdminTab('view-orders')">Voir toutes les commandes →</button>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>NÂ° Commande</th>
+                  <th>N° Commande</th>
                   <th>Client</th>
                   <th>Commune</th>
                   <th>Produits</th>
@@ -798,10 +798,10 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Catalogue & Maintenance Produits</h1>
-            <p>GÃ©rez les stocks, prix, compositions et visuels officiels (ETS Marie Andrea, AMABELLEBARBE, AMAFLEURDEPEAU).</p>
+            <p>Gérez les stocks, prix, compositions et visuels officiels (ETS Marie Andrea, AMABELLEBARBE, AMAFLEURDEPEAU).</p>
           </div>
           <div style="display:flex;gap:var(--space-2);">
-            <button class="btn btn-outline btn-sm" onclick="resetProductDefaults()">ðŸ”„ RÃ©initialiser DonnÃ©es Initiales</button>
+            <button class="btn btn-outline btn-sm" onclick="resetProductDefaults()">🔄 Réinitialiser Données Initiales</button>
             <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Ajouter un Produit</button>
           </div>
         </div>
@@ -809,11 +809,11 @@
         <div class="admin-card">
           <div class="admin-card-header">
             <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;flex:1;">
-              <input type="text" id="prodSearchInput" class="form-input" placeholder="ðŸ” Rechercher un produit, ingrÃ©dient..." style="max-width:320px;" oninput="filterAdminProducts()">
+              <input type="text" id="prodSearchInput" class="form-input" placeholder="🔍  Rechercher un produit, ingrédient..." style="max-width:320px;" oninput="filterAdminProducts()">
               <select id="prodCategoryFilter" class="form-select" style="max-width:240px;" onchange="filterAdminProducts()">
-                <option value="all">Toutes les catÃ©gories</option>
+                <option value="all">Toutes les catégories</option>
                 <option value="savons">Savons Artisanaux</option>
-                <option value="soins-specifiques">Soins SpÃ©cifiques & Teint</option>
+                <option value="soins-specifiques">Soins Spécifiques & Teint</option>
                 <option value="soins-dermatologiques">Soins Dermatologiques</option>
                 <option value="barbe-homme">Soins Barbe & Homme</option>
                 <option value="coffrets-cadeaux">Coffrets Cadeaux & Rituels</option>
@@ -830,9 +830,9 @@
               <thead>
                 <tr>
                   <th>Visuel</th>
-                  <th>DÃ©signation & Poids</th>
+                  <th>Désignation & Poids</th>
                   <th>Marque & Gamme</th>
-                  <th>CatÃ©gorie</th>
+                  <th>Catégorie</th>
                   <th>Prix (XOF)</th>
                   <th>Stock & Statut</th>
                   <th>Actions</th>
@@ -848,8 +848,8 @@
       <div id="view-merchants" class="admin-view-panel">
         <div class="admin-main-header">
           <div class="admin-main-title">
-            <h1>Marchands AgrÃ©Ã©s & Demandes d'IntÃ©gration</h1>
-            <p>ContrÃ´le des boutiques partenaires, validation KYC, comptes de reversement Wave/Orange Money et commission 15%.</p>
+            <h1>Marchands Agréés & Demandes d'Intégration</h1>
+            <p>Contrôle des boutiques partenaires, validation KYC, comptes de reversement Wave/Orange Money et commission 15%.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openAddMerchantModal()">+ Nouveau Marchand</button>
         </div>
@@ -857,7 +857,7 @@
         <div class="admin-card" style="border-left:4px solid #E67E22;">
           <div class="admin-card-header">
             <h2 class="admin-card-title" style="color:#D35400;">
-              â³ Demandes d'AgrÃ©ments en Attente (KYC)
+              ⏳  Demandes d'Agréments en Attente (KYC)
             </h2>
             <span class="status-badge pending" id="pendingMerchantCountBadge">2 dossiers</span>
           </div>
@@ -865,13 +865,13 @@
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Ã‰tablissement</th>
+                  <th>Établissement</th>
                   <th>Responsable</th>
                   <th>Commune / Ville</th>
-                  <th>TÃ©lÃ©phone / WhatsApp</th>
+                  <th>Téléphone / WhatsApp</th>
                   <th>Compte Wave / OM</th>
                   <th>Date Inscription</th>
-                  <th>DÃ©cision</th>
+                  <th>Décision</th>
                 </tr>
               </thead>
               <tbody id="pendingMerchantsTableBody"></tbody>
@@ -881,7 +881,7 @@
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">ðŸª Marchands AgrÃ©Ã©s Actifs</h2>
+            <h2 class="admin-card-title">🏪  Marchands Agréés Actifs</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
@@ -889,7 +889,7 @@
                 <tr>
                   <th>Boutique</th>
                   <th>Responsable</th>
-                  <th>CatÃ©gorie Principale</th>
+                  <th>Catégorie Principale</th>
                   <th>Localisation</th>
                   <th>Volume Ventes</th>
                   <th>Commission</th>
@@ -907,30 +907,30 @@
       <div id="view-commissions" class="admin-view-panel">
         <div class="admin-main-header">
           <div class="admin-main-title">
-            <h1>RÃ©seau Commercial & Suivi des Commissions</h1>
-            <p>Gestion des reprÃ©sentants par commune, ventilation du chiffre d'affaires et reversements Wave / Orange Money.</p>
+            <h1>Réseau Commercial & Suivi des Commissions</h1>
+            <p>Gestion des représentants par commune, ventilation du chiffre d'affaires et reversements Wave / Orange Money.</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddRepModal()">+ Nouveau ReprÃ©sentant</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddRepModal()">+ Nouveau Représentant</button>
         </div>
 
         <div class="stats-grid-6">
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Ventes RÃ©seau</span><span>ðŸ“ˆ</span></div>
+            <div class="stat-admin-label"><span>Ventes Réseau</span><span>📈</span></div>
             <div class="stat-admin-value" id="statRepTotalSales">8 700 000 XOF</div>
-            <div class="stat-admin-sub green">Par les reprÃ©sentants</div>
+            <div class="stat-admin-sub green">Par les représentants</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Commissions Dues</span><span>ðŸ’Ž</span></div>
+            <div class="stat-admin-label"><span>Commissions Dues</span><span>💎</span></div>
             <div class="stat-admin-value" style="color:var(--color-gold);" id="statRepTotalDue">1 305 000 XOF</div>
-            <div class="stat-admin-sub green">BarÃ¨me 15%</div>
+            <div class="stat-admin-sub green">Barème 15%</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Montants VersÃ©s</span><span>âœ…</span></div>
+            <div class="stat-admin-label"><span>Montants Versés</span><span>✅</span></div>
             <div class="stat-admin-value" style="color:#27AE60;" id="statRepTotalPaid">1 000 000 XOF</div>
             <div class="stat-admin-sub green">Via Wave & OM</div>
           </div>
           <div class="stat-card-admin">
-            <div class="stat-admin-label"><span>Solde Ã  DÃ©caisser</span><span>â³</span></div>
+            <div class="stat-admin-label"><span>Solde à Décaisser</span><span>⏳ </span></div>
             <div class="stat-admin-value" style="color:#E74C3C;" id="statRepTotalPending">305 000 XOF</div>
             <div class="stat-admin-sub orange">En attente de paiement</div>
           </div>
@@ -938,20 +938,20 @@
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">ðŸ‘¥ RÃ©seau des ReprÃ©sentants & Mandataires</h2>
+            <h2 class="admin-card-title">👥 Réseau des Représentants & Mandataires</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Nom du ReprÃ©sentant</th>
+                  <th>Nom du Représentant</th>
                   <th>Zone / Commune</th>
-                  <th>TÃ©lÃ©phone</th>
+                  <th>Téléphone</th>
                   <th>Nb Ventes</th>
                   <th>Volume Ventes</th>
                   <th>Commission Due (15%)</th>
-                  <th>DÃ©jÃ  VersÃ©</th>
-                  <th>Solde DÃ»</th>
+                  <th>Déjà Versé</th>
+                  <th>Solde Dû</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -966,27 +966,27 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Ambassadeurs, Influenceurs & Codes Promo</h1>
-            <p>CrÃ©ez et suivez l'efficacitÃ© des codes promotionnels et des commissions d'affiliation.</p>
+            <p>Créez et suivez l'efficacité des codes promotionnels et des commissions d'affiliation.</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddInfluencerModal()">+ CrÃ©er un Code Promo</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddInfluencerModal()">+ Créer un Code Promo</button>
         </div>
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">ðŸŒŸ Codes Promo & Tracking Affiliation</h2>
+            <h2 class="admin-card-title">🌐 Ÿ Codes Promo & Tracking Affiliation</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
                   <th>Code Promo</th>
-                  <th>Influenceur / CrÃ©ateur</th>
-                  <th>RÃ©seaux Sociaux</th>
+                  <th>Influenceur / Créateur</th>
+                  <th>Réseaux Sociaux</th>
                   <th>Remise Client</th>
                   <th>Commission</th>
                   <th>Utilisations</th>
-                  <th>Ventes GÃ©nÃ©rÃ©es</th>
-                  <th>Gains CumulÃ©s</th>
+                  <th>Ventes Générées</th>
+                  <th>Gains Cumulés</th>
                   <th>Statut</th>
                   <th>Actions</th>
                 </tr>
@@ -1002,25 +1002,25 @@
         <div class="admin-main-header">
           <div class="admin-main-title">
             <h1>Gestion des Commandes & Ventes</h1>
-            <p>Suivi en direct des rÃ¨glements Wave, Orange Money et dispatch de livraison sur Abidjan.</p>
+            <p>Suivi en direct des règlements Wave, Orange Money et dispatch de livraison sur Abidjan.</p>
           </div>
         </div>
 
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title">ðŸ“‹ Toutes les Commandes RÃ©cents</h2>
+            <h2 class="admin-card-title">📋 Toutes les Commandes Récents</h2>
           </div>
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>NÂ° Commande</th>
+                  <th>N° Commande</th>
                   <th>Date & Heure</th>
                   <th>Client</th>
                   <th>Commune / Adresse</th>
-                  <th>DÃ©tail Articles</th>
+                  <th>Détail Articles</th>
                   <th>Total TTC</th>
-                  <th>RÃ¨glement</th>
+                  <th>Règlement</th>
                   <th>Statut Commande</th>
                   <th>Dispatch</th>
                 </tr>
@@ -1150,7 +1150,7 @@
         <div class="admin-modal-body">
           <input type="hidden" id="editProdId">
           <div class="form-group">
-            <label class="form-label">DÃ©signation du Produit *</label>
+            <label class="form-label">Désignation du Produit *</label>
             <input type="text" id="prodInputName" class="form-input" placeholder="ex: Savon CLARYLEX (200 g)" required>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
@@ -1165,10 +1165,10 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">CatÃ©gorie *</label>
+              <label class="form-label">Catégorie *</label>
               <select id="prodInputCategory" class="form-select" required>
                 <option value="savons">Savons Artisanaux</option>
-                <option value="soins-specifiques">Soins SpÃ©cifiques & Teint</option>
+                <option value="soins-specifiques">Soins Spécifiques & Teint</option>
                 <option value="soins-dermatologiques">Soins Dermatologiques</option>
                 <option value="barbe-homme">Soins Barbe & Homme</option>
                 <option value="coffrets-cadeaux">Coffrets Cadeaux & Rituels</option>
@@ -1231,11 +1231,11 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Composition & IngrÃ©dients INCI</label>
-            <input type="text" id="prodInputComposition" class="form-input" placeholder="Palmiste, KaritÃ©, Miel, Parfum...">
+            <label class="form-label">Composition & Ingrédients INCI</label>
+            <input type="text" id="prodInputComposition" class="form-input" placeholder="Palmiste, Karité, Miel, Parfum...">
           </div>
           <div class="form-group">
-            <label class="form-label">Vertus & PropriÃ©tÃ©s ThÃ©rapeutiques</label>
+            <label class="form-label">Vertus & Propriétés Thérapeutiques</label>
             <textarea id="prodInputVertus" class="form-textarea" rows="2" placeholder="Clarifiant, anti-taches, tonifiant, cicatrisant..."></textarea>
           </div>
         </div>
@@ -1262,7 +1262,7 @@
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">Nom du GÃ©rant *</label>
+              <label class="form-label">Nom du Gérant *</label>
               <input type="text" id="merchInputOwner" class="form-input" placeholder="ex: Amadou Bamba" required>
             </div>
             <div class="form-group">
@@ -1272,17 +1272,17 @@
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">TÃ©lÃ©phone / WhatsApp *</label>
+              <label class="form-label">Téléphone / WhatsApp *</label>
               <input type="text" id="merchInputPhone" class="form-input" placeholder="+225 07..." required>
             </div>
             <div class="form-group">
-              <label class="form-label">NumÃ©ro Reversement Wave / OM *</label>
+              <label class="form-label">Numéro Reversement Wave / OM *</label>
               <input type="text" id="merchInputWave" class="form-input" placeholder="+225 07..." required>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">CatÃ©gorie SpÃ©cialisÃ©e</label>
-            <input type="text" id="merchInputCategory" class="form-input" placeholder="ex: Beurres bruts, Savons saponifiÃ©s...">
+            <label class="form-label">Catégorie Spécialisée</label>
+            <input type="text" id="merchInputCategory" class="form-input" placeholder="ex: Beurres bruts, Savons saponifiés...">
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
@@ -1317,7 +1317,7 @@
         </div>
         <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
           <button type="button" class="btn btn-ghost btn-sm" onclick="closeMerchantModal()">Annuler</button>
-          <button type="submit" class="btn btn-primary btn-sm">AgrÃ©er le Marchand</button>
+          <button type="submit" class="btn btn-primary btn-sm">Agréer le Marchand</button>
         </div>
       </form>
     </div>
@@ -1334,12 +1334,12 @@
         <div class="admin-modal-body">
           <input type="hidden" id="payoutRepId">
           <div class="form-group">
-            <label class="form-label">BÃ©nÃ©ficiaire</label>
+            <label class="form-label">Bénéficiaire</label>
             <input type="text" id="payoutRepName" class="form-input" readonly style="background:var(--color-surface-alt);font-weight:700;">
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">Montant Ã  Verser (XOF) *</label>
+              <label class="form-label">Montant à Verser (XOF) *</label>
               <input type="number" id="payoutAmountInput" class="form-input" required>
             </div>
             <div class="form-group">
@@ -1352,7 +1352,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">RÃ©fÃ©rence Transaction / ID ReÃ§u</label>
+            <label class="form-label">Référence Transaction / ID Reçu</label>
             <input type="text" id="payoutRefInput" class="form-input" placeholder="ex: WAVE-CI-998273">
           </div>
         </div>
@@ -1368,13 +1368,13 @@
   <div class="admin-modal-overlay" id="modalInfluencerOverlay">
     <div class="admin-modal">
       <div class="admin-modal-header">
-        <h3 class="admin-modal-title">CrÃ©er un Code Promo Influenceur</h3>
+        <h3 class="admin-modal-title">Créer un Code Promo Influenceur</h3>
         <button class="admin-modal-close" onclick="closeInfluencerModal()">&times;</button>
       </div>
       <form id="influencerForm" onsubmit="handleInfluencerFormSubmit(event)">
         <div class="admin-modal-body">
           <div class="form-group">
-            <label class="form-label">Code Promo SouhaitÃ© *</label>
+            <label class="form-label">Code Promo Souhaité *</label>
             <input type="text" id="infInputCode" class="form-input" placeholder="ex: GLOW2026" style="text-transform:uppercase;font-family:monospace;font-weight:700;" required>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
@@ -1497,7 +1497,7 @@
       if (sessionStorage.getItem(SESSION_KEY) !== 'granted') {
         var attempt = prompt('AMABELLEPEAU Administration\n\nVeuillez saisir le mot de passe administrateur :');
         if (attempt === null || attempt !== ADMIN_PASS) {
-          alert('Mot de passe incorrect. AccÃ¨s refusÃ©.');
+          alert('Mot de passe incorrect. Accès refusé.');
           window.location.href = '../index.html';
           throw new Error('Auth failed');
         }
@@ -1509,7 +1509,7 @@
       const container = document.getElementById('adminToastContainer');
       const toast = document.createElement('div');
       toast.className = 'admin-toast';
-      toast.innerHTML = `<span>${isSuccess ? 'âœ…' : 'âš ï¸'}</span><span>${msg}</span>`;
+      toast.innerHTML = `<span>${isSuccess ? '✅' : '⚠️'}</span><span>${msg}</span>`;
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3500);
     }
@@ -1616,8 +1616,8 @@
           </td>
           <td>
             <div style="display:flex;gap:4px;">
-              <button class="btn-action" onclick="editProduct('${p.id}')">âœï¸</button>
-              <button class="btn-action btn-action-danger" onclick="deleteProduct('${p.id}')">ðŸ—‘ï¸</button>
+              <button class="btn-action" onclick="editProduct('${p.id}')">✏️</button>
+              <button class="btn-action btn-action-danger" onclick="deleteProduct('${p.id}')">🗑️</button>
             </div>
           </td>
         </tr>
@@ -1709,10 +1709,10 @@ function handleProductFormSubmit(e) {
 
       if (editId) {
         ProductStore.update(editId, data);
-        showAdminToast('Produit mis Ã  jour avec succÃ¨s');
+        showAdminToast('Produit mis à jour avec succès');
       } else {
         ProductStore.add(data);
-        showAdminToast('Nouveau produit ajoutÃ© au catalogue');
+        showAdminToast('Nouveau produit ajouté au catalogue');
       }
 
       closeProductModal();
@@ -1723,16 +1723,16 @@ function handleProductFormSubmit(e) {
     function deleteProduct(id) {
       if (confirm('Voulez-vous vraiment supprimer ce produit de la marketplace ?')) {
         ProductStore.remove(id);
-        showAdminToast('Produit supprimÃ©', false);
+        showAdminToast('Produit supprimé', false);
         renderAdminProducts();
         renderOverview();
       }
     }
 
     function resetProductDefaults() {
-      if (confirm('RÃ©initialiser le catalogue avec les 15 produits officiels ETS Marie Andrea & AMABELLEBARBE ?')) {
+      if (confirm('Réinitialiser le catalogue avec les 15 produits officiels ETS Marie Andrea & AMABELLEBARBE ?')) {
         ProductStore.resetDefaults();
-        showAdminToast('Catalogue officiel rÃ©initialisÃ©');
+        showAdminToast('Catalogue officiel réinitialisé');
         renderAdminProducts();
         renderOverview();
       }
@@ -1748,7 +1748,7 @@ function handleProductFormSubmit(e) {
 
       const pendingBody = document.getElementById('pendingMerchantsTableBody');
       if (pending.length === 0) {
-        pendingBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:24px;">Aucun dossier en attente d'agrÃ©ment.</td></tr>`;
+        pendingBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:24px;">Aucun dossier en attente d'agrément.</td></tr>`;
       } else {
         pendingBody.innerHTML = pending.map(m => `
           <tr>
@@ -1760,8 +1760,8 @@ function handleProductFormSubmit(e) {
             <td>${m.joinedDate}</td>
             <td>
               <div style="display:flex;gap:6px;">
-                <button class="btn-action btn-action-primary" onclick="approveMerchant('${m.id}')">âœ“ AgrÃ©er</button>
-                <button class="btn-action btn-action-danger" onclick="rejectMerchant('${m.id}')">âœ• Refuser</button>
+                <button class="btn-action btn-action-primary" onclick="approveMerchant('${m.id}')">✓ Agréer</button>
+                <button class="btn-action btn-action-danger" onclick="rejectMerchant('${m.id}')">✕ Refuser</button>
               </div>
             </td>
           </tr>
@@ -1790,7 +1790,7 @@ function handleProductFormSubmit(e) {
 
     function approveMerchant(id) {
       AdminStore.updateMerchantStatus(id, 'approved');
-      showAdminToast('Marchand agrÃ©Ã© avec succÃ¨s !');
+      showAdminToast('Marchand agréé avec succès !');
       renderAdminMerchants();
       renderOverview();
     }
@@ -1798,7 +1798,7 @@ function handleProductFormSubmit(e) {
     function rejectMerchant(id) {
       if (confirm('Rejeter la demande de ce marchand ?')) {
         AdminStore.deleteMerchant(id);
-        showAdminToast('Demande rejetÃ©e', false);
+        showAdminToast('Demande rejetée', false);
         renderAdminMerchants();
         renderOverview();
       }
@@ -1873,7 +1873,7 @@ function handleMerchantFormSubmit(e) {
         commune: document.getElementById('merchInputCommune').value,
         phone: document.getElementById('merchInputPhone').value,
         waveNumber: document.getElementById('merchInputWave').value,
-        category: document.getElementById('merchInputCategory').value || 'CosmÃ©tiques & Soins',
+        category: document.getElementById('merchInputCategory').value || 'Cosmétiques & Soins',
         commissionRate: 15,
         status: 'approved',
         salesVolume: 0,
@@ -1882,7 +1882,7 @@ function handleMerchantFormSubmit(e) {
         desc: (document.getElementById('merchInputDesc') ? document.getElementById('merchInputDesc').value : '')
       };
       AdminStore.addMerchant(m);
-      showAdminToast('Nouveau marchand agrÃ©Ã© avec succÃ¨s');
+      showAdminToast('Nouveau marchand agréé avec succès');
       closeMerchantModal();
       renderAdminMerchants();
       renderOverview();
@@ -1912,7 +1912,7 @@ function handleMerchantFormSubmit(e) {
           <td style="color:#27AE60;font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.paidAmount)} XOF</td>
           <td style="color:${r.pendingBalance > 0 ? '#E74C3C' : '#27AE60'};font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.pendingBalance)} XOF</td>
           <td>
-            <button class="btn-action btn-action-primary" onclick="openPayoutModal('${r.id}', '${r.name}', ${r.pendingBalance})">ðŸ’³ Verser</button>
+            <button class="btn-action btn-action-primary" onclick="openPayoutModal('${r.id}', '${r.name}', ${r.pendingBalance})">💳 Verser</button>
           </td>
         </tr>
       `).join('');
@@ -1920,7 +1920,7 @@ function handleMerchantFormSubmit(e) {
 
     function openPayoutModal(id, name, due) {
       document.getElementById('payoutRepId').value = id;
-      document.getElementById('payoutRepName').value = name + ' (Solde dÃ»: ' + new Intl.NumberFormat('fr-FR').format(due) + ' XOF)';
+      document.getElementById('payoutRepName').value = name + ' (Solde dû: ' + new Intl.NumberFormat('fr-FR').format(due) + ' XOF)';
       document.getElementById('payoutAmountInput').value = due > 0 ? due : 50000;
       document.getElementById('modalPayoutOverlay').classList.add('active');
     }
@@ -1932,7 +1932,7 @@ function handleMerchantFormSubmit(e) {
       const id = document.getElementById('payoutRepId').value;
       const amt = document.getElementById('payoutAmountInput').value;
       AdminStore.recordPayout(id, amt);
-      showAdminToast('Versement de ' + new Intl.NumberFormat('fr-FR').format(amt) + ' XOF enregistrÃ© !');
+      showAdminToast('Versement de ' + new Intl.NumberFormat('fr-FR').format(amt) + ' XOF enregistré !');
       closePayoutModal();
       renderAdminRepresentatives();
     }
@@ -1956,7 +1956,7 @@ function handleMerchantFormSubmit(e) {
           <td style="color:var(--color-gold);font-weight:700;">${new Intl.NumberFormat('fr-FR').format(inf.commissionEarned)} XOF</td>
           <td><span class="status-badge approved">${inf.status}</span></td>
           <td>
-            <button class="btn-action btn-action-danger" onclick="deleteInfluencer('${inf.id}')">âœ• Retirer</button>
+            <button class="btn-action btn-action-danger" onclick="deleteInfluencer('${inf.id}')">✕ Retirer</button>
           </td>
         </tr>
       `).join('');
@@ -1979,14 +1979,14 @@ function handleMerchantFormSubmit(e) {
         commissionPercent: Number(document.getElementById('infInputComm').value)
       };
       AdminStore.addInfluencer(inf);
-      showAdminToast('Code promo ' + inf.code + ' activÃ© avec succÃ¨s');
+      showAdminToast('Code promo ' + inf.code + ' activé avec succès');
       closeInfluencerModal();
       renderAdminInfluencers();
     }
     function deleteInfluencer(id) {
       if (confirm('Voulez-vous supprimer ce code promo ?')) {
         AdminStore.deleteInfluencer(id);
-        showAdminToast('Code supprimÃ©');
+        showAdminToast('Code supprimé');
         renderAdminInfluencers();
       }
     }
@@ -2009,13 +2009,13 @@ function handleMerchantFormSubmit(e) {
           <td>
             <select class="form-select" style="font-size:12px;padding:4px 8px;" onchange="updateOrderStatus('${o.id}', this.value)">
               <option value="pending_payment" ${o.orderStatus==='pending_payment'?'selected':''}>En attente</option>
-              <option value="preparing" ${o.orderStatus==='preparing'?'selected':''}>En prÃ©paration</option>
+              <option value="preparing" ${o.orderStatus==='preparing'?'selected':''}>En préparation</option>
               <option value="out_for_delivery" ${o.orderStatus==='out_for_delivery'?'selected':''}>En livraison</option>
-              <option value="delivered" ${o.orderStatus==='delivered'?'selected':''}>LivrÃ©</option>
+              <option value="delivered" ${o.orderStatus==='delivered'?'selected':''}>Livré</option>
             </select>
           </td>
           <td>
-            <button class="btn-action" onclick="showAdminToast('Colis ${o.id} assignÃ© au coursier Yango Abidjan')">ðŸ›µ Dispatch</button>
+            <button class="btn-action" onclick="showAdminToast('Colis ${o.id} assigné au coursier Yango Abidjan')">🛵 Dispatch</button>
           </td>
         </tr>
       `).join('');
@@ -2023,7 +2023,7 @@ function handleMerchantFormSubmit(e) {
 
     function updateOrderStatus(id, status) {
       AdminStore.updateOrderStatus(id, status);
-      showAdminToast('Statut de la commande ' + id + ' mis Ã  jour');
+      showAdminToast('Statut de la commande ' + id + ' mis à jour');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
