@@ -1172,7 +1172,8 @@
     </div>
   </footer>
 
-  <!-- Payments module -->
+  <!-- Cart and Payments modules -->
+  <script src="js/cart.js"></script>
   <script src="js/payments.js"></script>
 
   <!-- =====================================================
@@ -1186,41 +1187,8 @@
         e.preventDefault();
         window.location.href = 'admin/index.html';
       });
-    }    // Initial standard catalog products for fallback/empty state re-adding
-    const DEFAULT_PRODUCTS = [
-      {
-        id: "savon-moringa-karite",
-        name: "Savon Noir Purifiant au Moringa & Karité",
-        variant: "Format 150g · Peaux mixtes à grasses",
-        price: 3500,
-        quantity: 2,
-        imageGradient: "linear-gradient(135deg, #1B4D1E 0%, #2D6B32 50%, #4A8C50 100%)",
-        badge: "Artisanal",
-        brand: "Atelier Nanan"
-      },
-      {
-        id: "serum-baobab-hibiscus",
-        name: "Sérum Éclat à l'Huile de Baobab & Hibiscus",
-        variant: "Flacon pipette 50ml · Élixir illuminateur",
-        price: 8500,
-        quantity: 1,
-        imageGradient: "linear-gradient(135deg, #C9896A 0%, #E8C5B0 50%, #C9A84C 100%)",
-        badge: "Bio Certifié",
-        brand: "Sérénité d'Ivoire"
-      },
-      {
-        id: "beurre-cacao-fleur-oranger",
-        name: "Beurre de Cacao Sauvage & Fleur d'Oranger",
-        variant: "Pot en verre 200g · Nutrition intense 48h",
-        price: 4500,
-        quantity: 1,
-        imageGradient: "linear-gradient(135deg, #8B7355 0%, #C9A84C 50%, #EDE8DC 100%)",
-        badge: "100% Brut",
-        brand: "Maison Botanique"
-      }
-    ];
+    }
 
-    const STORAGE_KEY = 'amabellepeau_cart';
     const PROMO_KEY = 'amabellepeau_promo';
 
     // Promo codes registry
@@ -1243,16 +1211,13 @@
     function showToast(message, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = `toast ${type === 'error' ? 'toast-error' : type === 'success' ? 'toast-success' : ''}`;
+      toast.className = 'toast ' + (type === 'error' ? 'toast-error' : type === 'success' ? 'toast-success' : '');
       
       let icon = '✨';
       if (type === 'success') icon = '✅';
       if (type === 'error') icon = '⚠️';
 
-      toast.innerHTML = `
-        <span style="font-size: 18px;">${icon}</span>
-        <div style="flex: 1; font-size: 13px; font-weight: 500; color: var(--color-black);">${message}</div>
-      `;
+      toast.innerHTML = '<span style="font-size: 18px;">' + icon + '</span><div style="flex: 1; font-size: 13px; font-weight: 500; color: var(--color-black);">' + message + '</div>';
       container.appendChild(toast);
 
       setTimeout(() => {
@@ -1261,20 +1226,17 @@
       }, 3500);
     }
 
-    // Load Cart from LocalStorage
+    // Load Cart from Cart Manager
     function initCart() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved !== null) {
-        try {
-          cart = JSON.parse(saved);
-        } catch (e) {
-          cart = [...DEFAULT_PRODUCTS];
-          saveCart();
-        }
+      if (typeof Cart !== 'undefined') {
+        cart = Cart.getItems();
       } else {
-        // Pre-load the 3 placeholder items as requested
-        cart = [...DEFAULT_PRODUCTS];
-        saveCart();
+        try {
+          const saved = localStorage.getItem('abp_cart') || localStorage.getItem('amabellepeau_cart');
+          cart = saved ? (Array.isArray(JSON.parse(saved)) ? JSON.parse(saved) : (JSON.parse(saved).items || [])) : [];
+        } catch (e) {
+          cart = [];
+        }
       }
 
       // Check saved promo
@@ -1290,17 +1252,23 @@
       renderCart();
     }
 
-    // Save cart to LocalStorage
+    // Save cart state
     function saveCart() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+      if (typeof Cart !== 'undefined') {
+        cart = Cart.getItems();
+      } else {
+        localStorage.setItem('amabellepeau_cart', JSON.stringify(cart));
+      }
       updateNavBadges();
     }
 
     // Update Header Badges
     function updateNavBadges() {
-      const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-      document.getElementById('headerCartCount').textContent = totalCount;
-      document.getElementById('mobileCartCount').textContent = totalCount;
+      const totalCount = cart.reduce((acc, item) => acc + (item.quantity || item.qty || 1), 0);
+      const hCount = document.getElementById('headerCartCount');
+      if (hCount) hCount.textContent = totalCount;
+      const mCount = document.getElementById('mobileCartCount');
+      if (mCount) mCount.textContent = totalCount;
     }
 
     // Render Cart HTML
@@ -1310,7 +1278,7 @@
       const itemsList = document.getElementById('cartItemsList');
       const headerBadge = document.getElementById('cartHeaderBadge');
 
-      const totalItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+      const totalItemsCount = cart.reduce((acc, item) => acc + (item.quantity || item.qty || 1), 0);
       updateNavBadges();
 
       if (cart.length === 0) {
@@ -1322,48 +1290,41 @@
       filledSection.style.display = 'grid';
       emptySection.style.display = 'none';
 
-      headerBadge.textContent = `${totalItemsCount} article${totalItemsCount > 1 ? 's' : ''}`;
+      headerBadge.textContent = totalItemsCount + ' article' + (totalItemsCount > 1 ? 's' : '');
 
-      // Build Items HTML
+      // Build Items HTML with real product images
       itemsList.innerHTML = cart.map(item => {
-        const lineTotal = item.price * item.quantity;
-        return `
-          <div class="cart-item" data-id="${item.id}">
-            <div class="cart-item-media">
-              <div class="cart-item-media-gradient" style="background: ${item.imageGradient};">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-                </svg>
-                <span class="cart-item-tag">${item.badge || 'Naturel'}</span>
-              </div>
-            </div>
+        const qty = item.quantity || item.qty || 1;
+        const lineTotal = item.price * qty;
+        const itemId = item.id || item.productId;
+        const imgSrc = item.image || 'assets/images/products/1.png';
 
-            <div class="cart-item-info">
-              <span class="cart-item-brand">${item.brand || 'AMABELLEPEAU'}</span>
-              <h3 class="cart-item-name">${item.name}</h3>
-              <p class="cart-item-variant">${item.variant}</p>
-              <div class="cart-item-price-unit">${formatXOF(item.price)} <span style="font-size: 11px; font-weight: normal; color: var(--color-text-muted);">/ l'unité</span></div>
-            </div>
-
-            <div class="cart-item-actions">
-              <div class="cart-item-total">${formatXOF(lineTotal)}</div>
-              
-              <div class="stepper">
-                <button type="button" class="stepper-btn" onclick="updateItemQuantity('${item.id}', -1)" aria-label="Diminuer">-</button>
-                <input type="text" class="stepper-value" value="${item.quantity}" readonly aria-label="Quantité">
-                <button type="button" class="stepper-btn" onclick="updateItemQuantity('${item.id}', 1)" aria-label="Augmenter">+</button>
-              </div>
-
-              <button type="button" class="cart-item-remove" onclick="removeItem('${item.id}')" title="Supprimer cet article">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-                Supprimer
-              </button>
-            </div>
-          </div>
-        `;
+        return '<div class="cart-item" data-id="' + itemId + '">' +
+          '<div class="cart-item-media" style="background: #faf7f2;">' +
+            '<img src="' + imgSrc + '" alt="' + item.name + '" onerror="this.onerror=null;this.src=\'assets/images/products/1.png\';" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md);">' +
+          '</div>' +
+          '<div class="cart-item-info">' +
+            '<span class="cart-item-brand">' + (item.brand || 'AMABELLEPEAU') + '</span>' +
+            '<h3 class="cart-item-name">' + item.name + '</h3>' +
+            '<p class="cart-item-variant">' + (item.variant || item.weight || 'Format standard') + '</p>' +
+            '<div class="cart-item-price-unit">' + formatXOF(item.price) + ' <span style="font-size: 11px; font-weight: normal; color: var(--color-text-muted);">/ l\'unité</span></div>' +
+          '</div>' +
+          '<div class="cart-item-actions">' +
+            '<div class="cart-item-total">' + formatXOF(lineTotal) + '</div>' +
+            '<div class="stepper">' +
+              '<button type="button" class="stepper-btn" onclick="updateItemQuantity(\'' + itemId + '\', -1)" aria-label="Diminuer">-</button>' +
+              '<input type="text" class="stepper-value" value="' + qty + '" readonly aria-label="Quantité">' +
+              '<button type="button" class="stepper-btn" onclick="updateItemQuantity(\'' + itemId + '\', 1)" aria-label="Augmenter">+</button>' +
+            '</div>' +
+            '<button type="button" class="cart-item-remove" onclick="removeItem(\'' + itemId + '\')" title="Supprimer cet article">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                '<polyline points="3 6 5 6 21 6"></polyline>' +
+                '<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>' +
+              '</svg>' +
+              ' Supprimer' +
+            '</button>' +
+          '</div>' +
+        '</div>';
       }).join('');
 
       calculateSummary();
@@ -1371,52 +1332,72 @@
 
     // Update Quantity
     function updateItemQuantity(id, delta) {
-      const item = cart.find(p => p.id === id);
-      if (!item) return;
-
-      const newQty = item.quantity + delta;
-      if (newQty <= 0) {
-        removeItem(id);
+      if (typeof Cart !== 'undefined') {
+        Cart.updateQty(id, delta, false);
+        cart = Cart.getItems();
       } else {
-        item.quantity = newQty;
-        saveCart();
-        renderCart();
+        const item = cart.find(p => (p.id === id || p.productId === id));
+        if (!item) return;
+        const newQty = (item.quantity || item.qty || 1) + delta;
+        if (newQty <= 0) {
+          removeItem(id);
+          return;
+        } else {
+          item.quantity = newQty;
+          item.qty = newQty;
+          saveCart();
+        }
       }
+      renderCart();
     }
 
     // Remove single item
     function removeItem(id) {
-      const itemIndex = cart.findIndex(p => p.id === id);
-      if (itemIndex > -1) {
-        const removed = cart[itemIndex];
-        cart.splice(itemIndex, 1);
-        saveCart();
-        renderCart();
-        showToast(`"${removed.name}" a été retiré de votre panier.`);
+      if (typeof Cart !== 'undefined') {
+        Cart.remove(id);
+        cart = Cart.getItems();
+      } else {
+        const itemIndex = cart.findIndex(p => (p.id === id || p.productId === id));
+        if (itemIndex > -1) {
+          cart.splice(itemIndex, 1);
+          saveCart();
+        }
       }
+      renderCart();
+      showToast('Article retiré de votre panier.');
     }
 
     // Add sample item (used from empty state suggestions)
-    function addSampleItem(id) {
-      const sample = DEFAULT_PRODUCTS.find(p => p.id === id);
-      if (!sample) return;
+    function addSampleItem(productId) {
+      const sampleMap = {
+        'savon-curcuma': { id: 'prod-soap-01', name: 'Savon Curcuma & Miel (100 g)', price: 3000, image: 'assets/images/products/1.png', variant: '100 g', brand: 'ETS Marie Andrea' },
+        'savon-clarylex': { id: 'prod-clarylex-200g', name: 'Savon CLARYLEX (200 g)', price: 4000, image: 'assets/images/products/38.png', variant: '200 g', brand: 'ETS Marie Andrea' },
+        'huile-baobab': { id: 'prod-huile-baobab-100ml', name: 'Huile Précieuse de Baobab (100 ml)', price: 6500, image: 'assets/images/products/32.png', variant: '100 ml', brand: 'AMABELLEPEAU' }
+      };
 
-      const existing = cart.find(p => p.id === id);
-      if (existing) {
-        existing.quantity += 1;
+      const item = sampleMap[productId] || { id: 'prod-soap-01', name: 'Savon Curcuma & Miel (100 g)', price: 3000, image: 'assets/images/products/1.png', variant: '100 g', brand: 'ETS Marie Andrea' };
+
+      if (typeof Cart !== 'undefined') {
+        Cart.add(item);
+        cart = Cart.getItems();
       } else {
-        cart.push({ ...sample, quantity: 1 });
+        cart.push({ ...item, quantity: 1, qty: 1 });
+        saveCart();
       }
 
-      saveCart();
       renderCart();
-      showToast(`"${sample.name}" a été ajouté au panier !`, 'success');
+      showToast('"' + item.name + '" a été ajouté au panier !', 'success');
     }
 
     // Clear entire cart
     function clearCart() {
-      cart = [];
-      saveCart();
+      if (typeof Cart !== 'undefined') {
+        Cart.clear();
+        cart = [];
+      } else {
+        cart = [];
+        saveCart();
+      }
       currentPromo = null;
       localStorage.removeItem(PROMO_KEY);
       renderCart();

@@ -1699,55 +1699,63 @@
                   <input type="radio" name="categoryFilter" value="all" class="custom-radio" checked>
                   Tous les produits
                 </span>
-                <span class="filter-count-badge" id="count-all">12</span>
+                <span class="filter-count-badge" id="count-all">49</span>
               </label>
 
               <label class="filter-item">
                 <span class="filter-item-label">
                   <input type="radio" name="categoryFilter" value="savons" class="custom-radio">
-                  Savons Artisanaux
+                  Savons Saponifiés à Froid
                 </span>
-                <span class="filter-count-badge">42</span>
+                <span class="filter-count-badge">36</span>
+              </label>
+
+              <label class="filter-item">
+                <span class="filter-item-label">
+                  <input type="radio" name="categoryFilter" value="huiles" class="custom-radio">
+                  Huiles & Sérums Pures
+                </span>
+                <span class="filter-count-badge">3</span>
               </label>
 
               <label class="filter-item">
                 <span class="filter-item-label">
                   <input type="radio" name="categoryFilter" value="visage" class="custom-radio">
-                  Soins Visage
+                  Soins Visage & Dermo
                 </span>
-                <span class="filter-count-badge">28</span>
+                <span class="filter-count-badge">3</span>
               </label>
 
               <label class="filter-item">
                 <span class="filter-item-label">
                   <input type="radio" name="categoryFilter" value="corps" class="custom-radio">
-                  Soins Corps
+                  Soins Corps & Bains
                 </span>
-                <span class="filter-count-badge">35</span>
-              </label>
-
-              <label class="filter-item">
-                <span class="filter-item-label">
-                  <input type="radio" name="categoryFilter" value="parfums" class="custom-radio">
-                  Parfums Naturels
-                </span>
-                <span class="filter-count-badge">15</span>
+                <span class="filter-count-badge">1</span>
               </label>
 
               <label class="filter-item">
                 <span class="filter-item-label">
                   <input type="radio" name="categoryFilter" value="cheveux" class="custom-radio">
-                  Soins Cheveux
+                  Soins Capillaires & Chébé
                 </span>
-                <span class="filter-count-badge">19</span>
+                <span class="filter-count-badge">1</span>
               </label>
 
               <label class="filter-item">
                 <span class="filter-item-label">
-                  <input type="radio" name="categoryFilter" value="bien-etre" class="custom-radio">
-                  Bien-être
+                  <input type="radio" name="categoryFilter" value="barbe" class="custom-radio">
+                  Soins Barbe & Homme
                 </span>
-                <span class="filter-count-badge">12</span>
+                <span class="filter-count-badge">4</span>
+              </label>
+
+              <label class="filter-item">
+                <span class="filter-item-label">
+                  <input type="radio" name="categoryFilter" value="coffrets" class="custom-radio">
+                  Coffrets & Rituels Cadeaux
+                </span>
+                <span class="filter-count-badge">2</span>
               </label>
             </div>
           </div>
@@ -2168,6 +2176,7 @@
   <!-- ═══════════════════════════════════════════════════════════════
        SCRIPTS: Cart & Payments Manager + Catalogue Logic
        ═══════════════════════════════════════════════════════════════ -->
+  <script src="js/products-data.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/payments.js"></script>
 
@@ -2178,314 +2187,8 @@
      * quick view, wishlist, and deep-link query parameter synchronization.
      */
 
-    // ── 1. PRODUCTS DATASET (12 Items) ──────────────────────────────
-    const PRODUCTS = [
-      {
-        id: 'p-savon-karite-vanille',
-        name: 'Savon Karité & Vanille',
-        merchantId: 'amabellepeau',
-        brand: 'AMABELLEPEAU',
-        category: 'savons',
-        categoryName: 'Savons Artisanaux',
-        price: 3500,
-        oldPrice: null,
-        rating: 4.8,
-        reviewsCount: 124,
-        badge: 'bestseller',
-        badgeText: 'Coup de Cœur',
-        stock: true,
-        ingredients: 'Beurre de karité brut bio ivoirien, macérât de gousses de vanille de Madagascar, huile de coco vierge, glycérine naturelle.',
-        description: 'Savon surgras artisanal saponifié à froid. Enrichi en beurre de karité pur non raffiné pour nourrir l\'épiderme et adoucir intensément la peau avec une note gourmande de vanille.',
-        gradient: 'linear-gradient(135deg, #123315 0%, #255829 45%, #E5CCA2 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <defs>
-              <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E2C67A"/>
-                <stop offset="100%" stop-color="#FFFFFF"/>
-              </linearGradient>
-            </defs>
-            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(201,168,76,0.25)" stroke-width="1.5" stroke-dasharray="4 3"/>
-            <path d="M50 20 C62 32, 75 48, 70 65 C65 80, 50 82, 50 82 C50 82, 35 80, 30 65 C25 48, 38 32, 50 20 Z" fill="url(#g1)" opacity="0.9"/>
-            <path d="M50 24 L50 80" stroke="#123315" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M50 42 C58 38, 64 42, 64 42" stroke="#123315" stroke-width="1.2"/>
-            <path d="M50 56 C42 52, 36 56, 36 56" stroke="#123315" stroke-width="1.2"/>
-          </svg>`
-      },
-      {
-        id: 'p-huile-coco-bio',
-        name: 'Huile de Coco Bio',
-        merchantId: 'amabellepeau',
-        brand: 'AMABELLEPEAU',
-        category: 'corps',
-        categoryName: 'Soins Corps',
-        price: 7200,
-        oldPrice: null,
-        rating: 4.9,
-        reviewsCount: 89,
-        badge: 'new',
-        badgeText: 'Nouveau',
-        stock: true,
-        ingredients: '100% pure huile de noix de coco vierge de Grand-Bassam, première pression à froid, non raffinée, non désodorisée.',
-        description: 'Huile vierge pure extraite de cocos fraîches ivoiriennes. Pénètre rapidement pour satiner le corps, réparer les pointes de cheveux et nourrir la peau en profondeur.',
-        gradient: 'linear-gradient(135deg, #092010 0%, #1A4D24 50%, #F5F2EC 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <defs>
-              <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#F5F2EC"/>
-                <stop offset="100%" stop-color="#C9A84C"/>
-              </linearGradient>
-            </defs>
-            <circle cx="50" cy="50" r="34" fill="url(#g2)" opacity="0.85"/>
-            <circle cx="50" cy="50" r="24" fill="#092010"/>
-            <path d="M35 50 Q50 35 65 50 Q50 65 35 50 Z" fill="none" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
-            <circle cx="50" cy="50" r="10" fill="#E2C67A" opacity="0.9"/>
-          </svg>`
-      },
-      {
-        id: 'p-creme-beurre-karite',
-        name: 'Crème Beurre de Karité',
-        merchantId: 'amafleurdepeau',
-        brand: 'AMAFLEURDEPEAU',
-        category: 'visage',
-        categoryName: 'Soins Visage',
-        price: 5800,
-        oldPrice: 7000,
-        rating: 4.7,
-        reviewsCount: 67,
-        badge: 'promo',
-        badgeText: '-17%',
-        stock: true,
-        ingredients: 'Karité sauvage fouetté de Korhogo, huile d\'amande douce, extrait de camomille matricaire, vitamine E végétale.',
-        description: 'Crème onctueuse fouettée à froid comme un nuage. Redonne immédiatement souplesse, éclat et protection aux peaux déshydratées ou exposées au climat tropical.',
-        gradient: 'linear-gradient(135deg, #2B1810 0%, #5E3924 50%, #E2C67A 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <circle cx="50" cy="50" r="38" fill="rgba(226,198,122,0.2)" stroke="#E2C67A" stroke-width="1"/>
-            <path d="M50 25 C68 25, 78 40, 75 56 C72 70, 58 76, 50 75 C42 76, 28 70, 25 56 C22 40, 32 25, 50 25 Z" fill="#F5F2EC"/>
-            <path d="M42 45 C48 38, 56 46, 62 40 C66 48, 56 56, 50 60 C44 56, 36 50, 42 45 Z" fill="#C9A84C"/>
-          </svg>`
-      },
-      {
-        id: 'p-gel-aloe-vera-pur',
-        name: 'Gel Aloe Vera Pur',
-        merchantId: 'amabellepeau',
-        brand: 'AMABELLEPEAU',
-        category: 'visage',
-        categoryName: 'Soins Visage',
-        price: 4500,
-        oldPrice: null,
-        rating: 4.6,
-        reviewsCount: 203,
-        badge: 'bestseller',
-        badgeText: 'Bestseller',
-        stock: true,
-        ingredients: 'Jus de filet frais d\'Aloe Barbadensis Miller 99%, gomme xanthane naturelle, sorbate de potassium végétal.',
-        description: 'Fraîcheur vivifiante et hydratation intense. Apaise instantanément les coups de soleil, soulage les irritations du rasoir et resserre les pores sans effet collant.',
-        gradient: 'linear-gradient(135deg, #092612 0%, #155523 50%, #76BC7C 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <path d="M50 18 C58 35, 68 55, 62 78 C58 84, 42 84, 38 78 C32 55, 42 35, 50 18 Z" fill="#8CE094"/>
-            <path d="M50 26 C55 40, 62 58, 58 74 C54 78, 46 78, 42 74 C38 58, 45 40, 50 26 Z" fill="#2E7D32"/>
-            <circle cx="50" cy="52" r="3" fill="#FFFFFF" opacity="0.8"/>
-            <circle cx="48" cy="62" r="2.5" fill="#FFFFFF" opacity="0.8"/>
-          </svg>`
-      },
-      {
-        id: 'p-savon-charbon-actif',
-        name: 'Savon Charbon Actif',
-        merchantId: 'botanica',
-        brand: 'Botanica Abidjan',
-        category: 'savons',
-        categoryName: 'Savons Artisanaux',
-        price: 3200,
-        oldPrice: null,
-        rating: 4.5,
-        reviewsCount: 45,
-        badge: 'new',
-        badgeText: 'Nouveau',
-        stock: true,
-        ingredients: 'Charbon actif de coques de coco calcinées, huile essentielle de Tea Tree, beurre de karité, huile d\'olive vierge.',
-        description: 'Véritable aimant à toxines et sébum. Nettoie en profondeur les impuretés citadines, clarifie le teint et affine le grain de peau pour un teint matifié.',
-        gradient: 'linear-gradient(135deg, #070908 0%, #1C241E 50%, #4D8752 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <polygon points="50,20 78,38 78,68 50,86 22,68 22,38" fill="#1C241E" stroke="#C9A84C" stroke-width="1.5"/>
-            <polygon points="50,28 70,42 70,64 50,78 30,64 30,42" fill="#0D1A0D" opacity="0.9"/>
-            <circle cx="50" cy="53" r="10" fill="none" stroke="#E2C67A" stroke-width="1.5"/>
-          </svg>`
-      },
-      {
-        id: 'p-serum-vitamine-c',
-        name: 'Sérum Vitamine C',
-        merchantId: 'amafleurdepeau',
-        brand: 'AMAFLEURDEPEAU',
-        category: 'visage',
-        categoryName: 'Soins Visage',
-        price: 12000,
-        oldPrice: 14500,
-        rating: 4.8,
-        reviewsCount: 91,
-        badge: 'bestseller',
-        badgeText: 'Éclat Intense',
-        stock: true,
-        ingredients: 'Vitamine C stabilisée 15% (Ascorbyl Glucoside), acide hyaluronique botanique, hydrolat d\'oranger amer de Dabou.',
-        description: 'Sérum booster de collagène hautement concentré. Estompe les taches d\'hyperpigmentation, unifie la carnation et insuffle une radiance lumineuse spectaculaire.',
-        gradient: 'linear-gradient(135deg, #241402 0%, #68410C 50%, #E2C67A 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <circle cx="50" cy="50" r="38" fill="none" stroke="#E2C67A" stroke-width="1"/>
-            <circle cx="50" cy="50" r="28" fill="#E2C67A" opacity="0.3"/>
-            <path d="M50 20 L50 32 M50 68 L50 80 M20 50 L32 50 M68 50 L80 50 M29 29 L38 38 M62 62 L71 71 M29 71 L38 62 M62 38 L71 29" stroke="#E2C67A" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="50" cy="50" r="14" fill="#FFFFFF"/>
-          </svg>`
-      },
-      {
-        id: 'p-masque-argile-verte',
-        name: 'Masque Argile Verte',
-        merchantId: 'ivoire-nature',
-        brand: 'Ivoire Nature',
-        category: 'visage',
-        categoryName: 'Soins Visage',
-        price: 4800,
-        oldPrice: null,
-        rating: 4.4,
-        reviewsCount: 38,
-        badge: null,
-        badgeText: null,
-        stock: true,
-        ingredients: 'Argile illite verte micronisée, extrait d\'eucalyptus globulus, eau florale de sauge sclarée, huile de jojoba.',
-        description: 'Masque purifiant et rééquilibrant. Désincruste les pores sans assécher, resserre la texture cutanée et apporte une sensation de pureté naturelle et de fraîcheur.',
-        gradient: 'linear-gradient(135deg, #0C1E12 0%, #28442E 50%, #90B795 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <ellipse cx="50" cy="62" rx="32" ry="18" fill="#1C3322"/>
-            <path d="M22 60 C22 42, 32 30, 50 30 C68 30, 78 42, 78 60 Z" fill="#90B795"/>
-            <circle cx="50" cy="28" r="6" fill="#E2C67A"/>
-          </svg>`
-      },
-      {
-        id: 'p-lotion-corps-hibiscus',
-        name: 'Lotion Corps Hibiscus',
-        merchantId: 'amabellepeau',
-        brand: 'AMABELLEPEAU',
-        category: 'corps',
-        categoryName: 'Soins Corps',
-        price: 6500,
-        oldPrice: 8000,
-        rating: 4.7,
-        reviewsCount: 156,
-        badge: 'promo',
-        badgeText: '-19%',
-        stock: true,
-        ingredients: 'Infusion de calices d\'hibiscus sabdariffa bio (Bissap), glycérine végétale, huile de sésame grillé, beurre de karité.',
-        description: 'Lait corporel soyeux gorgé d\'acides de fruits naturels. Hydrate la peau pendant 24 heures et laisse un délicat sillage floral acidulé et envoûtant.',
-        gradient: 'linear-gradient(135deg, #320C19 0%, #6E2036 50%, #E8C5B0 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <circle cx="50" cy="50" r="36" fill="rgba(232,197,176,0.15)" stroke="#E8C5B0" stroke-width="1"/>
-            <path d="M50 30 C56 20, 68 32, 60 42 C70 42, 72 58, 60 62 C68 70, 54 80, 50 68 C46 80, 32 70, 40 62 C28 58, 30 42, 40 42 C32 32, 44 20, 50 30 Z" fill="#E8C5B0" opacity="0.9"/>
-            <circle cx="50" cy="50" r="6" fill="#C9A84C"/>
-          </svg>`
-      },
-      {
-        id: 'p-savon-miel-propolis',
-        name: 'Savon Miel & Propolis',
-        merchantId: 'amabellebarbe',
-        brand: 'AMABELLEBARBE',
-        category: 'savons',
-        categoryName: 'Savons Artisanaux',
-        price: 4000,
-        oldPrice: null,
-        rating: 4.6,
-        reviewsCount: 72,
-        badge: null,
-        badgeText: null,
-        stock: true,
-        ingredients: 'Miel brut d\'acacia de savane ivoirienne, extrait pur de propolis verte, beurre de karité, cire d\'abeille opaline.',
-        description: 'Formule protectrice et régénérante aux vertus antibactériennes. Recommandé pour nettoyer le visage, soulager la peau après le rasage et calmer les tiraillements.',
-        gradient: 'linear-gradient(135deg, #241804 0%, #5C3D0A 50%, #EBB644 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <path d="M50 20 L74 34 L74 62 L50 76 L26 62 L26 34 Z" fill="none" stroke="#EBB644" stroke-width="2"/>
-            <path d="M50 30 L66 39 L66 59 L50 68 L34 59 L34 39 Z" fill="#EBB644" opacity="0.85"/>
-            <circle cx="50" cy="49" r="6" fill="#241804"/>
-          </svg>`
-      },
-      {
-        id: 'p-huile-palme-rouge',
-        name: 'Huile de Palme Rouge',
-        merchantId: 'purete-tropicale',
-        brand: 'Pureté Tropicale',
-        category: 'bien-etre',
-        categoryName: 'Bien-être',
-        price: 8000,
-        oldPrice: null,
-        rating: 4.3,
-        reviewsCount: 29,
-        badge: null,
-        badgeText: null,
-        stock: true,
-        ingredients: '100% huile vierge de pulpe de palme rouge (Elaeis guineensis) pressée au pressoir traditionnel villageois.',
-        description: 'Trésor ancestral de beauté ouest-africain. Naturellement saturée en caroténoïdes et tocotriénols, elle donne un teint doré lumineux et un puissant bouclier antioxydant.',
-        gradient: 'linear-gradient(135deg, #300C02 0%, #762208 50%, #DD6632 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <circle cx="50" cy="50" r="36" fill="rgba(221,102,50,0.2)"/>
-            <path d="M50 22 C64 40, 72 60, 50 78 C28 60, 36 40, 50 22 Z" fill="#DD6632"/>
-            <ellipse cx="46" cy="48" rx="6" ry="14" fill="#FFA570" opacity="0.6"/>
-          </svg>`
-      },
-      {
-        id: 'p-shampoing-karite',
-        name: 'Shampoing Karité',
-        merchantId: 'amabellepeau',
-        brand: 'AMABELLEPEAU',
-        category: 'cheveux',
-        categoryName: 'Soins Cheveux',
-        price: 5500,
-        oldPrice: null,
-        rating: 4.8,
-        reviewsCount: 88,
-        badge: 'bestseller',
-        badgeText: 'Bestseller',
-        stock: true,
-        ingredients: 'Base lavante douce végétale de coco, beurre de karité liquide, extrait de feuille de baobab, huile de ricin blanc.',
-        description: 'Shampoing crémeux sans sulfates ni silicones. Lave délicatement sans agresser le cuir chevelu, démêle les boucles et restaure brillance et élasticité aux cheveux naturels.',
-        gradient: 'linear-gradient(135deg, #092112 0%, #1A4F27 50%, #89C795 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <path d="M50 25 C62 38, 72 55, 66 72 C60 84, 40 84, 34 72 C28 55, 38 38, 50 25 Z" fill="#89C795"/>
-            <path d="M50 35 Q58 48 50 62 Q42 74 50 82" stroke="#092112" stroke-width="2" fill="none" stroke-linecap="round"/>
-          </svg>`
-      },
-      {
-        id: 'p-beurre-cacao-pur',
-        name: 'Beurre Cacao Pur',
-        merchantId: 'secret-de-reine',
-        brand: 'Secret de Reine',
-        category: 'corps',
-        categoryName: 'Soins Corps',
-        price: 6000,
-        oldPrice: null,
-        rating: 4.5,
-        reviewsCount: 51,
-        badge: null,
-        badgeText: null,
-        stock: true,
-        ingredients: '100% pur beurre de cacao de fèves fermentées de San Pedro, non désodorisé, arôme chocolat naturel.',
-        description: 'Soin corporel gourmand ultra-nourrissant. Fond délicieusement au contact de la chaleur de la peau pour estomper les vergetures et laisser un toucher velouté incomparable.',
-        gradient: 'linear-gradient(135deg, #1C0F08 0%, #462517 50%, #B88557 100%)',
-        svgIcon: `
-          <svg viewBox="0 0 100 100" class="visual-art-svg">
-            <ellipse cx="50" cy="50" rx="34" ry="22" transform="rotate(-30 50 50)" fill="#B88557"/>
-            <path d="M26 62 Q50 48 74 38" stroke="#1C0F08" stroke-width="2" fill="none"/>
-            <circle cx="45" cy="48" r="4" fill="#F5F2EC"/>
-            <circle cx="55" cy="52" r="3" fill="#F5F2EC"/>
-          </svg>`
-      }
-    ];
+    // ── 1. MASTER PRODUCTS DATASET ───────────────────────────────────
+    const PRODUCTS = (typeof ProductStore !== 'undefined') ? ProductStore.getAll() : (typeof DEFAULT_PRODUCTS !== 'undefined' ? DEFAULT_PRODUCTS : []);
 
     // ── 2. STATE MANAGEMENT ─────────────────────────────────────────
     const state = {
@@ -2689,12 +2392,12 @@
           : '';
 
         card.innerHTML = `
-          <div class="product-card-visual" style="background: ${product.gradient};">
+          <div class="product-card-visual" style="background: #FAF7F2; overflow: hidden; position: relative; cursor: pointer;">
             ${badgeHtml}
-            ${product.svgIcon}
+            <img src="${product.image || 'assets/images/products/1.png'}" alt="${product.name}" class="product-card-img" onerror="this.onerror=null;this.src='assets/images/products/1.png';" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
 
             <!-- Action icons: wishlist & quick view -->
-            <div class="product-hover-actions">
+            <div class="product-hover-actions" onclick="event.stopPropagation()">
               <button type="button" class="action-icon-btn ${isWishlisted ? 'wishlist-active' : ''}" data-wishlist="${product.id}" title="${isWishlisted ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="${isWishlisted ? '#E74C3C' : 'none'}" stroke="${isWishlisted ? '#E74C3C' : 'currentColor'}" stroke-width="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -2709,7 +2412,7 @@
             </div>
 
             <!-- Slide-up Add to Cart -->
-            <div class="hover-add-cart-wrap">
+            <div class="hover-add-cart-wrap" onclick="event.stopPropagation()">
               <button type="button" class="hover-add-btn" data-addcart="${product.id}">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <circle cx="9" cy="21" r="1"></circle>
@@ -2726,14 +2429,16 @@
               <span class="brand-dot"></span>
               ${product.brand}
             </div>
-            <h3 class="product-title" title="${product.name}">${product.name}</h3>
+            <h3 class="product-title" title="${product.name}">
+              <a href="produit.html?id=${product.id}" style="color: inherit; text-decoration: none;">${product.name}</a>
+            </h3>
 
             <div class="product-rating">
               <span class="product-stars">${renderStarString(product.rating)}</span>
-              <span class="product-reviews-count">${product.rating} (${product.reviewsCount})</span>
+              <span class="product-reviews-count">${product.rating} (${product.reviewsCount || product.reviews || 95})</span>
             </div>
 
-            <p class="product-card-desc">${product.description}</p>
+            <p class="product-card-desc">${product.shortDesc || product.description}</p>
 
             <div class="product-card-footer">
               <div class="product-pricing">
@@ -2749,10 +2454,10 @@
           </div>
         `;
 
-        // Card click triggers quick view if not clicking buttons
+        // Card click navigates to product details page
         card.addEventListener('click', (e) => {
-          if (e.target.closest('button')) return;
-          openQuickView(product.id);
+          if (e.target.closest('button') || e.target.closest('.product-hover-actions') || e.target.closest('.hover-add-cart-wrap')) return;
+          window.location.href = 'produit.html?id=' + product.id;
         });
 
         els.productsGrid.appendChild(card);
@@ -2888,20 +2593,23 @@
       }, 3500);
     }
 
-    // ── 9. ADD TO CART HANDLER ──────────────────────────────────────
+    // ── 9. ADD TO CART HANDLER (Unified) ─────────────────────────────
     function handleAddToCart(productId, qty = 1) {
-      const product = PRODUCTS.find(p => p.id === productId);
+      const product = PRODUCTS.find(p => p.id === productId || String(p.id) === String(productId));
       if (!product) return;
 
       if (typeof Cart !== 'undefined' && Cart.add) {
         const res = Cart.add({
-          merchantId: product.merchantId,
+          merchantId: product.merchantId || 'ets-marie-andrea',
           productId: product.id,
+          id: product.id,
           name: product.name,
+          brand: product.brand,
           price: product.price,
-          image: 'assets/icons/brand-logo.png',
-          variant: '100g',
-          qty: qty
+          image: product.image || 'assets/images/products/1.png',
+          variant: product.weight || 'Format standard',
+          qty: qty,
+          quantity: qty
         });
 
         if (res && res.success === false) {
@@ -2954,13 +2662,14 @@
       }
 
       els.modalDesc.textContent = product.description;
-      els.modalIngredients.innerHTML = `<strong>Ingrédients clés :</strong> ${product.ingredients}`;
+      els.modalIngredients.innerHTML = `<strong>Composition & Vertus :</strong> ${product.composition || product.ingredients || 'Beurre de karité pur, palmiste pressé, extraits végétaux ivoiriens.'}`;
 
-      els.modalImageBox.style.background = product.gradient;
-      if (product.image) {
-        els.modalImageBox.innerHTML = '<img src="' + product.image + '" alt="' + product.name + '" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-xl);">';
-      } else {
-        els.modalImageBox.innerHTML = product.svgIcon;
+      els.modalImageBox.style.background = '#FAF7F2';
+      els.modalImageBox.innerHTML = '<img src="' + (product.image || 'assets/images/products/1.png') + '" alt="' + product.name + '" onerror="this.onerror=null;this.src=\'assets/images/products/1.png\';" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-xl);">';
+      
+      const modalViewMoreBtn = document.getElementById('modalViewFullProductBtn');
+      if (modalViewMoreBtn) {
+        modalViewMoreBtn.onclick = () => window.location.href = 'produit.html?id=' + product.id;
       }
 
       els.modalQtyInput.value = '1';
