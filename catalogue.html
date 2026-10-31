@@ -2745,6 +2745,7 @@
        SCRIPTS: Cart & Payments Manager + Catalogue Logic
        ═══════════════════════════════════════════════════════════════ -->
   <script src="js/storage-db.js"></script>
+  <script src="js/preorder-store.js"></script>
   <script src="js/products-data.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/payments.js"></script>
@@ -3076,6 +3077,13 @@
               <button type="button" class="list-add-btn" data-addcart="${product.id}" onclick="event.stopPropagation()">
                 Ajouter au panier
               </button>
+            </div>
+
+            <!-- Quick Bulk / Pre-order access -->
+            <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(201,168,76,0.25); display: flex; justify-content: space-between; align-items: center;" onclick="event.stopPropagation()">
+              <a href="produit.html?id=${product.id}#preorder" style="font-size: 11px; font-weight: 700; color: var(--color-gold); text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Commander en gros avec tarifs dégressifs (-5% à -20%)">
+                <span>📦 En gros (-5% à -20%) →</span>
+              </a>
             </div>
           </div>
         `;

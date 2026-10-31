@@ -318,6 +318,23 @@
         </div>
 
         <!-- Features -->
+        <!-- Pre-order & Bulk / Recurring Purchase Box -->
+        <div class="preorder-callout-card" style="background: linear-gradient(135deg, rgba(201,168,76,0.12) 0%, rgba(27,77,30,0.06) 100%); border: 1.5px solid var(--color-gold); border-radius: 12px; padding: 16px; margin-bottom: var(--space-6);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:20px;">📦</span>
+              <strong style="color:var(--color-black);font-size:14px;">Précommande en Volume & Livraisons Récurrentes</strong>
+            </div>
+            <span style="background:var(--color-gold);color:#0D1A0D;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;text-transform:uppercase;letter-spacing:0.04em;">Remise jusqu'à -20%</span>
+          </div>
+          <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:12px;line-height:1.45;">
+            Besoin de 5 à 500+ unités pour votre salon, revente ou approvisionnement régulier ? Planifiez votre date de livraison avec notre artisan partenaire <strong><span id="preorderMerchantBannerName">ETS Marie Andrea</span></strong> et activez une livraison récurrente (bi-mensuelle, mensuelle, trimestrielle).
+          </p>
+          <button type="button" class="btn btn-outline w-full" style="border-color:var(--color-gold);color:var(--color-forest);font-weight:700;background:#fff;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="openPreorderModal()">
+            ⚡ Configurer une Précommande / Récurrence
+          </button>
+        </div>
+
         <div class="features-grid">
           <div class="feature-item"><span class="feature-icon">🌿</span> 100% Ingrédients à base de plantes</div>
           <div class="feature-item"><span class="feature-icon">🇨🇮</span> Maître Savonnier & Fabricant CI</div>
@@ -474,6 +491,7 @@
 <style>@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.5);}50%{box-shadow:0 4px 30px rgba(37,211,102,0.8),0 0 0 8px rgba(37,211,102,0.1);}}</style>
 
 <script src="js/storage-db.js"></script>
+  <script src="js/preorder-store.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/products-data.js"></script>
 <script>
@@ -795,6 +813,287 @@
       });
     }
   });
-</script>
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       PRE-ORDER & RECURRING ORDER LOGIC
+       ═══════════════════════════════════════════════════════════════ */
+    function openPreorderModal() {
+      const p = currentProduct || (typeof ProductStore !== 'undefined' ? ProductStore.getAll()[0] : null);
+      if (!p) return;
+
+      document.getElementById('preorderModalTitle').textContent = p.name;
+      document.getElementById('preorderModalMerchant').textContent = p.merchant || 'ETS Marie Andrea';
+      const bName = document.getElementById('preorderMerchantBannerName');
+      if (bName) bName.textContent = p.merchant || 'ETS Marie Andrea';
+
+      const imgEl = document.getElementById('preorderModalImg');
+      if (imgEl) {
+        imgEl.src = (typeof ABPStorage !== 'undefined' && ABPStorage.resolveImage) ?
+          ABPStorage.resolveImage(p.image, 'assets/images/products/1.png') :
+          (p.image || 'assets/images/products/1.png');
+      }
+
+      // Set min delivery date (5 days ahead)
+      const d = new Date();
+      d.setDate(d.getDate() + 5);
+      const minDate = d.toISOString().split('T')[0];
+      const dateInp = document.getElementById('preorderDeliveryDate');
+      if (dateInp) {
+        dateInp.min = minDate;
+        dateInp.value = minDate;
+      }
+
+      updatePreorderCalculations();
+
+      const modal = document.getElementById('preorderModal');
+      if (modal) {
+        modal.style.display = 'flex';
+      }
+    }
+
+    function closePreorderModal() {
+      const modal = document.getElementById('preorderModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function setPreorderQty(qty) {
+      document.getElementById('preorderQtyInput').value = qty;
+      document.querySelectorAll('.preorder-qty-chip').forEach(chip => {
+        if (parseInt(chip.getAttribute('data-qty'), 10) === qty) {
+          chip.classList.add('active');
+          chip.style.background = 'var(--color-forest)';
+          chip.style.color = '#fff';
+        } else {
+          chip.classList.remove('active');
+          chip.style.background = '';
+          chip.style.color = '';
+        }
+      });
+      updatePreorderCalculations();
+    }
+
+    function updatePreorderCalculations() {
+      const p = currentProduct || { price: 4000 };
+      const qty = parseInt(document.getElementById('preorderQtyInput').value, 10) || 5;
+      const basePrice = p.price || 4000;
+
+      const calc = (typeof PreorderStore !== 'undefined' && PreorderStore.calculateBreakdown) ?
+        PreorderStore.calculateBreakdown(basePrice, qty) :
+        {
+          quantity: qty,
+          basePrice: basePrice,
+          discountPercent: qty >= 100 ? 20 : (qty >= 50 ? 15 : (qty >= 20 ? 10 : (qty >= 5 ? 5 : 0))),
+          tierLabel: qty >= 100 ? 'Tarif Grossiste (-20%)' : (qty >= 50 ? 'Volume Élite (-15%)' : (qty >= 20 ? 'Club (-10%)' : 'Lot (-5%)')),
+          discountedUnit: Math.round(basePrice * (qty >= 100 ? 0.8 : (qty >= 50 ? 0.85 : (qty >= 20 ? 0.9 : (qty >= 5 ? 0.95 : 1))))),
+          totalPrice: Math.round(basePrice * (qty >= 100 ? 0.8 : (qty >= 50 ? 0.85 : (qty >= 20 ? 0.9 : (qty >= 5 ? 0.95 : 1))))) * qty,
+          depositAmount: Math.round(basePrice * (qty >= 100 ? 0.8 : (qty >= 50 ? 0.85 : (qty >= 20 ? 0.9 : (qty >= 5 ? 0.95 : 1))))) * qty * 0.3,
+          savings: (basePrice * qty) - (Math.round(basePrice * (qty >= 100 ? 0.8 : (qty >= 50 ? 0.85 : (qty >= 20 ? 0.9 : (qty >= 5 ? 0.95 : 1))))) * qty)
+        };
+
+      const format = (amt) => new Intl.NumberFormat('fr-FR').format(amt) + ' XOF';
+
+      const baseEl = document.getElementById('preorderBaseUnitPrice');
+      if (baseEl) baseEl.textContent = format(calc.basePrice);
+      const savLbl = document.getElementById('preorderSavingsLabel');
+      if (savLbl) savLbl.textContent = 'Remise volume (-' + calc.discountPercent + '%) :';
+      const savAmt = document.getElementById('preorderSavingsAmount');
+      if (savAmt) savAmt.textContent = '-' + format(calc.savings);
+      const discEl = document.getElementById('preorderDiscountedUnit');
+      if (discEl) discEl.textContent = format(calc.discountedUnit) + ' / unité';
+      const totEl = document.getElementById('preorderTotalAmount');
+      if (totEl) totEl.textContent = format(calc.totalPrice);
+      const depEl = document.getElementById('preorderDepositAmount');
+      if (depEl) depEl.textContent = format(calc.depositAmount);
+      const tierEl = document.getElementById('preorderTierBadge');
+      if (tierEl) tierEl.textContent = calc.tierLabel;
+    }
+
+    function handlePreorderSubmit(event) {
+      event.preventDefault();
+      const p = currentProduct || { id: 'custom', name: 'Soin Naturel', price: 4000 };
+
+      const qty = parseInt(document.getElementById('preorderQtyInput').value, 10) || 5;
+      const deliveryDate = document.getElementById('preorderDeliveryDate').value;
+      const recurrenceEl = document.querySelector('input[name="preorderRecurrence"]:checked');
+      const recurrence = recurrenceEl ? recurrenceEl.value : 'none';
+
+      const custName = document.getElementById('preorderCustName').value.trim();
+      const custPhone = document.getElementById('preorderCustPhone').value.trim();
+      const custAddress = document.getElementById('preorderCustAddress').value.trim();
+
+      const payload = {
+        productId: p.id,
+        productName: p.name,
+        productImage: p.image,
+        merchantId: p.merchantId || 'ets-marie-andrea',
+        merchantName: p.merchant || 'ETS Marie Andrea',
+        quantity: qty,
+        unitPrice: p.price || 4000,
+        deliveryDate: deliveryDate,
+        recurrence: recurrence,
+        customerName: custName,
+        customerPhone: custPhone,
+        customerAddress: custAddress
+      };
+
+      let created = null;
+      if (typeof PreorderStore !== 'undefined') {
+        created = PreorderStore.create(payload);
+      }
+
+      closePreorderModal();
+
+      if (typeof showToast === 'function') {
+        showToast('Précommande enregistrée avec succès (Réf: ' + (created ? created.id : 'PRE-2026') + ')');
+      } else {
+        alert('Précommande enregistrée avec succès (Réf: ' + (created ? created.id : 'PRE-2026') + ')');
+      }
+
+      // WhatsApp direct message generator
+      const merchantPhone = (p.merchantId === 'amabellebarbe') ? '2250788001122' : '2250799108108';
+      const recLabels = {
+        'none': 'Commande ponctuelle',
+        'biweekly': 'Toutes les 2 semaines',
+        'monthly': 'Chaque mois',
+        'quarterly': 'Chaque trimestre'
+      };
+      const waMsg = encodeURIComponent(
+        'Bonjour ' + (p.merchant || 'AMABELLEPEAU') + ', je viens de configurer une PRÉCOMMANDE sur votre boutique :\n\n' +
+        '📦 Produit : ' + p.name + '\n' +
+        '🔢 Quantité : ' + qty + ' unités\n' +
+        '📅 Date de livraison souhaitée : ' + deliveryDate + '\n' +
+        '🔄 Fréquence : ' + (recLabels[recurrence] || 'Unique') + '\n' +
+        '💰 Montant total : ' + new Intl.NumberFormat('fr-FR').format(created ? created.totalPrice : p.price * qty) + ' XOF\n' +
+        '👤 Client : ' + custName + ' (' + custPhone + ')\n' +
+        '📍 Livraison : ' + custAddress + '\n' +
+        '🔖 Réf : ' + (created ? created.id : 'PRE-2026') + '\n\n' +
+        'Merci de me confirmer la prise en charge et le planning de fabrication !'
+      );
+
+      if (confirm('Précommande ' + (created ? created.id : '') + ' enregistrée ! Souhaitez-vous transmettre la confirmation directement sur WhatsApp au maître savonnier (' + (p.merchant || 'Marchand') + ') ?')) {
+        window.open('https://wa.me/' + merchantPhone + '?text=' + waMsg, '_blank');
+      }
+    }
+
+    // Auto-open preorder modal if requested in URL hash (#preorder)
+    if (window.location.hash === '#preorder') {
+      setTimeout(openPreorderModal, 400);
+    }
+
+  </script>
+
+  <!-- =====================================================
+       MODAL: PRÉCOMMANDE EN VOLUME & COMMANDES RÉCURRENTES
+       ===================================================== -->
+  <div class="modal-overlay" id="preorderModal" style="display:none;position:fixed;inset:0;background:rgba(13,26,13,0.75);backdrop-filter:blur(4px);z-index:99999;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.35);border:1px solid rgba(201,168,76,0.3);padding:24px;position:relative;">
+      <button type="button" onclick="closePreorderModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--color-text-muted);line-height:1;">&times;</button>
+      
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--color-border);">
+        <img id="preorderModalImg" src="assets/images/products/savon-clarylex.jpg" style="width:54px;height:54px;border-radius:8px;object-fit:cover;border:1px solid rgba(201,168,76,0.4);" alt="Produit">
+        <div>
+          <span style="font-size:11px;font-weight:700;color:var(--color-gold);text-transform:uppercase;">Précommande Artisanale</span>
+          <h3 id="preorderModalTitle" style="font-size:16px;font-family:var(--font-display);color:var(--color-black);margin:0;">Savon CLARYLEX</h3>
+          <div style="font-size:12px;color:var(--color-text-muted);">Marchand : <strong id="preorderModalMerchant" style="color:var(--color-forest);">ETS Marie Andrea</strong></div>
+        </div>
+      </div>
+
+      <form id="preorderForm" onsubmit="handlePreorderSubmit(event)">
+        <!-- 1. Quantité & Paliers de Remise -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--color-black);">1. Quantité souhaitée (Petites & Grandes séries)</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <button type="button" class="btn btn-outline btn-sm preorder-qty-chip active" data-qty="5" onclick="setPreorderQty(5)">5 pcs (-5%)</button>
+            <button type="button" class="btn btn-outline btn-sm preorder-qty-chip" data-qty="20" onclick="setPreorderQty(20)">20 pcs (-10%)</button>
+            <button type="button" class="btn btn-outline btn-sm preorder-qty-chip" data-qty="50" onclick="setPreorderQty(50)">50 pcs (-15%)</button>
+            <button type="button" class="btn btn-outline btn-sm preorder-qty-chip" data-qty="100" onclick="setPreorderQty(100)">100 pcs (-20%)</button>
+            <button type="button" class="btn btn-outline btn-sm preorder-qty-chip" data-qty="200" onclick="setPreorderQty(200)">200+ pcs</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="number" id="preorderQtyInput" class="form-input" min="1" max="2000" value="5" style="width:130px;font-weight:700;" oninput="updatePreorderCalculations()">
+            <span id="preorderTierBadge" style="font-size:12px;color:var(--color-forest);font-weight:600;background:rgba(27,77,30,0.08);padding:4px 10px;border-radius:6px;">Lot Découverte (-5%)</span>
+          </div>
+        </div>
+
+        <!-- 2. Date de Livraison Souhaitée -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--color-black);">2. Date de livraison / disponibilité souhaitée *</label>
+          <input type="date" id="preorderDeliveryDate" class="form-input" required style="width:100%;max-width:280px;">
+          <div style="font-size:11px;color:var(--color-text-muted);margin-top:4px;">⏱️ Permet au maître savonnier de planifier la cure artisanale (min. 5 jours).</div>
+        </div>
+
+        <!-- 3. Fréquence / Commande Récurrente -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--color-black);">3. Récurrence / Abonnement périodique</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;background:#faf7f2;padding:8px 12px;border-radius:8px;border:1px solid var(--color-border);cursor:pointer;">
+              <input type="radio" name="preorderRecurrence" value="none" checked onchange="updatePreorderCalculations()">
+              <span>📦 <strong>Commande unique</strong> (ponctuelle)</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;background:#faf7f2;padding:8px 12px;border-radius:8px;border:1px solid var(--color-border);cursor:pointer;">
+              <input type="radio" name="preorderRecurrence" value="biweekly" onchange="updatePreorderCalculations()">
+              <span>🔄 <strong>Toutes les 2 semaines</strong></span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;background:#faf7f2;padding:8px 12px;border-radius:8px;border:1px solid var(--color-border);cursor:pointer;">
+              <input type="radio" name="preorderRecurrence" value="monthly" onchange="updatePreorderCalculations()">
+              <span>📅 <strong>Tous les mois</strong> (Recommandé)</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;background:#faf7f2;padding:8px 12px;border-radius:8px;border:1px solid var(--color-border);cursor:pointer;">
+              <input type="radio" name="preorderRecurrence" value="quarterly" onchange="updatePreorderCalculations()">
+              <span>🍂 <strong>Tous les trimestres</strong></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 4. Coordonnées de Livraison -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+          <div>
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Votre Nom & Prénom *</label>
+            <input type="text" id="preorderCustName" class="form-input" placeholder="Ex: Kouamé Affoué" required>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Téléphone (Wave / OM) *</label>
+            <input type="tel" id="preorderCustPhone" class="form-input" placeholder="+225 07 00 00 00" required>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Lieu de livraison (Abidjan ou Intérieur CI)</label>
+            <input type="text" id="preorderCustAddress" class="form-input" placeholder="Commune, quartier, repère exact...">
+          </div>
+        </div>
+
+        <!-- 5. Récapitulatif Tarifaire en Direct -->
+        <div style="background:#faf7f2;border:1.5px dashed var(--color-gold);border-radius:10px;padding:14px;margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-muted);margin-bottom:4px;">
+            <span>Prix unitaire standard :</span>
+            <span id="preorderBaseUnitPrice">4 000 XOF</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px;">
+            <span id="preorderSavingsLabel">Remise volume (-5%) :</span>
+            <span id="preorderSavingsAmount">-1 000 XOF</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-black);font-weight:600;margin-bottom:6px;">
+            <span>Prix unitaire remisé :</span>
+            <span id="preorderDiscountedUnit">3 800 XOF / unité</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:var(--color-forest);padding-top:6px;border-top:1px solid rgba(0,0,0,0.08);">
+            <span>Total Précommande :</span>
+            <span id="preorderTotalAmount">19 000 XOF</span>
+          </div>
+          <div style="font-size:11px;color:var(--color-text-muted);margin-top:4px;">
+            Acompte artisan suggéré (30%) : <strong id="preorderDepositAmount" style="color:var(--color-gold);">5 700 XOF</strong> à la commande, solde à la livraison.
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;">
+          <button type="button" class="btn btn-ghost" onclick="closePreorderModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;min-width:220px;">
+            ✓ Valider la Précommande
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

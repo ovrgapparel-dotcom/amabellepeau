@@ -1332,7 +1332,7 @@ const DEFAULT_PRODUCTS = [
 
 // Product Store with LocalStorage Persistence
 const ProductStore = {
-  STORAGE_VERSION: 'v5.1',
+  STORAGE_VERSION: 'v5.2',
   STORAGE_KEY: 'abp_products_catalog_v5',
 
   getAll: function() {
@@ -1341,52 +1341,62 @@ const ProductStore = {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge default products with stored customizations (preserve user uploads, prices, custom images)
+          // Merge default products with stored customizations (preserve user uploads, prices, custom images, gallery)
           const merged = DEFAULT_PRODUCTS.map(defP => {
             const saved = parsed.find(s => s.id === defP.id || String(s.id) === String(defP.id));
             if (!saved) return defP;
             return {
               ...defP,
               ...saved,
-              // Always prioritize user-uploaded/customized image over placeholder
-              image: saved.image || defP.image
+              image: saved.image || defP.image,
+              images: (Array.isArray(saved.images) && saved.images.length > 0) ? saved.images : defP.images
             };
           });
 
           // Also keep any newly created user products not present in DEFAULT_PRODUCTS
           const customUserProducts = parsed.filter(p => !DEFAULT_PRODUCTS.some(d => d.id === p.id || String(d.id) === String(p.id)));
           const finalList = [...merged, ...customUserProducts];
-          
-          // Re-hydrate any images stored in high-capacity IndexedDB
+
+          // Re-hydrate images & gallery from IndexedDB cache
           if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
             finalList.forEach(p => {
-              const cached = ABPStorage.getImage('prod_img_' + p.id);
-              if (cached) p.image = cached;
+              // Main image
+              if (p.image && p.image.startsWith('idb:')) {
+                const cached = ABPStorage.getImage(p.image.replace('idb:', ''));
+                if (cached) p.image = cached;
+              } else {
+                const cached = ABPStorage.getImage('prod_img_' + p.id);
+                if (cached) p.image = cached;
+              }
+
+              // Multi-image gallery
+              if (Array.isArray(p.images)) {
+                p.images = p.images.map((img, i) => {
+                  if (img && img.startsWith('idb:')) {
+                    const cached = ABPStorage.getImage(img.replace('idb:', ''));
+                    return cached || img;
+                  } else {
+                    const cached = ABPStorage.getImage('prod_img_' + p.id + '_' + i);
+                    return cached || img;
+                  }
+                });
+              }
             });
           }
 
-          // Keep version tag in sync without wiping custom data
-          localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
-          // Hydrate any idb: pointer images from IndexedDB cache
-    if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
-      finalList.forEach(p => {
-        if (p.image && p.image.startsWith('idb:')) {
-          const cached = ABPStorage.getImage(p.image.replace('idb:', ''));
-          if (cached) p.image = cached;
-        } else {
-          const cached = ABPStorage.getImage('prod_img_' + p.id);
-          if (cached) p.image = cached;
-        }
-      });
-    }
-    return finalList;
+          try {
+            localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
+          } catch(e) {}
+          return finalList;
         }
       }
     } catch(e) {
       console.warn('Could not read product storage, using defaults', e);
     }
     this.save(DEFAULT_PRODUCTS);
-    localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
+    try {
+      localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
+    } catch(e) {}
     return DEFAULT_PRODUCTS;
   },
 
@@ -1403,12 +1413,26 @@ const ProductStore = {
     const p = this.getAll().find(prod => prod.id === id || String(prod.id) === String(id));
     if (p) {
       if (typeof ABPStorage !== 'undefined') {
+        // Main image hydration
         const idbKey = (p.image && p.image.startsWith('idb:')) ? p.image.replace('idb:', '') : ('prod_img_' + p.id);
         const cached = ABPStorage.getImage(idbKey);
         if (cached) {
           p.image = cached;
         } else if (p.image && p.image.startsWith('idb:')) {
           p.image = p.fallbackImage || 'assets/images/products/1.png';
+        }
+
+        // Multi-image gallery hydration
+        if (Array.isArray(p.images)) {
+          p.images = p.images.map((img, i) => {
+            if (img && img.startsWith('idb:')) {
+              const cachedG = ABPStorage.getImage(img.replace('idb:', ''));
+              return cachedG || img;
+            } else {
+              const cachedG = ABPStorage.getImage('prod_img_' + p.id + '_' + i);
+              return cachedG || img;
+            }
+          });
         }
       } else if (p.image && p.image.startsWith('idb:')) {
         p.image = p.fallbackImage || 'assets/images/products/1.png';
@@ -1420,13 +1444,30 @@ const ProductStore = {
   save: function(products) {
     try {
       if (typeof ABPStorage !== 'undefined') {
-        // 1. Move ALL base64 blobs to IndexedDB; replace with lightweight idb: key in JSON
+        // 1. Move ALL base64 blobs (main image + gallery) to IndexedDB; replace with idb: pointer in JSON
         const slim = products.map(p => {
+          let updatedImage = p.image;
           if (p.image && p.image.startsWith('data:')) {
             ABPStorage.setImage('prod_img_' + p.id, p.image);
-            return Object.assign({}, p, { image: 'idb:prod_img_' + p.id });
+            updatedImage = 'idb:prod_img_' + p.id;
           }
-          return p;
+
+          let updatedImages = p.images;
+          if (Array.isArray(p.images)) {
+            updatedImages = p.images.map((img, i) => {
+              if (img && img.startsWith('data:')) {
+                const k = 'prod_img_' + p.id + '_' + i;
+                ABPStorage.setImage(k, img);
+                return 'idb:' + k;
+              }
+              return img;
+            });
+          }
+
+          return Object.assign({}, p, {
+            image: updatedImage,
+            images: updatedImages
+          });
         });
         // 2. Save lean JSON (no base64) so localStorage never hits quota
         ABPStorage.safeSetItem(this.STORAGE_KEY, JSON.stringify(slim));
@@ -1450,6 +1491,13 @@ const ProductStore = {
     if (product.image && product.image.startsWith('data:') && typeof ABPStorage !== 'undefined') {
       ABPStorage.setImage('prod_img_' + product.id, product.image);
     }
+    if (Array.isArray(product.images) && typeof ABPStorage !== 'undefined') {
+      product.images.forEach((img, i) => {
+        if (img && img.startsWith('data:')) {
+          ABPStorage.setImage('prod_img_' + product.id + '_' + i, img);
+        }
+      });
+    }
     products.unshift(product);
     this.save(products);
     return product;
@@ -1461,6 +1509,13 @@ const ProductStore = {
     if (idx !== -1) {
       if (data.image && data.image.startsWith('data:') && typeof ABPStorage !== 'undefined') {
         ABPStorage.setImage('prod_img_' + id, data.image);
+      }
+      if (Array.isArray(data.images) && typeof ABPStorage !== 'undefined') {
+        data.images.forEach((img, i) => {
+          if (img && img.startsWith('data:')) {
+            ABPStorage.setImage('prod_img_' + id + '_' + i, img);
+          }
+        });
       }
       products[idx] = { ...products[idx], ...data };
       this.save(products);

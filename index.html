@@ -2613,9 +2613,11 @@
     // Dynamic Render of Active Promotions & Videos from AdminStore
     function getPromoImgSrc(src) {
       if (!src) return 'assets/images/products/ets-marie-andrea-catalogue.jpg';
-      if (src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http://') || src.startsWith('https://')) return src;
-      if (src.startsWith('/')) return src;
-      return src; // relative paths resolve fine from root index.html
+      if (typeof ABPStorage !== 'undefined' && ABPStorage.resolveImage) {
+        return ABPStorage.resolveImage(src, 'assets/images/products/ets-marie-andrea-catalogue.jpg');
+      }
+      if (src.startsWith('idb:')) return 'assets/images/products/ets-marie-andrea-catalogue.jpg';
+      return src;
     }
 
     function renderStorefrontPromotions() {
@@ -2924,6 +2926,18 @@
     updateCounters();
     renderStorefrontProducts();
     renderStorefrontPromotions();
+
+    // Re-render when IndexedDB media cache is ready or content is saved
+    window.addEventListener('abp_storage_ready', () => {
+      renderStorefrontPromotions();
+      renderStorefrontProducts();
+    });
+    window.addEventListener('abp_promotions_updated', () => {
+      renderStorefrontPromotions();
+    });
+    window.addEventListener('abp_products_updated', () => {
+      renderStorefrontProducts();
+    });
   </script>
 </body>
 </html>

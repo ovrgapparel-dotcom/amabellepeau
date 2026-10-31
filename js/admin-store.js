@@ -622,12 +622,17 @@ const AdminStore = {
       return defaultPromos;
     }
 
-    // Hydrate any images from IndexedDB
+    // Hydrate any images and videos from IndexedDB
     if (typeof ABPStorage !== 'undefined' && ABPStorage.cache) {
       list.forEach(pr => {
         const idbKey = pr.mediaUrl && pr.mediaUrl.startsWith('idb:') ? pr.mediaUrl.replace('idb:', '') : 'promo_img_' + pr.id;
         const cached = ABPStorage.getImage(idbKey);
         if (cached) pr.mediaUrl = cached;
+
+        if (pr.videoUrl && pr.videoUrl.startsWith('idb:')) {
+          const cachedV = ABPStorage.getImage(pr.videoUrl.replace('idb:', ''));
+          if (cachedV) pr.videoUrl = cachedV;
+        }
       });
     }
 
@@ -638,11 +643,22 @@ const AdminStore = {
     try {
       if (typeof ABPStorage !== 'undefined') {
         const slimPromo = data.map(pr => {
+          let updatedMedia = pr.mediaUrl;
           if (pr.mediaUrl && pr.mediaUrl.startsWith('data:')) {
             ABPStorage.setImage('promo_img_' + pr.id, pr.mediaUrl);
-            return Object.assign({}, pr, { mediaUrl: 'idb:promo_img_' + pr.id });
+            updatedMedia = 'idb:promo_img_' + pr.id;
           }
-          return pr;
+
+          let updatedVideo = pr.videoUrl;
+          if (pr.videoUrl && pr.videoUrl.startsWith('data:')) {
+            ABPStorage.setImage('promo_vid_' + pr.id, pr.videoUrl);
+            updatedVideo = 'idb:promo_vid_' + pr.id;
+          }
+
+          return Object.assign({}, pr, {
+            mediaUrl: updatedMedia,
+            videoUrl: updatedVideo
+          });
         });
         ABPStorage.safeSetItem('abp_admin_promotions', JSON.stringify(slimPromo));
       } else {

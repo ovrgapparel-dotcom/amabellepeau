@@ -10,6 +10,7 @@
 
   <!-- Core Data Stores -->
   <script src="../js/storage-db.js"></script>
+  <script src="../js/preorder-store.js"></script>
   <script src="../js/products-data.js"></script>
   <script src="../js/admin-store.js"></script>
 
@@ -903,6 +904,18 @@
             </div>
           </button>
 
+          <button class="sidebar-item-btn" data-tab="tab-preorders">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+              <span>Précommandes en Gros</span>
+            </div>
+            <span class="sidebar-badge" id="merchantPreorderBadge" style="background:var(--color-gold);color:#0D1A0D;font-weight:800;">0</span>
+          </button>
+
           <!-- FINANCES -->
           <div class="sidebar-section-title">FINANCES</div>
           <button class="sidebar-item-btn" data-tab="tab-finances">
@@ -1773,6 +1786,42 @@
     </main>
   </div>
 
+  
+      <!-- TAB: PREORDERS -->
+      <div class="tab-view-content" id="tab-preorders">
+        <div class="dashboard-header" style="margin-bottom: var(--space-6);">
+          <div>
+            <h1 class="page-title">📦 Précommandes & Volumes en Gros Reçus</h1>
+            <p class="page-subtitle" style="color:var(--color-text-muted);">Commandes groupées pour votre atelier, livraisons programmées et approvisionnements récurrents.</p>
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="renderMerchantPreorders()">🔄 Actualiser</button>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-6); background: #fff; border-radius: var(--radius-lg); border: 1px solid rgba(201,168,76,0.3); padding: var(--space-5);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-family:var(--font-display);font-size:16px;color:#0D1A0D;margin:0;">📋 Carnet des Précommandes & Livraisons pour Votre Boutique</h3>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead>
+                <tr style="border-bottom:2px solid rgba(201,168,76,0.3);text-align:left;color:var(--color-text-muted);">
+                  <th style="padding:10px 8px;">Réf / Date</th>
+                  <th style="padding:10px 8px;">Client</th>
+                  <th style="padding:10px 8px;">Téléphone / WhatsApp</th>
+                  <th style="padding:10px 8px;">Produit & Quantité</th>
+                  <th style="padding:10px 8px;">Total Estimé</th>
+                  <th style="padding:10px 8px;">Livraison Prévue</th>
+                  <th style="padding:10px 8px;">Récurrence</th>
+                  <th style="padding:10px 8px;">Statut</th>
+                </tr>
+              </thead>
+              <tbody id="merchantPreordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
   <!-- =====================================================
        MODAL: AJOUTER UN PRODUIT
        ===================================================== -->
@@ -2001,6 +2050,7 @@
         document.querySelectorAll('.tab-view-content').forEach(view => view.classList.remove('active'));
         const activeView = document.getElementById(targetTab);
         if (activeView) {
+          if (targetTab === 'tab-preorders') renderMerchantPreorders();
           activeView.classList.add('active');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -2460,6 +2510,50 @@
                pMerch.includes(mName) ||
                (mSlug.includes('marie') && (pBrand.includes('marie') || pMId.includes('marie') || pBrand.includes('amabellepeau')));
       });
+    }
+
+    
+    function renderMerchantPreorders() {
+      if (typeof PreorderStore === 'undefined') return;
+      const allPreorders = PreorderStore.getAll();
+      const myPreorders = allPreorders.filter(p => 
+        !p.merchantId || 
+        p.merchantId === _currentMerchantId || 
+        (p.merchant && p.merchant.toLowerCase().includes((_currentMerchantName || '').toLowerCase()))
+      );
+
+      const badge = document.getElementById('merchantPreorderBadge');
+      if (badge) badge.textContent = myPreorders.length;
+
+      const tbody = document.getElementById('merchantPreordersTableBody');
+      if (!tbody) return;
+
+      if (myPreorders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--color-text-muted);">Aucune précommande en cours pour votre boutique.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = myPreorders.map(item => {
+        const phoneClean = (item.customerPhone || '').replace(/[^0-9]/g, '');
+        const statusMap = {
+          'pending': '<span class="status-badge warning">En attente</span>',
+          'in_production': '<span class="status-badge approved">En production</span>',
+          'ready': '<span class="status-badge approved">Prête</span>',
+          'completed': '<span class="status-badge approved">Livrée</span>'
+        };
+        const statusBadge = statusMap[item.status] || '<span class="status-badge approved">' + item.status + '</span>';
+
+        return '<tr>' +
+          '<td><strong>' + item.id + '</strong><br><small style="color:var(--color-text-muted);">' + item.date + '</small></td>' +
+          '<td><strong>' + item.customerName + '</strong></td>' +
+          '<td><a href="https://wa.me/' + phoneClean + '" target="_blank" style="color:var(--color-green);font-weight:700;">💬 ' + item.customerPhone + '</a></td>' +
+          '<td><strong>' + item.productName + '</strong><br><span style="color:var(--color-gold);font-weight:700;">' + item.quantity + ' unités</span></td>' +
+          '<td><strong>' + new Intl.NumberFormat('fr-FR').format(item.totalPrice) + ' XOF</strong></td>' +
+          '<td>📅 ' + (item.deliveryDate || 'Non spécifiée') + '</td>' +
+          '<td>' + (item.recurrence && item.recurrence !== 'none' ? '🔁 ' + item.recurrence : 'Ponctuelle') + '</td>' +
+          '<td>' + statusBadge + '</td>' +
+        '</tr>';
+      }).join('');
     }
 
     function renderMerchantProducts() {

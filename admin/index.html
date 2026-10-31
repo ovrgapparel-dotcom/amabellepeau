@@ -683,6 +683,14 @@
             </div>
             <span class="sidebar-badge" id="badgeOrderCount" style="background:var(--color-green);color:#fff;">5</span>
           </button>
+
+          <button class="sidebar-item-btn" data-view="view-preorders" onclick="switchAdminTab('view-preorders')">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              <span>Précommandes en Gros</span>
+            </div>
+            <span class="sidebar-badge" id="badgePreorderCount" style="background:var(--color-gold);color:#0D1A0D;font-weight:800;">2</span>
+          </button>
         </nav>
       </div>
 
@@ -1032,6 +1040,70 @@
         </div>
       </div>
 
+      
+      <!-- VIEW 6B: PREORDERS & BULK ORDERS -->
+      <div id="view-preorders" class="admin-view-panel">
+        <div class="admin-main-header">
+          <div class="admin-main-title">
+            <h1>📦 Précommandes & Commandes en Gros</h1>
+            <p>Gestion des volumes d'approvisionnement (5 à 100+ unités), dates de livraison programmées et abonnements récurrents.</p>
+          </div>
+          <button class="btn btn-primary" onclick="renderAdminPreorders()">
+            <span>🔄 Actualiser</span>
+          </button>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px;">
+          <div class="metric-card">
+            <div class="metric-label">Total Précommandes</div>
+            <div class="metric-value" id="statPreorderCount">0</div>
+            <div class="metric-trend trend-up">✦ Volumes groupés</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Volume Total (Pièces)</div>
+            <div class="metric-value" id="statPreorderUnits">0 pcs</div>
+            <div class="metric-trend trend-up">Savons & rituels</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Chiffre d'Affaires Estimé</div>
+            <div class="metric-value" id="statPreorderTotalValue">0 XOF</div>
+            <div class="metric-trend trend-up">Règlements Wave / OM</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Commandes Récurrentes</div>
+            <div class="metric-value" id="statPreorderRecurring">0 actifs</div>
+            <div class="metric-trend trend-neutral">Abonnements périodiques</div>
+          </div>
+        </div>
+
+        <!-- Preorders Table -->
+        <div class="admin-card">
+          <div class="admin-card-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <h2 class="admin-card-title">📋 Carnet des Précommandes & Livraisons Échelonnées</h2>
+            <div style="font-size:12px;color:var(--color-text-muted);">Mise à jour en temps réel</div>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Réf / Date</th>
+                  <th>Client & Contact</th>
+                  <th>Produit & Quantité</th>
+                  <th>Artisan / Marchand</th>
+                  <th>Remise Volume</th>
+                  <th>Total Estimé</th>
+                  <th>Livraison Prévue</th>
+                  <th>Récurrence</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody id="preordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- VIEW 7: PROMOTIONS, BANNERS & SHORT VIDEOS -->
       <div id="view-promotions" class="admin-view-panel">
         <div class="admin-main-header">
@@ -1300,6 +1372,21 @@
             <label class="form-label">Vertus & Propriétés Thérapeutiques</label>
             <textarea id="prodInputVertus" class="form-textarea" rows="2" placeholder="Clarifiant, anti-taches, tonifiant, cicatrisant..."></textarea>
           </div>
+            <!-- Multi-Photos Gallery Section -->
+            <div style="margin-top:16px;padding:14px;background:var(--color-surface-alt);border-radius:var(--radius-lg);border:1px dashed rgba(201,168,76,0.4);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <label class="form-label" style="margin:0;font-size:13px;font-weight:700;color:var(--color-text-main);">📸 Galerie Photos Multiples (Vues secondaires du soin)</label>
+                <button type="button" class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 10px;" onclick="document.getElementById('prodGalleryInput').click()">+ Ajouter des photos</button>
+                <input type="file" id="prodGalleryInput" accept="image/*" multiple style="display:none;" onchange="handleProductGalleryUpload(this)">
+              </div>
+              <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:10px;">
+                Ajoutez des visuels complémentaires (texture, ingrédients, dos du flacon, rituel d'application) pour enrichir la fiche produit.
+              </div>
+              <div id="prodGalleryThumbStrip" style="display:flex;flex-wrap:wrap;gap:10px;min-height:50px;align-items:center;padding:6px;background:rgba(0,0,0,0.03);border-radius:var(--radius-md);">
+                <span id="prodGalleryEmptyText" style="font-size:11px;color:var(--color-text-muted);font-style:italic;">Aucune photo secondaire. Cliquez sur "+ Ajouter des photos".</span>
+              </div>
+            </div>
+
         </div>
         <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
           <button type="button" class="btn btn-ghost btn-sm" onclick="closeProductModal()">Annuler</button>
@@ -1551,6 +1638,7 @@
 
   <!-- Scripts -->
   <script src="../js/storage-db.js"></script>
+  <script src="../js/preorder-store.js"></script>
   <script src="../js/products-data.js"></script>
   <script src="../js/admin-store.js"></script>
   <script>
@@ -1596,6 +1684,7 @@
       if (viewId === 'view-commissions') renderAdminRepresentatives();
       if (viewId === 'view-influencers') renderAdminInfluencers();
       if (viewId === 'view-orders') renderAdminOrders();
+      if (viewId === 'view-preorders') renderAdminPreorders();
       if (viewId === 'view-promotions') renderAdminPromotions();
       if (viewId === 'view-subscribers') renderAdminSubscribers();
 
@@ -1793,6 +1882,10 @@
       document.getElementById('productForm').reset();
       document.getElementById('editProdId').value = '';
       removeProductUploadedImage();
+      uploadedProductGallery = [];
+      renderProductGalleryThumbs();
+      uploadedProductGallery = Array.isArray(p.images) ? [...p.images] : (p.image ? [p.image] : []);
+      renderProductGalleryThumbs();
       document.getElementById('modalProductOverlay').classList.add('active');
     }
 
@@ -1891,6 +1984,51 @@
       }
     }
 
+    
+    let uploadedProductGallery = [];
+
+    async function handleProductGalleryUpload(input) {
+      const files = Array.from(input.files || []);
+      if (!files.length) return;
+
+      showAdminToast('Traitement de ' + files.length + ' photo(s)...');
+
+      for (const file of files) {
+        try {
+          const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
+            await ABPStorage.compressImage(file, 640, 640, 0.72) :
+            await compressImage(file, 640, 640, 0.72);
+          uploadedProductGallery.push(compressed);
+        } catch(err) {
+          console.warn('Gallery compress error', err);
+        }
+      }
+
+      input.value = '';
+      renderProductGalleryThumbs();
+      showAdminToast('Photos ajoutées à la galerie ✓');
+    }
+
+    function removeGalleryPhoto(idx) {
+      uploadedProductGallery.splice(idx, 1);
+      renderProductGalleryThumbs();
+    }
+
+    function renderProductGalleryThumbs() {
+      const container = document.getElementById('prodGalleryThumbStrip');
+      if (!container) return;
+      if (uploadedProductGallery.length === 0) {
+        container.innerHTML = '<span style="font-size:11px;color:var(--color-text-muted);font-style:italic;">Aucune photo secondaire. Cliquez sur "+ Ajouter des photos".</span>';
+        return;
+      }
+      container.innerHTML = uploadedProductGallery.map((src, i) => `
+        <div style="position:relative;width:64px;height:64px;border-radius:6px;overflow:hidden;border:1px solid rgba(201,168,76,0.3);background:#111;">
+          <img src="${getAdminImgSrc(src)}" style="width:100%;height:100%;object-fit:cover;">
+          <button type="button" onclick="removeGalleryPhoto(${i})" style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:#e74c3c;color:#fff;border:none;font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Supprimer">&times;</button>
+        </div>
+      `).join('');
+    }
+
     function removeProductUploadedImage() {
       uploadedProductImageBase64 = null;
       const inp = document.getElementById('prodUploadInput');
@@ -1941,6 +2079,7 @@
         stock: Number(document.getElementById('prodInputStock').value) || 50,
         weight: document.getElementById('prodInputWeight').value.trim() || '200 g',
         image: chosenImage,
+        images: uploadedProductGallery.length > 0 ? uploadedProductGallery : [chosenImage],
         fallbackImage: chosenImage.startsWith('data:') ? 'assets/images/products/1.png' : chosenImage,
         composition: document.getElementById('prodInputComposition').value.trim(),
         vertus: document.getElementById('prodInputVertus').value.trim(),
@@ -2677,6 +2816,79 @@
       showAdminToast('Fichier CSV exporté avec succès');
     }
 
-    </script>
+    
+    function renderAdminPreorders() {
+      if (typeof PreorderStore === 'undefined') return;
+      const list = PreorderStore.getAll();
+
+      const countBadge = document.getElementById('badgePreorderCount');
+      if (countBadge) countBadge.textContent = list.length;
+      const statCount = document.getElementById('statPreorderCount');
+      if (statCount) statCount.textContent = list.length;
+
+      const totalUnits = list.reduce((a, b) => a + (b.quantity || 0), 0);
+      const totalVal = list.reduce((a, b) => a + (b.totalPrice || 0), 0);
+      const recurringCount = list.filter(p => p.recurrence && p.recurrence !== 'none').length;
+
+      const statUnits = document.getElementById('statPreorderUnits');
+      if (statUnits) statUnits.textContent = totalUnits + ' pcs';
+      const statVal = document.getElementById('statPreorderTotalValue');
+      if (statVal) statVal.textContent = new Intl.NumberFormat('fr-FR').format(totalVal) + ' XOF';
+      const statRec = document.getElementById('statPreorderRecurring');
+      if (statRec) statRec.textContent = recurringCount + ' actifs';
+
+      const tbody = document.getElementById('preordersTableBody');
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--color-text-muted);">Aucune précommande pour le moment.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const statusColors = {
+          'pending': 'warning',
+          'in_production': 'approved',
+          'ready': 'approved',
+          'completed': 'approved'
+        };
+        const badgeClass = statusColors[item.status] || 'approved';
+
+        const phoneClean = (item.customerPhone || '').replace(/[^0-9]/g, '');
+
+        return '<tr>' +
+          '<td><strong>' + item.id + '</strong><div style="font-size:11px;color:var(--color-text-muted);">' + item.date + '</div></td>' +
+          '<td><strong>' + item.customerName + '</strong><div style="font-size:11px;color:var(--color-forest);">' + item.customerPhone + '</div></td>' +
+          '<td>' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+              '<img src="' + getAdminImgSrc(item.productImage) + '" style="width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid rgba(201,168,76,0.3);">' +
+              '<div><strong>' + item.productName + '</strong><div style="font-size:11px;color:var(--color-gold);font-weight:700;">' + item.quantity + ' unités (-' + (item.discountPercent || 0) + '%)</div></div>' +
+            '</div>' +
+          '</td>' +
+          '<td><span style="font-weight:600;color:var(--color-forest);">' + item.merchantName + '</span></td>' +
+          '<td><strong style="color:var(--color-black);">' + item.deliveryDate + '</strong></td>' +
+          '<td><span class="status-badge" style="background:rgba(201,168,76,0.15);color:var(--color-gold);">' + (item.recurrenceLabel || 'Unique') + '</span></td>' +
+          '<td><strong style="color:var(--color-forest);">' + new Intl.NumberFormat('fr-FR').format(item.totalPrice) + ' XOF</strong><div style="font-size:10px;color:var(--color-text-muted);">Acompte 30%: ' + new Intl.NumberFormat('fr-FR').format(item.depositAmount || 0) + '</div></td>' +
+          '<td><span class="status-badge ' + badgeClass + '">' + (item.statusLabel || item.status) + '</span></td>' +
+          '<td>' +
+            '<div style="display:flex;gap:6px;">' +
+              '<a href="https://wa.me/' + phoneClean + '" target="_blank" class="btn-action" title="Contacter client sur WhatsApp">💬</a>' +
+              '<button class="btn-action" title="Passer en production" onclick="updatePreorderStatusAdmin(\'' + item.id + '\', \'in_production\')">⚙️</button>' +
+              '<button class="btn-action btn-action-primary" title="Marquer Prêt" onclick="updatePreorderStatusAdmin(\'' + item.id + '\', \'ready\')">✓</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function updatePreorderStatusAdmin(id, status) {
+      if (typeof PreorderStore !== 'undefined') {
+        PreorderStore.updateStatus(id, status);
+        showAdminToast('Statut de la précommande mis à jour ✓');
+        renderAdminPreorders();
+      }
+    }
+  
+</script>
 </body>
 </html>
