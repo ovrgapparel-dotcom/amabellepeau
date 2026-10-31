@@ -2782,7 +2782,14 @@
       viewMode: 'grid',
       currentPage: 1,
       itemsPerPage: 12,
-      wishlist: JSON.parse(localStorage.getItem('abp_wishlist') || '[]'),
+      wishlist: (() => {
+        try {
+          const w = JSON.parse(localStorage.getItem('abp_wishlist') || '[]');
+          return Array.isArray(w) ? w : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
     };
 
     // ── 3. DOM ELEMENTS ─────────────────────────────────────────────
@@ -2843,13 +2850,11 @@
 
     // ── 4. CURRENCY & FORMATTING HELPERS ────────────────────────────
     function formatXOF(amount) {
-      if (typeof window.formatXOF === 'function') {
-        return window.formatXOF(amount);
-      }
+      const val = Number(amount) || 0;
       return new Intl.NumberFormat('fr-FR', {
         style: 'decimal',
         maximumFractionDigits: 0
-      }).format(amount) + ' XOF';
+      }).format(val) + ' XOF';
     }
 
     function renderStarString(rating) {
@@ -2976,6 +2981,7 @@
       els.productsGrid.innerHTML = '';
 
       if (sorted.length === 0) {
+        if (els.paginationContainer) els.paginationContainer.style.display = 'none';
         els.productsGrid.innerHTML = `
           <div class="catalogue-empty-state" style="grid-column: 1 / -1; text-align:center; padding: 48px 16px;">
             <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 12px;">🌿</div>
@@ -2991,9 +2997,17 @@
         return;
       }
 
+      // Pagination calculation
+      const totalPages = Math.ceil(sorted.length / state.itemsPerPage) || 1;
+      if (state.currentPage > totalPages) state.currentPage = 1;
+      if (state.currentPage < 1) state.currentPage = 1;
+
+      const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+      const paginatedItems = sorted.slice(startIndex, startIndex + state.itemsPerPage);
+
       // Render cards
-      sorted.forEach(product => {
-        const isWishlisted = state.wishlist.includes(product.id);
+      paginatedItems.forEach(product => {
+        const isWishlisted = Array.isArray(state.wishlist) && state.wishlist.includes(product.id);
         const card = document.createElement('article');
         card.className = 'product-card';
         card.setAttribute('data-id', product.id);
@@ -3096,7 +3110,46 @@
 
         els.productsGrid.appendChild(card);
       });
+
+      // Render pagination controls
+      renderPagination(totalPages);
     }
+
+    function renderPagination(totalPages) {
+      if (!els.paginationContainer) return;
+      if (totalPages <= 1) {
+        els.paginationContainer.style.display = 'none';
+        return;
+      }
+      els.paginationContainer.style.display = 'flex';
+
+      let html = '';
+      const prevDisabled = state.currentPage <= 1;
+      const prevPage = Math.max(1, state.currentPage - 1);
+      html += `<button type="button" class="pagination-btn nav-text" ${prevDisabled ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''} onclick="goToPage(${prevPage})">&laquo; Précédent</button>`;
+
+      for (let i = 1; i <= totalPages; i++) {
+        const isActive = i === state.currentPage;
+        html += `<button type="button" class="pagination-btn ${isActive ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+      }
+
+      const nextDisabled = state.currentPage >= totalPages;
+      const nextPage = Math.min(totalPages, state.currentPage + 1);
+      html += `<button type="button" class="pagination-btn nav-text" ${nextDisabled ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''} onclick="goToPage(${nextPage})">Suivant &raquo;</button>`;
+
+      els.paginationContainer.innerHTML = html;
+    }
+
+    function goToPage(p) {
+      const filtered = getFilteredProducts();
+      const totalPages = Math.ceil(filtered.length / state.itemsPerPage) || 1;
+      state.currentPage = Math.max(1, Math.min(p, totalPages));
+      renderCatalogue();
+      if (els.productsGrid) {
+        els.productsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    window.goToPage = goToPage;
 
     // ── 7. ACTIVE FILTER PILLS DISPLAY ──────────────────────────────
     function updateActiveFilterPills() {
@@ -3410,6 +3463,7 @@
       state.minRating = 0;
       state.stockOnly = false;
       state.sortBy = 'populaire';
+      state.currentPage = 1;
 
       // Reset DOM elements
       if (els.catalogueSearchInput) els.catalogueSearchInput.value = '';
@@ -3447,6 +3501,7 @@
           if (chip) {
             const cat = chip.getAttribute('data-cat');
             state.category = cat;
+            state.currentPage = 1;
             const rad = document.querySelector(`input[name="categoryFilter"][value="${cat}"]`);
             if (rad) rad.checked = true;
             syncURL();
@@ -3467,6 +3522,7 @@
       if (els.catalogueSearchInput) {
         els.catalogueSearchInput.addEventListener('input', (e) => {
           state.searchQuery = e.target.value;
+          state.currentPage = 1;
           if (els.clearSearchBtn) els.clearSearchBtn.style.display = state.searchQuery ? 'block' : 'none';
           syncURL();
           renderCatalogue();
@@ -3476,6 +3532,7 @@
       if (els.clearSearchBtn) {
         els.clearSearchBtn.addEventListener('click', () => {
           state.searchQuery = '';
+          state.currentPage = 1;
           if (els.catalogueSearchInput) els.catalogueSearchInput.value = '';
           els.clearSearchBtn.style.display = 'none';
           syncURL();
@@ -3486,6 +3543,7 @@
       if (els.triggerSearchBtn) {
         els.triggerSearchBtn.addEventListener('click', () => {
           if (els.catalogueSearchInput) state.searchQuery = els.catalogueSearchInput.value;
+          state.currentPage = 1;
           syncURL();
           renderCatalogue();
         });
@@ -3496,6 +3554,7 @@
         els.categoryFilterList.addEventListener('change', (e) => {
           if (e.target.name === 'categoryFilter') {
             state.category = e.target.value;
+            state.currentPage = 1;
             syncURL();
             renderCatalogue();
           }
@@ -3508,6 +3567,7 @@
           if (e.target.classList.contains('brand-checkbox')) {
             const checked = Array.from(document.querySelectorAll('.brand-checkbox:checked')).map(cb => cb.value);
             state.selectedBrands = checked;
+            state.currentPage = 1;
             syncURL();
             renderCatalogue();
           }
@@ -3530,6 +3590,7 @@
         els.priceMaxSlider.addEventListener('input', (e) => {
           const val = parseInt(e.target.value, 10);
           state.maxPrice = val;
+          state.currentPage = 1;
           if (els.priceMaxDisplay) els.priceMaxDisplay.textContent = formatXOF(val);
           const percent = ((val - 500) / (50000 - 500)) * 100;
           if (els.sliderFill) els.sliderFill.style.right = `${100 - percent}%`;
@@ -3543,6 +3604,7 @@
         els.ratingFilterList.addEventListener('change', (e) => {
           if (e.target.name === 'ratingFilter') {
             state.minRating = parseFloat(e.target.value) || 0;
+            state.currentPage = 1;
             syncURL();
             renderCatalogue();
           }
@@ -3553,6 +3615,7 @@
       if (els.stockOnlyCheckbox) {
         els.stockOnlyCheckbox.addEventListener('change', (e) => {
           state.stockOnly = e.target.checked;
+          state.currentPage = 1;
           renderCatalogue();
         });
       }
@@ -3561,6 +3624,7 @@
       if (els.sortSelect) {
         els.sortSelect.addEventListener('change', (e) => {
           state.sortBy = e.target.value;
+          state.currentPage = 1;
           syncURL();
           renderCatalogue();
         });
