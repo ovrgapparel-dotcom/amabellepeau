@@ -82,10 +82,147 @@
     /* Toast */
     .account-toast { position: fixed; bottom: 24px; right: 24px; background: #0D1A0D; color: white; border: 1px solid #C9A84C; border-radius: 8px; padding: 12px 20px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 9999; display: flex; align-items: center; gap: 8px; animation: fadeIn 0.3s ease; }
 
-    @media(max-width:900px) { 
-      .account-layout { grid-template-columns: 1fr; } 
-      .account-sidebar { position: static; } 
+    @media (max-width: 900px) { 
+      .account-layout { grid-template-columns: 1fr; gap: var(--space-4); } 
       .form-grid-2 { grid-template-columns: 1fr; } 
+    }
+
+    /* ── ENHANCED APP-GRADE MOBILE OPTIMIZATIONS (<= 768px) ── */
+    @media (max-width: 768px) {
+      .account-page { padding: var(--space-3) 0 var(--space-12); }
+      .container { padding: 0 12px; }
+      
+      /* Sticky Compact User Header & Horizontal Tab Scroller */
+      .account-sidebar {
+        position: sticky;
+        top: calc(var(--nav-height, 60px) + 4px);
+        z-index: 90;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+      }
+
+      .account-avatar {
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+        background: linear-gradient(135deg, #0D1A0D, #1B4D1E);
+      }
+
+      .avatar-circle {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+        margin: 0;
+        flex-shrink: 0;
+        border-width: 2px;
+      }
+
+      .avatar-name {
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.2;
+      }
+
+      .avatar-email {
+        font-size: 11px;
+        margin-top: 1px;
+        opacity: 0.8;
+      }
+
+      .account-nav {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 8px 10px;
+        gap: 6px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        background: var(--color-surface);
+        border-top: 1px solid rgba(201,168,76,0.15);
+      }
+      .account-nav::-webkit-scrollbar { display: none; }
+
+      .account-nav-item {
+        padding: 7px 12px;
+        border-radius: 20px;
+        border-left: none !important;
+        background: var(--color-surface-alt);
+        flex-shrink: 0;
+        font-size: 12px;
+        font-weight: 600;
+        gap: 6px;
+        color: var(--color-text);
+      }
+
+      .account-nav-item.active {
+        background: var(--color-green-deep) !important;
+        color: #FFFFFF !important;
+      }
+      .account-nav-item.active .badge {
+        background: var(--color-gold) !important;
+        color: #0D1A0D !important;
+      }
+
+      /* Compact Content Panels */
+      .account-panel {
+        padding: 16px 14px;
+        border-radius: var(--radius-lg);
+      }
+
+      .panel-title {
+        font-size: 20px;
+      }
+
+      .panel-subtitle {
+        font-size: 12px;
+        margin-bottom: var(--space-4);
+      }
+
+      /* Touch-Friendly Order Cards */
+      .order-card-header {
+        padding: 10px 12px;
+      }
+      .order-number {
+        font-size: 13px;
+      }
+      .order-card-body {
+        padding: 12px;
+      }
+      .order-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .order-card-footer > div:last-child {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+        width: 100%;
+      }
+      .order-card-footer .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 9px 12px;
+        font-size: 12px;
+      }
+
+      /* Tracking view on mobile */
+      .tracking-search-bar {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tracking-search-bar .btn {
+        width: 100%;
+      }
+      
+      /* Input touch zoom fix (minimum 16px to prevent iOS auto-zoom) */
+      .form-input, .form-select {
+        font-size: 16px !important;
+      }
     }
   </style>
 </head>
