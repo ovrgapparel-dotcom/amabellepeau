@@ -1299,6 +1299,68 @@
             </div>
           </div>
 
+          <!-- Three-Way Confirmation Hub & Branded Invoice Card -->
+          <div class="order-receipt-card" style="margin-top: 24px; margin-bottom: 24px; background: #FAF7F2; border: 2px solid var(--color-gold); border-radius: 16px; padding: 24px; text-align: left;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 26px;">📄</span>
+                <div>
+                  <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0; color: var(--color-black); font-weight: 700;">Facture Proforma & Reçu Officiel</h3>
+                  <p style="font-size: 12px; color: var(--color-text-muted); margin: 0;">Document officiel horodaté avec détails complets et validité fiscale</p>
+                </div>
+              </div>
+              <span class="tag tag-green" style="background: rgba(39, 174, 96, 0.15); color: #27AE60; font-weight: 700; padding: 6px 14px; border-radius: 20px;">✓ Paiement Validé</span>
+            </div>
+
+            <!-- Three-Way Notification Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 20px;">
+              <div style="background: white; border-radius: 10px; padding: 14px; border: 1px solid #E5DDD0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--color-gold); text-transform: uppercase;">1. Client</span>
+                  <span style="font-size: 10px; background: rgba(39,174,96,0.15); color:#27AE60; padding:2px 6px; border-radius:10px; font-weight:700;">Reçu émis</span>
+                </div>
+                <div style="font-size: 13px; font-weight: 600; color: #0D1A0D; margin-top: 4px;" id="threeWayCustomerName">Client AMABELLEPEAU</div>
+                <div style="font-size: 11px; color: #666; margin-top: 2px;">WhatsApp & Facture PDF prêts</div>
+              </div>
+              <div style="background: white; border-radius: 10px; padding: 14px; border: 1px solid #E5DDD0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--color-gold); text-transform: uppercase;">2. Marchand</span>
+                  <span style="font-size: 10px; background: rgba(201,168,76,0.2); color:#997316; padding:2px 6px; border-radius:10px; font-weight:700;">Bon transmis</span>
+                </div>
+                <div style="font-size: 13px; font-weight: 600; color: #0D1A0D; margin-top: 4px;" id="threeWayMerchantName">ETS Marie Andrea</div>
+                <div style="font-size: 11px; color: #666; margin-top: 2px;">Préparation en cours</div>
+              </div>
+              <div style="background: white; border-radius: 10px; padding: 14px; border: 1px solid #E5DDD0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--color-gold); text-transform: uppercase;">3. Administration</span>
+                  <span style="font-size: 10px; background: rgba(13,26,13,0.1); color:#0D1A0D; padding:2px 6px; border-radius:10px; font-weight:700;">Archivé</span>
+                </div>
+                <div style="font-size: 13px; font-weight: 600; color: #0D1A0D; margin-top: 4px;">Plateforme AMABELLEPEAU</div>
+                <div style="font-size: 11px; color: #666; margin-top: 2px;">Comptabilité & Suivi centralisé</div>
+              </div>
+            </div>
+
+            <!-- Direct Quick Action CTAs -->
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <a id="viewInvoiceBtn" href="facture.html" target="_blank" class="btn btn-primary" style="flex: 1; min-width: 220px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                Ouvrir la Facture Branded PDF
+              </a>
+
+              <a id="whatsappCustomerNoticeBtn" href="#" target="_blank" class="btn" style="flex: 1; min-width: 220px; background: #25D366; color: white; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Recevoir confirmation WhatsApp
+              </a>
+            </div>
+          </div>
+
           <!-- Actions -->
           <div style="display: flex; justify-content: center; gap: var(--space-4); flex-wrap: wrap;">
             <button type="button" class="btn btn-primary btn-lg" onclick="openTrackingModal()">
@@ -1489,6 +1551,7 @@
   <script src="js/storage-db.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/payments.js"></script>
+  <script src="js/order-invoice-engine.js"></script>
 
   <!-- =====================================================
        CHECKOUT JAVASCRIPT CONTROLLER
@@ -1852,14 +1915,68 @@
       document.getElementById('receiptPaymentMethod').textContent = paymentLabels[selectedPayment] || 'Mobile Money';
       document.getElementById('receiptTotalPaid').textContent = formatXOF(confirmedOrderData.total);
 
+      // Create full order record in OrderInvoiceEngine
+      let registeredOrder = null;
+      if (typeof OrderInvoiceEngine !== 'undefined') {
+        const { subtotal, discountAmount } = calculateCheckoutTotals();
+        registeredOrder = OrderInvoiceEngine.createOrder({
+          orderNumber: confirmedOrderData.orderNumber,
+          customerName: confirmedOrderData.customerName || `${orderInfo.prenom} ${orderInfo.nom}`,
+          phone: confirmedOrderData.phone || orderInfo.phone,
+          email: orderInfo.email || '',
+          commune: orderInfo.commune || 'Abidjan',
+          address: confirmedOrderData.address || `${orderInfo.commune}, ${orderInfo.quartier}`,
+          landmark: orderInfo.landmark || '',
+          deliveryMethod: selectedDelivery ? selectedDelivery.label : 'Livraison Standard Abidjan (24-48h)',
+          deliveryFee: selectedDelivery ? selectedDelivery.cost : 1500,
+          subtotal: subtotal,
+          discount: discountAmount,
+          total: confirmedOrderData.total,
+          paymentMethod: selectedPayment,
+          paymentLabel: paymentLabels[selectedPayment] || 'Mobile Money',
+          paymentStatus: 'succeeded',
+          orderStatus: 'payment_received',
+          items: cart.map(it => ({
+            id: it.id,
+            name: it.name,
+            price: it.price,
+            qty: it.quantity || it.qty || 1,
+            merchant: it.merchant || 'ETS Marie Andrea',
+            merchantId: it.merchantId || 'ets-marie-andrea'
+          })),
+          itemsRaw: cart
+        });
+      }
+
+      // Update Three-Way DOM cards
+      const custNameEl = document.getElementById('threeWayCustomerName');
+      if (custNameEl) custNameEl.textContent = confirmedOrderData.customerName || `${orderInfo.prenom} ${orderInfo.nom}`;
+
+      const merchNameEl = document.getElementById('threeWayMerchantName');
+      if (merchNameEl && registeredOrder) merchNameEl.textContent = registeredOrder.merchant || 'ETS Marie Andrea';
+
+      // Update invoice button link
+      const invoiceUrl = `facture.html?id=${confirmedOrderData.orderNumber}`;
+      const viewInvoiceBtn = document.getElementById('viewInvoiceBtn');
+      if (viewInvoiceBtn) viewInvoiceBtn.href = invoiceUrl;
+
+      // Update customer WhatsApp notice button link
+      const custWaBtn = document.getElementById('whatsappCustomerNoticeBtn');
+      if (custWaBtn && registeredOrder && typeof OrderInvoiceEngine !== 'undefined') {
+        custWaBtn.href = OrderInvoiceEngine.buildCustomerWhatsAppUrl(registeredOrder);
+      } else if (custWaBtn) {
+        custWaBtn.href = `https://wa.me/2250799108108?text=${encodeURIComponent('Bonjour, voici ma commande ' + confirmedOrderData.orderNumber + ' - Facture: ' + window.location.origin + '/' + invoiceUrl)}`;
+      }
+
       // Clear cart from LocalStorage
       localStorage.removeItem('amabellepeau_cart');
       localStorage.removeItem('amabellepeau_promo');
-      document.getElementById('headerCartCount').textContent = '0';
+      const cartCountEl = document.getElementById('headerCartCount');
+      if (cartCountEl) cartCountEl.textContent = '0';
 
       // Move to Step 4
       navigateToStep(4);
-      showToast('Félicitations ! Votre commande a été confirmée.', 'success');
+      showToast('Félicitations ! Votre commande a été confirmée et la facture générée.', 'success');
     }
 
     function closePaymentModal() {

@@ -1031,6 +1031,7 @@
                   <th>Total TTC</th>
                   <th>Règlement</th>
                   <th>Statut Commande</th>
+                  <th>Facture & Notif</th>
                   <th>Dispatch</th>
                 </tr>
               </thead>
@@ -1641,6 +1642,7 @@
   <script src="../js/preorder-store.js"></script>
   <script src="../js/products-data.js"></script>
   <script src="../js/admin-store.js"></script>
+  <script src="../js/order-invoice-engine.js"></script>
   <script>
     // Auth Gate
     (function() {
@@ -2484,7 +2486,12 @@
     function renderAdminOrders() {
       const orders = AdminStore.getOrders();
       const body = document.getElementById('ordersFullTableBody');
-      body.innerHTML = orders.map(o => `
+      body.innerHTML = orders.map(o => {
+        const waNotifUrl = (typeof OrderInvoiceEngine !== 'undefined')
+          ? OrderInvoiceEngine.buildStatusUpdateWhatsAppUrl(o, o.orderStatus)
+          : ('https://wa.me/' + (o.phone || '').replace(/[^0-9]/g, ''));
+
+        return `
         <tr>
           <td><strong>${o.id}</strong></td>
           <td style="font-size:12px;color:var(--color-text-muted);">${o.date}</td>
@@ -2495,7 +2502,7 @@
           <td>${o.commune}</td>
           <td style="font-size:12px;max-width:240px;">${o.items}</td>
           <td><strong style="color:var(--color-green);">${new Intl.NumberFormat('fr-FR').format(o.total)} XOF</strong></td>
-          <td><span class="status-badge approved">${o.paymentMethod.toUpperCase()} (${o.paymentStatus})</span></td>
+          <td><span class="status-badge approved">${(o.paymentMethod || 'WAVE').toUpperCase()} (${o.paymentStatus || 'succeeded'})</span></td>
           <td>
             <select class="form-select" style="font-size:12px;padding:4px 8px;" onchange="updateOrderStatus('${o.id}', this.value)">
               <option value="pending_payment" ${o.orderStatus==='pending_payment'?'selected':''}>En attente</option>
@@ -2505,15 +2512,34 @@
             </select>
           </td>
           <td>
+            <div style="display:flex;gap:4px;flex-direction:column;">
+              <a href="../facture.html?id=${o.id}" target="_blank" class="btn-action" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;background:#FAF7F2;border:1px solid #C9A84C;color:#0D1A0D;padding:3px 6px;border-radius:4px;font-size:11px;font-weight:600;" title="Voir la facture officielle">
+                📄 Facture PDF
+              </a>
+              <a href="${waNotifUrl}" target="_blank" class="btn-action" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;background:#25D366;color:white;padding:3px 6px;border-radius:4px;font-size:11px;font-weight:600;" title="Notifier le client sur WhatsApp">
+                💬 WhatsApp
+              </a>
+            </div>
+          </td>
+          <td>
             <button class="btn-action" onclick="showAdminToast('Colis ${o.id} assigné au coursier Yango Abidjan')">🛵 Dispatch</button>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function updateOrderStatus(id, status) {
       AdminStore.updateOrderStatus(id, status);
-      showAdminToast('Statut de la commande ' + id + ' mis à jour');
+      const orders = AdminStore.getOrders();
+      const order = orders.find(o => o.id === id);
+      if (order && typeof OrderInvoiceEngine !== 'undefined') {
+        const waUrl = OrderInvoiceEngine.buildStatusUpdateWhatsAppUrl(order, status);
+        showAdminToast(`Statut mis à jour (${status}). <a href="${waUrl}" target="_blank" style="color:#C9A84C;font-weight:700;margin-left:6px;text-decoration:underline;">💬 Notifier WhatsApp</a>`, true);
+      } else {
+        showAdminToast('Statut de la commande ' + id + ' mis à jour');
+      }
+      renderAdminOrders();
     }
 
     window.addEventListener('DOMContentLoaded', () => {

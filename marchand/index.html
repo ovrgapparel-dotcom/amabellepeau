@@ -13,6 +13,7 @@
   <script src="../js/preorder-store.js"></script>
   <script src="../js/products-data.js"></script>
   <script src="../js/admin-store.js"></script>
+  <script src="../js/order-invoice-engine.js"></script>
 
   <style>
     /* ── Styles spécifiques Portail Marchand ── */
@@ -1556,54 +1557,15 @@
             <thead>
               <tr>
                 <th>N° Commande</th>
-                <th>Client</th>
+                <th>Client & Contact</th>
                 <th>Détail Commande</th>
                 <th>Montant</th>
-                <th>Mode Paiement</th>
+                <th>Paiement</th>
                 <th>Statut</th>
+                <th>Facture & Action</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td><strong>#CMD-0841</strong></td>
-                <td>Kouamé Affoué</td>
-                <td>2x Savon Moringa</td>
-                <td>7 000 XOF</td>
-                <td><span class="payment-badge" style="background:#1BA4E8; color:white;">Wave</span></td>
-                <td><span class="status status-pending">En attente</span></td>
-              </tr>
-              <tr>
-                <td><strong>#CMD-0839</strong></td>
-                <td>Diop Mamadou</td>
-                <td>1x Sérum Baobab + 1x Savon</td>
-                <td>13 000 XOF</td>
-                <td><span class="payment-badge" style="background:#FF7900; color:white;">Orange Money</span></td>
-                <td><span class="status status-pending">En attente</span></td>
-              </tr>
-              <tr>
-                <td><strong>#CMD-0820</strong></td>
-                <td>Touré Fanta</td>
-                <td>1x Coffret Rituel Douceur</td>
-                <td>14 000 XOF</td>
-                <td><span class="payment-badge" style="background:#1BA4E8; color:white;">Wave</span></td>
-                <td><span class="status status-delivered">Livré</span></td>
-              </tr>
-              <tr>
-                <td><strong>#CMD-0815</strong></td>
-                <td>Bakayoko Ali</td>
-                <td>2x Beurre Cacao Brut</td>
-                <td>9 000 XOF</td>
-                <td>Espèces livraison</td>
-                <td><span class="status status-delivered">Livré</span></td>
-              </tr>
-              <tr>
-                <td><strong>#CMD-0808</strong></td>
-                <td>Gnahoré Patricia</td>
-                <td>1x Sérum Hibiscus</td>
-                <td>8 500 XOF</td>
-                <td><span class="payment-badge" style="background:#1BA4E8; color:white;">Wave</span></td>
-                <td><span class="status status-delivered">Livré</span></td>
-              </tr>
+            <tbody id="merchantOrdersTableBody">
             </tbody>
           </table>
         </div>
@@ -2051,6 +2013,7 @@
         const activeView = document.getElementById(targetTab);
         if (activeView) {
           if (targetTab === 'tab-preorders') renderMerchantPreorders();
+          if (targetTab === 'tab-all-orders') renderMerchantOrders();
           activeView.classList.add('active');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -2745,6 +2708,72 @@
       }
     });
 
-</script>
+
+    // ── MERCHANT ORDERS RENDERING WITH 3-WAY INVOICE LINKS ──
+    function renderMerchantOrders() {
+      const tbody = document.getElementById('merchantOrdersTableBody');
+      if (!tbody) return;
+
+      const orders = (typeof AdminStore !== 'undefined' && AdminStore.getOrders)
+        ? AdminStore.getOrders()
+        : ((typeof OrderInvoiceEngine !== 'undefined') ? OrderInvoiceEngine.getAllOrders() : []);
+
+      if (!orders || orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--color-text-muted);">Aucune commande enregistrée pour le moment.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => {
+        const orderId = o.id || o.orderNumber;
+        const waUrl = (typeof OrderInvoiceEngine !== 'undefined')
+          ? OrderInvoiceEngine.buildStatusUpdateWhatsAppUrl(o, o.orderStatus)
+          : ('https://wa.me/' + (o.phone || '').replace(/[^0-9]/g, ''));
+
+        let statusBadge = '<span class="status status-pending">En attente</span>';
+        if (o.orderStatus === 'preparing' || o.orderStatus === 'payment_received') {
+          statusBadge = '<span class="status status-delivered" style="background:rgba(201,168,76,0.15);color:#997316;font-weight:700;">En préparation</span>';
+        } else if (o.orderStatus === 'out_for_delivery' || o.orderStatus === 'order_shipped') {
+          statusBadge = '<span class="status status-delivered" style="background:rgba(30,144,255,0.15);color:#1E90FF;font-weight:700;">En livraison</span>';
+        } else if (o.orderStatus === 'delivered' || o.orderStatus === 'order_delivered') {
+          statusBadge = '<span class="status status-delivered">Livré</span>';
+        }
+
+        const payColor = (o.paymentMethod || '').toLowerCase().includes('orange') ? '#FF7900' : '#1BA4E8';
+
+        return `
+          <tr>
+            <td>
+              <strong>${orderId}</strong>
+              <div style="font-size:11px;color:var(--color-text-muted);">${o.date || ''}</div>
+            </td>
+            <td>
+              <strong>${o.customerName || 'Client'}</strong>
+              <div style="font-size:11px;color:var(--color-text-muted);">${o.phone || ''}</div>
+              <div style="font-size:11px;color:var(--color-text-muted);">${o.commune || ''}</div>
+            </td>
+            <td style="font-size:12px;max-width:240px;line-height:1.4;">${o.items || ''}</td>
+            <td><strong style="color:var(--color-green);">${new Intl.NumberFormat('fr-FR').format(o.total || 0)} XOF</strong></td>
+            <td>
+              <span class="payment-badge" style="background:${payColor}; color:white;">
+                ${(o.paymentMethod || 'Wave').toUpperCase()}
+              </span>
+            </td>
+            <td>${statusBadge}</td>
+            <td>
+              <div style="display:flex;gap:4px;flex-direction:column;">
+                <a href="../facture.html?id=${orderId}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:3px 8px;font-size:11px;font-weight:600;" title="Ouvrir la Facture Branded PDF">
+                  📄 Facture PDF
+                </a>
+                <a href="${waUrl}" target="_blank" class="btn btn-sm" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;background:#25D366;color:white;padding:3px 8px;font-size:11px;font-weight:600;" title="Notifier le client sur WhatsApp">
+                  💬 Notifier Client
+                </a>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+  </script>
 </body>
 </html>

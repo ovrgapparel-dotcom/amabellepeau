@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facture Officielle — AMABELLEPEAU | Savons Naturels & Cosmétiques de Luxe</title>
+  <meta name="description" content="Facture officielle et reçu de commande client AMABELLEPEAU. Cosmétiques naturels et savons saponifiés à froid à Abidjan, Côte d'Ivoire.">
+  <link rel="icon" type="image/png" href="assets/icons/brand-logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Core Stores -->
+  <script src="js/storage-db.js"></script>
+  <script src="js/products-data.js"></script>
+  <script src="js/admin-store.js"></script>
+  <script src="js/order-invoice-engine.js"></script>
+
+  <style>
+    :root {
+      --color-green: #1B4D1E;
+      --color-dark: #0D1A0D;
+      --color-gold: #C9A84C;
+      --color-gold-light: #E8D5A3;
+      --color-cream: #FAF7F2;
+      --color-border: #E8E2D8;
+      --color-text: #2C2C2C;
+      --color-text-muted: #6B7280;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background-color: #EDE8DE;
+      color: var(--color-text);
+      line-height: 1.5;
+      padding: 24px 16px;
+    }
+
+    /* ── Sticky Top Action Bar (Screen Only) ── */
+    .invoice-toolbar {
+      max-width: 860px;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--color-dark);
+      padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+    }
+
+    .toolbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--color-cream);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .toolbar-brand img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-toolbar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-pdf {
+      background: linear-gradient(135deg, #C9A84C, #E8D5A3);
+      color: #0D1A0D;
+    }
+    .btn-pdf:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 168, 76, 0.4);
+    }
+
+    .btn-wa-client {
+      background: #25D366;
+      color: #FFFFFF;
+    }
+    .btn-wa-client:hover {
+      background: #20bd5a;
+    }
+
+    .btn-merchant {
+      background: rgba(255,255,255,0.12);
+      color: var(--color-cream);
+      border: 1px solid rgba(201, 168, 76, 0.4);
+    }
+    .btn-merchant:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* Status Control dropdown in toolbar */
+    .status-switch-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.08);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: var(--color-gold-light);
+      font-size: 12px;
+    }
+    .status-switch-wrap select {
+      background: #0D1A0D;
+      color: #FFFFFF;
+      border: 1px solid var(--color-gold);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* ── The Branded Paper Sheet ── */
+    .invoice-sheet {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+      border: 1px solid var(--color-border);
+      position: relative;
+      overflow: hidden;
+      padding: 44px 48px;
+    }
+
+    /* Gold luxury top accent band */
+    .invoice-sheet::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #1B4D1E 0%, #C9A84C 50%, #1B4D1E 100%);
+    }
+
+    /* ── Header ── */
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--color-cream);
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+    }
+
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-crest {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 2px solid var(--color-gold);
+      padding: 3px;
+      background: #FAF7F2;
+    }
+
+    .brand-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--color-green);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: var(--color-gold);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 3px;
+    }
+
+    .invoice-meta-box {
+      text-align: right;
+    }
+
+    .invoice-doc-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .invoice-number-highlight {
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-green);
+      background: #EBF4EC;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .invoice-date {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Status Banner (Dynamic) ── */
+    .status-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-radius: 8px;
+      margin-bottom: 28px;
+      border-left: 5px solid;
+    }
+
+    .status-banner.payment_received {
+      background: #EBF7EE;
+      border-color: #1B4D1E;
+      color: #0F3312;
+    }
+    .status-banner.order_pending {
+      background: #FEF8E7;
+      border-color: #D4A017;
+      color: #7A5B07;
+    }
+    .status-banner.order_shipped {
+      background: #EBF5FB;
+      border-color: #2980B9;
+      color: #1A5276;
+    }
+    .status-banner.order_delivered {
+      background: #F4ECF7;
+      border-color: #8E44AD;
+      color: #512E5F;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-description {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    /* ── Parties Grid (Client & Merchant) ── */
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      background: #FAF7F2;
+      padding: 20px 24px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      margin-bottom: 28px;
+    }
+
+    .party-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--color-gold);
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .party-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin-bottom: 4px;
+    }
+
+    .party-info-line {
+      font-size: 13px;
+      color: #4B5563;
+      margin-bottom: 3px;
+    }
+
+    /* ── Items Table ── */
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 28px;
+    }
+
+    .invoice-table th {
+      background: #0D1A0D;
+      color: #FAF7F2;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    .invoice-table th:last-child,
+    .invoice-table td:last-child {
+      text-align: right;
+    }
+
+    .invoice-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #F0ECE4;
+      font-size: 13px;
+    }
+
+    .invoice-table tbody tr:nth-child(even) {
+      background: #FDFBF8;
+    }
+
+    .item-product-name {
+      font-weight: 700;
+      color: var(--color-dark);
+    }
+    .item-merchant-sub {
+      font-size: 11px;
+      color: var(--color-gold);
+      margin-top: 2px;
+    }
+
+    /* ── Totals & Summary Block ── */
+    .totals-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 32px;
+    }
+
+    .totals-box {
+      width: 320px;
+    }
+
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 6px 0;
+      color: #4B5563;
+    }
+
+    .totals-row.grand-total {
+      border-top: 2px solid var(--color-dark);
+      padding-top: 12px;
+      margin-top: 6px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-green);
+    }
+
+    /* ── Security & Stamp Block ── */
+    .footer-guarantee {
+      border-top: 1px dashed var(--color-border);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .stamp-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .official-stamp {
+      width: 80px;
+      height: 80px;
+      border: 2px dashed var(--color-gold);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gold);
+      text-align: center;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transform: rotate(-8deg);
+      background: rgba(201, 168, 76, 0.05);
+    }
+
+    .security-note {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      max-width: 480px;
+      line-height: 1.45;
+    }
+
+    /* ── Three-Way Notification Cards Bar (Below Sheet) ── */
+    .three-way-panel {
+      max-width: 860px;
+      margin: 24px auto 0;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    .three-way-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--color-dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .three-way-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .notify-card {
+      background: #FAF7F2;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .notify-card-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .notify-card-desc {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-bottom: 14px;
+      line-height: 1.35;
+    }
+
+    .notify-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .btn-notify {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-notify-wa {
+      background: #25D366;
+      color: #FFFFFF;
+    }
+    .btn-notify-wa:hover {
+      background: #1eb954;
+    }
+
+    .btn-notify-email {
+      background: #0D1A0D;
+      color: #FAF7F2;
+    }
+    .btn-notify-email:hover {
+      background: #1B4D1E;
+    }
+
+    /* ── Print Stylesheet (Pure A4 Vector Document) ── */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        padding: 0 !important;
+      }
+      .invoice-toolbar,
+      .three-way-panel {
+        display: none !important;
+      }
+      .invoice-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 20px 0 !important;
+        max-width: 100% !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .invoice-sheet {
+        padding: 24px 18px;
+      }
+      .invoice-header {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .invoice-meta-box {
+        text-align: left;
+      }
+      .parties-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .three-way-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================
+       1. STICKY TOP CONTROLS (Screen only)
+       ======================================================== -->
+  <aside class="invoice-toolbar" id="screenToolbar">
+    <a href="index.html" class="toolbar-brand">
+      <img src="assets/icons/brand-logo.png" onerror="this.src='assets/icons/logo.png'" alt="AMABELLEPEAU">
+      <span>AMABELLEPEAU</span>
+    </a>
+
+    <!-- Live Status Selector for Merchant & Admin -->
+    <div class="status-switch-wrap">
+      <span>Statut Commande :</span>
+      <select id="statusSelect" onchange="changeOrderStatus(this.value)">
+        <option value="payment_received">✅ Paiement Reçu</option>
+        <option value="order_pending">⏳ Commande En Attente</option>
+        <option value="order_shipped">🛵 Commande Expédiée</option>
+        <option value="order_delivered">✨ Commande Livrée</option>
+      </select>
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn-toolbar btn-pdf" onclick="window.print()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path></svg>
+        <span>Imprimer / PDF</span>
+      </button>
+
+      <a id="topCustomerWaBtn" href="#" target="_blank" class="btn-toolbar btn-wa-client">
+        <span>💬 WhatsApp Client</span>
+      </a>
+
+      <a href="marchand/index.html" class="btn-toolbar btn-merchant">
+        <span>Espace Marchand</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================
+       2. BRANDED LUXURY INVOICE SHEET
+       ======================================================== -->
+  <main class="invoice-sheet" id="invoiceSheet">
+    
+    <!-- Header -->
+    <header class="invoice-header">
+      <div class="brand-identity">
+        <img src="assets/icons/brand-logo.png" onerror="this.src='assets/icons/logo.png'" alt="AMABELLEPEAU" class="brand-crest">
+        <div>
+          <h1 class="brand-title">AMABELLEPEAU</h1>
+          <div class="brand-tagline">Savonnerie Botanique &amp; Cosmétiques d'Abidjan</div>
+        </div>
+      </div>
+
+      <div class="invoice-meta-box">
+        <div class="invoice-doc-title">Facture Officielle</div>
+        <div class="invoice-number-highlight" id="invoiceNumber">ABP-XXXX</div>
+        <div class="invoice-date" id="invoiceDate">Date : 31 Octobre 2026</div>
+      </div>
+    </header>
+
+    <!-- Dynamic Status Banner -->
+    <div class="status-banner payment_received" id="statusBanner">
+      <div>
+        <div class="status-badge" id="statusBadge">
+          <span>✅</span>
+          <span id="statusLabel">Paiement Reçu (Mobile Money)</span>
+        </div>
+        <div class="status-description" id="statusNote">
+          Le règlement a été validé avec succès. Préparation en cours à l'atelier.
+        </div>
+      </div>
+      <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; opacity: 0.7;">
+        Réf: Wave / Orange Money CI
+      </div>
+    </div>
+
+    <!-- Parties Grid -->
+    <section class="parties-grid">
+      <!-- Client -->
+      <div>
+        <div class="party-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Destinataire &amp; Livraison
+        </div>
+        <div class="party-name" id="custName">Client AMABELLEPEAU</div>
+        <div class="party-info-line" id="custPhone">📞 +225 07 00 00 00 00</div>
+        <div class="party-info-line" id="custAddress">📍 Cocody Angré, Abidjan</div>
+        <div class="party-info-line" id="custDelivery">🚚 Mode : Livraison Standard 24-48h</div>
+      </div>
+
+      <!-- Merchant -->
+      <div>
+        <div class="party-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Marchand &amp; Expéditeur Agréé
+        </div>
+        <div class="party-name" id="merchantName">ETS Marie Andrea</div>
+        <div class="party-info-line" id="merchantContact">📞 +225 07 09 72 40 96</div>
+        <div class="party-info-line" id="merchantLocation">📍 Cocody Riviera 3, Abidjan</div>
+        <div class="party-info-line">🏛️ Plateforme : AMABELLEPEAU Marketplace</div>
+      </div>
+    </section>
+
+    <!-- Items Table -->
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th style="width: 40px;">#</th>
+          <th>Désignation des Produits Botaniques</th>
+          <th style="width: 100px;">Prix Unit.</th>
+          <th style="width: 60px; text-align: center;">Qté</th>
+          <th style="width: 110px;">Total (XOF)</th>
+        </tr>
+      </thead>
+      <tbody id="invoiceTableBody">
+        <!-- Injected via JavaScript -->
+      </tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="totals-wrapper">
+      <div class="totals-box">
+        <div class="totals-row">
+          <span>Sous-total articles :</span>
+          <strong id="summarySubtotal">0 XOF</strong>
+        </div>
+        <div class="totals-row">
+          <span>Frais de livraison (Abidjan) :</span>
+          <span id="summaryDelivery">1 500 XOF</span>
+        </div>
+        <div class="totals-row" id="discountRow" style="display: none; color: #27AE60;">
+          <span>Remise accordée :</span>
+          <span id="summaryDiscount">- 0 XOF</span>
+        </div>
+        <div class="totals-row grand-total">
+          <span>Total Net Réglé :</span>
+          <span id="summaryGrandTotal">0 XOF</span>
+        </div>
+        <div style="font-size: 11px; text-align: right; color: var(--color-text-muted); margin-top: 4px;" id="paymentMethodLabel">
+          Règlement : Wave CI
+        </div>
+      </div>
+    </div>
+
+    <!-- Security, Stamp & Legal Footer -->
+    <footer class="footer-guarantee">
+      <div class="stamp-container">
+        <div class="official-stamp">
+          <span>★ CERTIFIÉ ★</span>
+          <strong>AMABELLEPEAU</strong>
+          <span>ABIDJAN CI</span>
+        </div>
+        <div class="security-note">
+          <strong>Garantie Authenticité &amp; Traçabilité :</strong> Cette facture certifie la confection artisanale par saponification à froid à partir de beurres végétaux purs d'Afrique de l'Ouest. En cas de réclamation, contactez le service client au +225 07 99 10 81 08.
+        </div>
+      </div>
+
+      <div style="text-align: right; font-size: 11px; color: var(--color-text-muted);">
+        <div>AMABELLEPEAU Marketplace CI</div>
+        <div>RCCM : CI-ABJ-03-2026-B12</div>
+        <div>Abidjan, Côte d'Ivoire</div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ========================================================
+       3. THREE-WAY CONFIRMATION HUB (Customer, Merchant, Admin)
+       ======================================================== -->
+  <section class="three-way-panel">
+    <h2 class="three-way-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      Centre de Confirmation &amp; Notification Tripartite (3-Way)
+    </h2>
+
+    <div class="three-way-grid">
+      <!-- 1. Client -->
+      <div class="notify-card">
+        <div>
+          <div class="notify-card-header">
+            <span>👤</span>
+            <span>1. Client Acheteur</span>
+          </div>
+          <p class="notify-card-desc">
+            Envoie la facture PDF officielle, le reçu de paiement et le suivi de livraison au client sur son WhatsApp ou Email.
+          </p>
+        </div>
+        <div class="notify-btn-group">
+          <a id="custWaLink" href="#" target="_blank" class="btn-notify btn-notify-wa">
+            <span>💬 WhatsApp Client</span>
+          </a>
+          <a id="custEmailLink" href="#" class="btn-notify btn-notify-email">
+            <span>✉️ Email Client</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. Marchand -->
+      <div class="notify-card">
+        <div>
+          <div class="notify-card-header">
+            <span>🏪</span>
+            <span id="cardMerchantTitle">2. Marchand Vendeur</span>
+          </div>
+          <p class="notify-card-desc">
+            Alerte immédiate au maître savonnier / boutique pour préparer et emballer le colis avec le bon de commande PDF.
+          </p>
+        </div>
+        <div class="notify-btn-group">
+          <a id="merchWaLink" href="#" target="_blank" class="btn-notify btn-notify-wa">
+            <span>💬 Alerter Marchand</span>
+          </a>
+          <a id="merchEmailLink" href="#" class="btn-notify btn-notify-email">
+            <span>✉️ Email Marchand</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. Admin -->
+      <div class="notify-card">
+        <div>
+          <div class="notify-card-header">
+            <span>🛡️</span>
+            <span>3. Administration AMABELLEPEAU</span>
+          </div>
+          <p class="notify-card-desc">
+            Archive la facture, enregistre la transaction financière et synchronise avec le dispatch des coursiers d'Abidjan.
+          </p>
+        </div>
+        <div class="notify-btn-group">
+          <a id="adminWaLink" href="#" target="_blank" class="btn-notify btn-notify-wa">
+            <span>💬 WhatsApp Admin</span>
+          </a>
+          <a id="adminEmailLink" href="#" class="btn-notify btn-notify-email">
+            <span>✉️ Email Admin</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       4. CLIENT-SIDE CONTROLLER
+       ======================================================== -->
+  <script>
+    let currentOrder = null;
+
+    function initInvoicePage() {
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('id') || params.get('ref') || params.get('order');
+
+      if (orderId && typeof OrderInvoiceEngine !== 'undefined') {
+        currentOrder = OrderInvoiceEngine.getOrderById(orderId);
+      }
+
+      // Fallback: check latest created order
+      if (!currentOrder) {
+        try {
+          const latest = localStorage.getItem('abp_latest_order');
+          if (latest) currentOrder = JSON.parse(latest);
+        } catch (e) {}
+      }
+
+      // Default fallback demo order if none found
+      if (!currentOrder) {
+        currentOrder = {
+          id: 'ABP-EXEMPLE-CI',
+          orderNumber: 'ABP-EXEMPLE-CI',
+          date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          customerName: 'Mariam Coulibaly',
+          phone: '+225 07 88 12 34 56',
+          email: 'mariam.coulibaly@gmail.com',
+          commune: 'Cocody Angré 8ème Tranche',
+          address: 'Villa 14, Rue des Jardins, Abidjan',
+          deliveryMethod: 'Livraison Standard Abidjan (24-48h)',
+          deliveryFee: 1500,
+          subtotal: 15000,
+          discount: 0,
+          total: 16500,
+          paymentMethod: 'wave',
+          paymentLabel: 'Wave CI (Direct Mobile Money)',
+          orderStatus: 'payment_received',
+          merchant: 'ETS Marie Andrea',
+          merchantSlug: 'ets-marie-andrea',
+          rawItems: [
+            { name: 'Le CLARYLEX — Visage & Corps (250 ml)', price: 5000, qty: 2, merchant: 'ETS Marie Andrea' },
+            { name: 'Savon Artisanal Curcuma & Miel Pur (200 g)', price: 2500, qty: 2, merchant: 'ETS Marie Andrea' }
+          ],
+          items: 'Le CLARYLEX (250 ml) x 2, Savon Curcuma & Miel (200 g) x 2'
+        };
+      }
+
+      renderInvoice(currentOrder);
+    }
+
+    function renderInvoice(order) {
+      if (!order) return;
+
+      // Meta
+      document.getElementById('invoiceNumber').textContent = order.id || order.orderNumber || 'ABP-0000';
+      document.getElementById('invoiceDate').textContent = `Émise le : ${order.date || '31 Octobre 2026'}`;
+
+      // Status
+      const statusKey = order.orderStatus || 'payment_received';
+      const statusObj = (typeof OrderInvoiceEngine !== 'undefined' && OrderInvoiceEngine.STATUSES[statusKey])
+        ? OrderInvoiceEngine.STATUSES[statusKey]
+        : { label: 'Paiement Reçu', icon: '✅', color: '#1B4D1E', customerNote: 'Paiement validé avec succès.' };
+
+      const banner = document.getElementById('statusBanner');
+      banner.className = `status-banner ${statusKey}`;
+      document.getElementById('statusBadge').innerHTML = `<span>${statusObj.icon}</span><span>${statusObj.label}</span>`;
+      document.getElementById('statusNote').textContent = statusObj.customerNote || statusObj.shortDesc || '';
+
+      const select = document.getElementById('statusSelect');
+      if (select) select.value = statusKey;
+
+      // Client info
+      document.getElementById('custName').textContent = order.customerName || 'Client';
+      document.getElementById('custPhone').textContent = `📞 ${order.phone || 'Non renseigné'}`;
+      document.getElementById('custAddress').textContent = `📍 ${order.address || order.commune || 'Abidjan'}`;
+      document.getElementById('custDelivery').textContent = `🚚 Mode : ${order.deliveryMethod || 'Livraison Standard'}`;
+
+      // Merchant info
+      const merchantObj = (typeof OrderInvoiceEngine !== 'undefined' && OrderInvoiceEngine.MERCHANTS[order.merchantSlug])
+        ? OrderInvoiceEngine.MERCHANTS[order.merchantSlug]
+        : { name: order.merchant || 'ETS Marie Andrea', phone: '+225 07 09 72 40 96', commune: 'Cocody Riviera 3, Abidjan' };
+
+      document.getElementById('merchantName').textContent = merchantObj.name;
+      document.getElementById('merchantContact').textContent = `📞 ${merchantObj.phone}`;
+      document.getElementById('merchantLocation').textContent = `📍 ${merchantObj.commune}`;
+      document.getElementById('cardMerchantTitle').textContent = `2. Marchand (${merchantObj.name})`;
+
+      // Items Table
+      const tbody = document.getElementById('invoiceTableBody');
+      const items = Array.isArray(order.rawItems) && order.rawItems.length > 0
+        ? order.rawItems
+        : [{ name: order.items || 'Soins cosmétiques bio', price: (order.subtotal || order.total - 1500), qty: 1, merchant: merchantObj.name }];
+
+      tbody.innerHTML = items.map((it, idx) => {
+        const qty = it.qty || it.quantity || 1;
+        const price = Number(it.price) || 0;
+        const lineTotal = price * qty;
+        return `
+          <tr>
+            <td style="color:var(--color-text-muted); font-size:11px;">${idx + 1}</td>
+            <td>
+              <div class="item-product-name">${it.name}</div>
+              <div class="item-merchant-sub">Vendeur agréé : ${it.merchant || merchantObj.name}</div>
+            </td>
+            <td>${formatXOF(price)}</td>
+            <td style="text-align: center; font-weight: 700;">${qty}</td>
+            <td><strong>${formatXOF(lineTotal)}</strong></td>
+          </tr>
+        `;
+      }).join('');
+
+      // Totals
+      const subtotal = Number(order.subtotal) || (Number(order.total) - Number(order.deliveryFee || 1500));
+      const delivery = Number(order.deliveryFee) || 1500;
+      const total = Number(order.total) || (subtotal + delivery);
+
+      document.getElementById('summarySubtotal').textContent = formatXOF(subtotal);
+      document.getElementById('summaryDelivery').textContent = formatXOF(delivery);
+      document.getElementById('summaryGrandTotal').textContent = formatXOF(total);
+      document.getElementById('paymentMethodLabel').textContent = `Règlement : ${order.paymentLabel || order.paymentMethod || 'Wave CI'}`;
+
+      // 3-Way Notification links
+      if (typeof OrderInvoiceEngine !== 'undefined') {
+        const custWa = OrderInvoiceEngine.buildCustomerWhatsAppUrl(order);
+        const custMail = OrderInvoiceEngine.buildCustomerEmailMailto(order);
+        const merchWa = OrderInvoiceEngine.buildMerchantWhatsAppUrl(order);
+        const merchMail = OrderInvoiceEngine.buildMerchantEmailMailto(order);
+        const adminWa = OrderInvoiceEngine.buildAdminWhatsAppUrl(order);
+        const adminMail = OrderInvoiceEngine.buildAdminEmailMailto(order);
+
+        document.getElementById('topCustomerWaBtn').href = custWa;
+        document.getElementById('custWaLink').href = custWa;
+        document.getElementById('custEmailLink').href = custMail;
+        document.getElementById('merchWaLink').href = merchWa;
+        document.getElementById('merchEmailLink').href = merchMail;
+        document.getElementById('adminWaLink').href = adminWa;
+        document.getElementById('adminEmailLink').href = adminMail;
+      }
+    }
+
+    function changeOrderStatus(newStatus) {
+      if (!currentOrder) return;
+      if (typeof OrderInvoiceEngine !== 'undefined') {
+        const updated = OrderInvoiceEngine.updateOrderStatus(currentOrder.id, newStatus);
+        if (updated) {
+          currentOrder = updated;
+          renderInvoice(currentOrder);
+        }
+      }
+    }
+
+    function formatXOF(amount) {
+      const val = Number(amount) || 0;
+      return new Intl.NumberFormat('fr-FR', {
+        style: 'decimal',
+        maximumFractionDigits: 0
+      }).format(val) + ' XOF';
+    }
+
+    window.addEventListener('DOMContentLoaded', initInvoicePage);
+  </script>
+
+</body>
+</html>
