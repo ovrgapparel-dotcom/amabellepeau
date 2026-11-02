@@ -103,7 +103,7 @@ cp .env.example .env
 ### Paiements (MVP — Liens statiques)
 | Méthode | Lien |
 |---------|------|
-| 🌊 Wave | `https://pay.wave.com/mqr-tc/mqr-1cz6t6hdg21tj` |
+| 🌊 Wave | `https://pay.wave.com/m/M_ci_1F_--SCMirUC/c/ci/` |
 | 🟠 Orange Money | `https://multi.app.orange-money.com/...` |
 | 💬 WhatsApp | `https://wa.me/c/2250799108108` |
 

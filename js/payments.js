@@ -15,7 +15,7 @@ const PAYMENT_CONFIG = {
     name: 'Wave CI',
     label: 'Payer avec Wave',
     description: 'Paiement sans frais instantané avec Wave',
-    link: 'https://pay.wave.com/mqr-tc/mqr-1cz6t6hdg21tj',
+    link: 'https://pay.wave.com/m/M_ci_1F_--SCMirUC/c/ci/',
     color: '#1E90FF',
     icon: '🌊',
     logo: 'WAVE',
