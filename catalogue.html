@@ -1725,6 +1725,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="css/social-share.css">
 </head>
 
 <body>
@@ -2703,6 +2704,31 @@
                 Ajouter au panier
               </button>
             </div>
+            
+            <!-- Quick View Social Share -->
+            <div class="social-share-box" style="margin-top: 14px; margin-bottom: 0; padding: 12px 14px;">
+              <div class="social-share-header" style="margin-bottom: 8px;">
+                <span class="social-share-icon">✨</span>
+                <span class="social-share-label" style="font-size: 12px;">Partager ce soin :</span>
+              </div>
+              <div class="social-share-buttons" id="quickViewShareButtons">
+                <button type="button" class="share-btn share-whatsapp" onclick="if(activeModalProduct) SocialShare.share('whatsapp', activeModalProduct)" title="Partager sur WhatsApp">
+                  <span>WhatsApp</span>
+                </button>
+                <button type="button" class="share-btn share-facebook" onclick="if(activeModalProduct) SocialShare.share('facebook', activeModalProduct)" title="Partager sur Facebook">
+                  <span>Facebook</span>
+                </button>
+                <button type="button" class="share-btn share-x" onclick="if(activeModalProduct) SocialShare.share('x', activeModalProduct)" title="Partager sur X">
+                  <span>X</span>
+                </button>
+                <button type="button" class="share-btn share-telegram" onclick="if(activeModalProduct) SocialShare.share('telegram', activeModalProduct)" title="Partager sur Telegram">
+                  <span>Telegram</span>
+                </button>
+                <button type="button" class="share-btn share-copy" onclick="if(activeModalProduct) SocialShare.copyLink(activeModalProduct, this)" title="Copier le lien direct">
+                  <span>Copier le lien</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2803,6 +2829,7 @@
   <script src="js/products-data.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/payments.js"></script>
+  <script src="js/social-share.js"></script>
 
   <script>
     /**
@@ -3100,8 +3127,17 @@
                 </button>
                 <button type="button" class="action-icon-btn" data-quickview="${product.id}" title="Aperçu rapide">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button type="button" class="action-icon-btn action-share-btn" data-share="${product.id}" title="Partager ce soin" onclick="event.stopPropagation(); if(window.SocialShare) SocialShare.openModalById('${product.id}')">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                   </svg>
                 </button>
               </div>
@@ -3142,9 +3178,20 @@
                 </div>
 
                 <!-- Direct Touch Add to Cart for Mobile screens -->
-                <button type="button" class="mobile-card-add-btn" data-addcart="${product.id}" onclick="event.stopPropagation()">
-                  + Ajouter
-                </button>
+                <div style="display:flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+                  <button type="button" class="btn-card-share" data-share="${product.id}" title="Partager ce soin" onclick="event.stopPropagation(); if(window.SocialShare) SocialShare.openModalById('${product.id}')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="18" cy="5" r="3"></circle>
+                      <circle cx="6" cy="12" r="3"></circle>
+                      <circle cx="18" cy="19" r="3"></circle>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                  </button>
+                  <button type="button" class="mobile-card-add-btn" data-addcart="${product.id}">
+                    + Ajouter
+                  </button>
+                </div>
 
                 <!-- List view CTA -->
                 <button type="button" class="list-add-btn" data-addcart="${product.id}" onclick="event.stopPropagation()">
@@ -3162,6 +3209,13 @@
           `;
 
           card.addEventListener('click', (e) => {
+            if (e.target.closest('[data-share]')) {
+              e.stopPropagation();
+              const shareId = e.target.closest('[data-share]').getAttribute('data-share');
+              const foundP = (typeof getProductsList === 'function' ? getProductsList() : []).find(x => String(x.id) === String(shareId)) || product;
+              if (window.SocialShare) window.SocialShare.openModal(foundP);
+              return;
+            }
             if (e.target.closest('button') || e.target.closest('.product-hover-actions') || e.target.closest('.hover-add-cart-wrap')) return;
             window.location.href = 'produit.html?id=' + product.id;
           });
