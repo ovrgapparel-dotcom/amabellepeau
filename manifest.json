@@ -7,11 +7,21 @@
   "background_color": "#0D1A0D",
   "theme_color": "#1B4D1E",
   "orientation": "portrait-primary",
-  "categories": ["shopping", "beauty", "lifestyle"],
+  "categories": [
+    "shopping",
+    "beauty",
+    "lifestyle"
+  ],
   "lang": "fr",
   "dir": "ltr",
   "scope": "/",
   "icons": [
+    {
+      "src": "assets/icons/brand-logo.png",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
     {
       "src": "assets/icons/logo.png",
       "sizes": "192x192",
@@ -25,21 +35,38 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [],
+  "screenshots": [
+    {
+      "src": "assets/images/og-share-amabellepeau.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "label": "AMABELLEPEAU — Boutique Naturelle"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Catalogue",
       "short_name": "Catalogue",
       "description": "Parcourir notre catalogue",
       "url": "/catalogue.html",
-      "icons": [{ "src": "assets/icons/logo.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "assets/icons/logo.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Mon Panier",
       "short_name": "Panier",
       "description": "Voir mon panier",
       "url": "/panier.html",
-      "icons": [{ "src": "assets/icons/logo.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "assets/icons/logo.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ],
   "related_applications": [],

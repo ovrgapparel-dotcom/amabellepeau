@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrat de Partenariat Vendeur & Ambassadeur — AMABELLEPEAU</title>
+  <style>
+    /* ── Print & Screen Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:  #0D1A0D;
+      --green:       #1B4D1E;
+      --green-light: #2D6E31;
+      --gold:        #C9A84C;
+      --gold-light:  #E8C86A;
+      --cream:       #FAF7F2;
+      --cream-dark:  #F0EBE0;
+      --text:        #1A1A1A;
+      --text-muted:  #5C5C5C;
+      --border:      #D8D0C0;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 11pt;
+      line-height: 1.65;
+      color: var(--text);
+      background: white;
+    }
+
+    /* ── Document wrapper ── */
+    .document {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 40px;
+      background: white;
+    }
+
+    /* ── Header / Cover ── */
+    .doc-header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      border-bottom: 3px solid var(--gold);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    .doc-header img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .doc-header-text {}
+    .doc-brand {
+      font-size: 22pt;
+      font-weight: bold;
+      color: var(--green);
+      letter-spacing: 2px;
+    }
+    .doc-brand span { color: var(--gold); }
+    .doc-tagline {
+      font-size: 9.5pt;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+    }
+
+    /* ── Document Title ── */
+    .doc-title-block {
+      text-align: center;
+      padding: 20px 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .doc-title {
+      font-size: 15pt;
+      font-weight: bold;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+    .doc-ref {
+      font-size: 9pt;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ── Info Box (Parties) ── */
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .party-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: var(--cream);
+    }
+    .party-label {
+      font-size: 8pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .party-name {
+      font-size: 11pt;
+      font-weight: bold;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+    .party-detail {
+      font-size: 9pt;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .party-field {
+      border-bottom: 1px dashed var(--border);
+      min-height: 20px;
+      margin: 4px 0 8px;
+      display: block;
+    }
+
+    /* ── Section headers ── */
+    .section {
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+    }
+    .section-title {
+      font-size: 11pt;
+      font-weight: bold;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-left: 4px solid var(--gold);
+      padding-left: 10px;
+      margin-bottom: 10px;
+    }
+    .article-num {
+      display: inline-block;
+      background: var(--green);
+      color: white;
+      font-size: 8.5pt;
+      font-weight: bold;
+      border-radius: 3px;
+      padding: 1px 7px;
+      margin-right: 8px;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+    }
+
+    p { margin-bottom: 8px; }
+
+    /* ── Highlight boxes ── */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(27,77,30,0.07), rgba(201,168,76,0.09));
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0;
+    }
+    .highlight-box strong { color: var(--green); }
+
+    /* ── Commission rate badge ── */
+    .commission-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green-dark);
+      font-size: 18pt;
+      font-weight: bold;
+      padding: 8px 24px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+      margin: 8px 0;
+    }
+
+    /* ── List styles ── */
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    li { margin-bottom: 4px; }
+
+    /* ── Payment methods ── */
+    .payment-methods {
+      display: flex;
+      gap: 16px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .payment-pill {
+      background: var(--cream-dark);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 10pt;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    /* ── Signature section ── */
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 28px;
+    }
+    .signature-block {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .signature-label {
+      font-size: 9pt;
+      font-weight: bold;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .signature-line {
+      border-bottom: 1px solid var(--text);
+      height: 50px;
+      margin: 10px 0 6px;
+    }
+    .signature-info {
+      font-size: 8.5pt;
+      color: var(--text-muted);
+    }
+
+    /* ── Footer ── */
+    .doc-footer {
+      border-top: 2px solid var(--gold);
+      padding-top: 12px;
+      margin-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8pt;
+      color: var(--text-muted);
+    }
+    .doc-footer-brand {
+      font-weight: bold;
+      color: var(--green);
+      font-size: 9pt;
+    }
+
+    /* ── Gold rule ── */
+    .gold-rule {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 16px 0;
+      opacity: 0.5;
+    }
+
+    /* ── Print styles ── */
+    @media print {
+      body { font-size: 10pt; }
+      .document { padding: 0; max-width: 100%; }
+      .no-print { display: none !important; }
+      .section { page-break-inside: avoid; }
+      .signature-grid { page-break-inside: avoid; }
+      a { color: var(--green) !important; text-decoration: none; }
+    }
+
+    /* ── Screen-only enhancements ── */
+    @media screen {
+      body { background: #f4f0e8; }
+      .document {
+        box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+        border-radius: 4px;
+        margin: 24px auto;
+      }
+      .print-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--green);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-size: 11pt;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 999;
+        transition: background 0.2s;
+      }
+      .print-btn:hover { background: var(--gold); color: var(--green-dark); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Screen-only Print Button -->
+<button class="print-btn no-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+
+<div class="document">
+
+  <!-- ── HEADER ── -->
+  <div class="doc-header">
+    <img src="assets/icons/brand-logo.png" alt="AMABELLEPEAU Logo" onerror="this.style.display='none'">
+    <div class="doc-header-text">
+      <div class="doc-brand">AMABELLE<span>PEAU</span></div>
+      <div class="doc-tagline">Savons Naturels &amp; Soins d'Exception · ETS Marie Andrea · Abidjan, Côte d'Ivoire</div>
+      <div class="doc-tagline" style="margin-top:4px; color: #8a7a4a;">amabellepeau.vercel.app &nbsp;|&nbsp; Paiement Wave &amp; Orange Money</div>
+    </div>
+  </div>
+
+  <!-- ── DOCUMENT TITLE ── -->
+  <div class="doc-title-block">
+    <div class="doc-title">Contrat de Partenariat<br>Vendeur &amp; Ambassadeur</div>
+    <div class="doc-ref">
+      Référence : AMP-CA-<span id="refNum">______</span> &nbsp;&middot;&nbsp;
+      Date : <span id="docDate">____ / ____ / 2025</span> &nbsp;&middot;&nbsp;
+      Code Promo : <strong style="color:#1B4D1E;">______________</strong>
+    </div>
+  </div>
+
+  <!-- ── PARTIES ── -->
+  <div class="parties-grid">
+    <div class="party-box">
+      <div class="party-label">La Marque (Mandant)</div>
+      <div class="party-name">AMABELLEPEAU</div>
+      <div class="party-detail">
+        ETS Marie Andrea<br>
+        Abidjan, Côte d'Ivoire<br>
+        <a href="https://amabellepeau.vercel.app" style="color:#1B4D1E;">amabellepeau.vercel.app</a>
+      </div>
+    </div>
+    <div class="party-box">
+      <div class="party-label">Le Vendeur / Ambassadeur (Mandataire)</div>
+      <div class="party-name">Nom &amp; Prénom :</div>
+      <span class="party-field"></span>
+      <div class="party-detail">
+        Téléphone : <span class="party-field" style="display:inline-block;width:140px;"></span><br>
+        WhatsApp : <span class="party-field" style="display:inline-block;width:140px;"></span><br>
+        Ville : <span class="party-field" style="display:inline-block;width:140px;"></span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="gold-rule">
+
+  <!-- ── PRÉAMBULE ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">PRÉAMBULE</span></div>
+    <p>
+      AMABELLEPEAU (ci-après « la Marque »), marque de soins artisanaux 100% naturels basée à Abidjan,
+      Côte d'Ivoire, souhaite développer un réseau de Vendeurs et Ambassadeurs indépendants pour
+      promouvoir et distribuer ses produits auprès d'une clientèle locale et régionale.
+    </p>
+    <p>
+      Dans ce cadre, la Marque propose au Vendeur/Ambassadeur de rejoindre son Programme de Partenariat
+      avec Commission, fondé sur l'utilisation d'un code promotionnel unique et la rémunération à la
+      performance sur les ventes générées.
+    </p>
+  </div>
+
+  <!-- ── ART. 1 : OBJET ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 1</span> Objet du Contrat</div>
+    <p>
+      Le présent contrat a pour objet de définir les conditions dans lesquelles le Vendeur/Ambassadeur
+      s'engage à promouvoir les produits AMABELLEPEAU auprès de sa clientèle, via un code promotionnel
+      unique lui étant attribué, en échange d'une commission sur chaque vente validée.
+    </p>
+  </div>
+
+  <!-- ── ART. 2 : CODE PROMO ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 2</span> Code Promotionnel &amp; Traçabilité</div>
+    <p>
+      À la signature du présent contrat, la Marque attribue au Vendeur/Ambassadeur un <strong>code
+      promotionnel unique et personnel</strong> (ci-après « Code Promo »), enregistré dans le système
+      de gestion AMABELLEPEAU.
+    </p>
+    <div class="highlight-box">
+      <strong>Code Promo attribué :</strong>
+      <span style="font-size:14pt; letter-spacing:3px; color:#1B4D1E; display:inline-block; margin-left:10px; border: 2px dashed #C9A84C; padding:4px 16px; border-radius:6px;">_______________</span>
+    </div>
+    <ul>
+      <li>Ce code est <strong>strictement personnel et non cessible</strong>. Il ne peut être utilisé que par le Vendeur/Ambassadeur signataire.</li>
+      <li>Chaque achat effectué sur la boutique en ligne avec ce code est automatiquement attribué au Vendeur/Ambassadeur dans notre système de suivi.</li>
+      <li>Le code offre une <strong>remise client de 5%</strong> sur la commande, ce qui incite les acheteurs à l'utiliser.</li>
+      <li>Le Vendeur/Ambassadeur peut partager ce code librement via ses réseaux sociaux, WhatsApp, TikTok, Instagram, bouche-à-oreille, etc.</li>
+    </ul>
+  </div>
+
+  <!-- ── ART. 3 : COMMISSION ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 3</span> Taux de Commission &amp; Calcul</div>
+    <div style="text-align:center; margin: 14px 0;">
+      <div class="commission-badge">15% de Commission</div>
+      <div style="font-size:9pt; color:#5C5C5C; margin-top:6px;">sur chaque vente validée attribuée au Code Promo</div>
+    </div>
+    <div class="highlight-box">
+      <strong>Exemple concret :</strong><br>
+      Commande client : <strong>10 000 XOF</strong><br>
+      Remise client (5%) : <em>−500 XOF</em><br>
+      Montant net facturé : <strong>9 500 XOF</strong><br>
+      Commission Vendeur (15%) : <strong style="color:#1B4D1E; font-size:12pt;">1 425 XOF</strong>
+    </div>
+    <ul>
+      <li>La commission est calculée sur le <strong>montant net de la commande</strong> (hors réduction appliquée par le code promo).</li>
+      <li>Seules les commandes <strong>livrées et entièrement payées</strong> donnent droit à commission. Les commandes annulées ou remboursées sont exclues.</li>
+      <li>Aucun plafond de commission n'est appliqué — plus vous vendez, plus vous gagnez.</li>
+    </ul>
+  </div>
+
+  <!-- ── ART. 4 : PAIEMENT ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 4</span> Modalités de Règlement</div>
+    <p>Les commissions dues sont réglées selon les conditions suivantes :</p>
+    <ul>
+      <li><strong>Fréquence :</strong> Règlement mensuel, au plus tard le <strong>5 du mois suivant</strong> la période de référence.</li>
+      <li><strong>Seuil minimum :</strong> Un minimum de <strong>2 000 XOF</strong> de commissions accumulées est requis pour déclencher le paiement. En dessous de ce seuil, les commissions sont reportées au mois suivant.</li>
+      <li><strong>Relevé mensuel :</strong> Un récapitulatif des ventes et commissions est communiqué au Vendeur/Ambassadeur par WhatsApp ou email avant chaque règlement.</li>
+    </ul>
+    <p><strong>Modes de paiement acceptés :</strong></p>
+    <div class="payment-methods">
+      <div class="payment-pill">📱 Wave CI</div>
+      <div class="payment-pill">🟠 Orange Money CI</div>
+      <div class="payment-pill">🏦 Virement bancaire (UEMOA)</div>
+    </div>
+    <p>
+      Le Vendeur/Ambassadeur communique ses coordonnées de paiement à la signature du contrat.
+      Toute modification doit être notifiée par écrit avec un préavis de 5 jours.
+    </p>
+  </div>
+
+  <!-- ── ART. 5 : OBLIGATIONS VENDEUR ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 5</span> Obligations du Vendeur / Ambassadeur</div>
+    <p>Le Vendeur/Ambassadeur s'engage à :</p>
+    <ul>
+      <li>Promouvoir les produits AMABELLEPEAU de manière <strong>authentique, honnête et respectueuse</strong> de la marque et de ses valeurs.</li>
+      <li>Ne pas faire de déclarations médicales ou thérapeutiques non fondées concernant les produits.</li>
+      <li>Ne pas <strong>revendre les produits achetés avec réduction à des prix artificiellement gonflés</strong>.</li>
+      <li>Utiliser les visuels et contenus officiels fournis par la Marque, ou obtenir son accord avant de créer du contenu de marque.</li>
+      <li>Tenir confidentiel le Code Promo attribué et ne pas le partager à une tierce personne à des fins de sous-commission non autorisée.</li>
+      <li>Signaler toute réclamation client à la Marque dans les meilleurs délais.</li>
+      <li>Ne pas représenter simultanément une marque concurrente directe sans en informer AMABELLEPEAU.</li>
+    </ul>
+  </div>
+
+  <!-- ── ART. 6 : OBLIGATIONS MARQUE ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 6</span> Obligations de la Marque</div>
+    <p>AMABELLEPEAU s'engage à :</p>
+    <ul>
+      <li>Régler les commissions dans les délais convenus à l'article 4.</li>
+      <li>Fournir au Vendeur/Ambassadeur un accès à ses statistiques de vente (commandes attribuées, montants, commissions dues) via tableau de bord partenaire ou rapport mensuel.</li>
+      <li>Mettre à disposition des ressources de promotion : photos produits, descriptions, visuels réseaux sociaux.</li>
+      <li>Assurer la qualité, la conformité et la livraison des produits commandés par les clients référés.</li>
+      <li>Informer le Vendeur/Ambassadeur de tout changement de tarif ou de catalogue avec un préavis raisonnable.</li>
+      <li>Répondre aux questions produits posées par le Vendeur/Ambassadeur dans un délai de 48h ouvrables.</li>
+    </ul>
+  </div>
+
+  <!-- ── ART. 7 : DURÉE ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 7</span> Durée &amp; Renouvellement</div>
+    <ul>
+      <li>Le présent contrat est conclu pour une durée initiale de <strong>12 (douze) mois</strong> à compter de la date de signature.</li>
+      <li>Il est <strong>reconduit tacitement</strong> par périodes successives de 12 mois, sauf résiliation par l'une des parties.</li>
+      <li>Chaque partie peut résilier le contrat en notifiant l'autre partie avec un <strong>préavis de 30 jours</strong> par message écrit (WhatsApp ou email).</li>
+      <li>En cas de faute grave (fraude, utilisation abusive du Code Promo, dénigrement de la Marque), la résiliation peut être immédiate, sans préavis ni indemnité.</li>
+    </ul>
+  </div>
+
+  <!-- ── ART. 8 : PROPRIÉTÉ INTELLECTUELLE ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 8</span> Propriété Intellectuelle</div>
+    <p>
+      La marque AMABELLEPEAU, son logo, ses visuels, ses formules et ses contenus sont la propriété exclusive
+      d'ETS Marie Andrea. Le Vendeur/Ambassadeur est autorisé à les utiliser uniquement dans le cadre de
+      la promotion des produits AMABELLEPEAU conformément aux présentes. Cette autorisation prend fin
+      automatiquement à la résiliation du contrat.
+    </p>
+  </div>
+
+  <!-- ── ART. 9 : CONFIDENTIALITÉ ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 9</span> Confidentialité</div>
+    <p>
+      Le Vendeur/Ambassadeur s'engage à traiter comme confidentielles toutes informations commerciales,
+      financières ou stratégiques communiquées par la Marque dans le cadre du présent contrat, et à ne
+      pas les divulguer à des tiers sans accord préalable écrit.
+    </p>
+  </div>
+
+  <!-- ── ART. 10 : LITIGES ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">Art. 10</span> Loi Applicable &amp; Règlement des Litiges</div>
+    <p>
+      Le présent contrat est soumis au droit ivoirien. En cas de différend relatif à son exécution ou
+      interprétation, les parties s'efforceront de régler le litige à l'amiable dans un délai de 30 jours.
+      À défaut, compétence exclusive est attribuée aux juridictions compétentes d'<strong>Abidjan,
+      Côte d'Ivoire</strong>.
+    </p>
+  </div>
+
+  <hr class="gold-rule">
+
+  <!-- ── SIGNATURES ── -->
+  <div class="section">
+    <div class="section-title"><span class="article-num">SIGNATURES</span></div>
+    <p style="margin-bottom:14px;">
+      En signant le présent document, les deux parties déclarent avoir lu, compris et accepté l'intégralité
+      des clauses ci-dessus. Fait en double exemplaire à Abidjan, le <strong>__________ / __________ / 2025</strong>.
+    </p>
+    <div class="signature-grid">
+      <div class="signature-block">
+        <div class="signature-label">Pour AMABELLEPEAU — ETS Marie Andrea</div>
+        <div class="signature-line"></div>
+        <div class="signature-info">
+          Nom &amp; Prénom : ________________________<br>
+          Qualité : Représentant(e) légal(e)<br>
+          Cachet de la marque :
+        </div>
+      </div>
+      <div class="signature-block">
+        <div class="signature-label">Le Vendeur / Ambassadeur</div>
+        <div class="signature-line"></div>
+        <div class="signature-info">
+          Nom &amp; Prénom : ________________________<br>
+          Téléphone : ________________________<br>
+          Mention manuscrite « Lu et approuvé »
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="doc-footer">
+    <div>
+      <div class="doc-footer-brand">AMABELLEPEAU</div>
+      <div>ETS Marie Andrea — Abidjan, Côte d'Ivoire</div>
+    </div>
+    <div style="text-align:right;">
+      <div>amabellepeau.vercel.app</div>
+      <div>Paiement Wave CI &amp; Orange Money</div>
+    </div>
+  </div>
+
+</div><!-- /document -->
+
+<script>
+  // Auto-generate reference number and date for new contracts
+  const ref = 'AMP-CA-' + Date.now().toString(36).toUpperCase().slice(-6);
+  document.getElementById('refNum').textContent = ref;
+  const now = new Date();
+  document.getElementById('docDate').textContent =
+    String(now.getDate()).padStart(2,'0') + ' / ' +
+    String(now.getMonth()+1).padStart(2,'0') + ' / ' +
+    now.getFullYear();
+</script>
+
+</body>
+</html>

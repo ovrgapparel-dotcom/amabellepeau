@@ -17,6 +17,8 @@
   <meta property="og:title" id="ogTitle" content="Détails du Produit — AMABELLEPEAU"/>
   <meta property="og:description" id="ogDesc" content="Cosmétique artisanal 100% naturel confectionné en Côte d'Ivoire."/>
   <meta property="og:image" id="ogImage" content="https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png"/>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
   <meta property="og:image:secure_url" id="ogImageSecure" content="https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png"/>
   <meta property="og:locale" content="fr_CI"/>
 
@@ -216,14 +218,16 @@
     .breadcrumb {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       overflow-x: auto;
       white-space: nowrap;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
-      font-size: 12px;
-      margin-bottom: 12px;
-      padding: 4px 0;
+      font-size: 11px;
+      margin-bottom: 10px;
+      padding: 6px 0;
+      width: 100%;
+      max-width: 100%;
     }
     .breadcrumb::-webkit-scrollbar { display: none; }
     .breadcrumb a { color: var(--color-text-muted); text-decoration: none; }

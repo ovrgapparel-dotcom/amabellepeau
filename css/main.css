@@ -1211,11 +1211,29 @@ h6 { font-size: var(--text-base); }
   }
 
 
-  .product-card-image { width: 100% !important; height: 160px !important; }
+  .product-card-image {
+    width: 100% !important;
+    height: 150px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+  }
+  .product-card-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    display: block !important;
+  }
   /* 2-column layout preserved on mobile screens */
   .grid-2, .grid-3, .grid-4 { 
     grid-template-columns: repeat(2, 1fr) !important; 
-    gap: 10px !important; 
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .container { padding: 0 14px; }

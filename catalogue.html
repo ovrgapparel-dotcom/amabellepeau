@@ -19,8 +19,8 @@
   <meta property="og:image" content="https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png">
   <meta property="og:image:secure_url" content="https://amabellepeau.vercel.app/assets/images/og-share-amabellepeau.png">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="1024">
-  <meta property="og:image:height" content="381">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:locale" content="fr_CI">
 
   <!-- Twitter / X Cards -->
@@ -1555,10 +1555,21 @@
       }
       .product-card-visual {
         width: 100% !important;
-        height: 160px !important;
+        height: 150px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        overflow: hidden !important;
+        position: relative !important;
+        aspect-ratio: unset !important;
+      }
+      .product-card-visual img, .product-card-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center center !important;
+        display: block !important;
+        margin: 0 !important;
       }
       .product-card-body {
         padding: 10px 8px !important;
