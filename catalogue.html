@@ -829,6 +829,25 @@
     }
 
     /* Artistic CSS Gradient Image Box */
+    
+    /* Enforce centered and full-width product imagery */
+    .product-card-visual {
+      width: 100% !important;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #FAF7F2;
+    }
+    .product-card-visual img, .product-card-img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      object-position: center center !important;
+      display: block !important;
+    }
+
     .product-card-visual {
       position: relative;
       aspect-ratio: 1;
@@ -1535,7 +1554,11 @@
         border-radius: 12px !important;
       }
       .product-card-visual {
+        width: 100% !important;
         height: 160px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
       .product-card-body {
         padding: 10px 8px !important;

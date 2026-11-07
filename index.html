@@ -762,6 +762,39 @@
     }
 
     /* ── Featured Products Section ── */
+
+    /* Enforce 100% width and centered images across desktop and mobile */
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background: #FFFFFF;
+      border-radius: var(--radius-lg, 16px);
+      overflow: hidden;
+      border: 1px solid var(--color-border, #E8E2D8);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card-image {
+      width: 100% !important;
+      height: 220px !important;
+      position: relative;
+      overflow: hidden;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #FAF7F2 !important;
+      margin: 0 auto;
+    }
+    .product-card-image img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      object-position: center center !important;
+      display: block !important;
+      margin: 0 auto;
+    }
+
     .products-section {
       padding: var(--space-20) 0;
       background: var(--color-surface-alt);
@@ -1623,7 +1656,11 @@
         flex-shrink: 1 !important;
       }
       .product-card-image {
-        height: 155px !important;
+        width: 100% !important;
+        height: 160px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
       .product-card-body {
         padding: 10px 8px !important;
@@ -2692,7 +2729,7 @@
       const prods = ProductStore.getAll();
       grid.innerHTML = prods.map(p => `
         <div class="product-card" data-id="${p.id}" data-title="${p.name}" data-price="${p.price}" style="cursor:pointer;" onclick="window.location.href='produit.html?id=${p.id}&title=${encodeURIComponent(p.name)}&price=${p.price}'">
-          <div class="product-card-image" style="height:220px;overflow:hidden;position:relative;background:#f5f0e8;">
+          <div class="product-card-image" style="width:100%;height:220px;overflow:hidden;position:relative;background:#f5f0e8;display:flex;align-items:center;justify-content:center;">
             <span class="product-card-badge ${p.badgeClass || 'badge-bestseller'}">${p.badge || 'Naturel'}</span>
             <div class="product-card-actions">
               <button class="product-card-action-btn btn-wishlist-action" title="Ajouter aux favoris" onclick="event.stopPropagation(); toggleWishlist('${p.name}', this)">🤍</button>
@@ -2700,7 +2737,7 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
               </button>
             </div>
-            <img src="${p.image}" onerror="this.src='${p.fallbackImage}'" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;">
+            <img src="${p.image}" onerror="this.src='${p.fallbackImage}'" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;transition:transform 0.4s ease;">
           </div>
           <div class="product-card-body">
             <div class="product-card-merchant" style="font-size:11px;color:var(--color-gold);font-weight:700;text-transform:uppercase;">${p.brand} · ${p.merchant}</div>
