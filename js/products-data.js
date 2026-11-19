@@ -1332,17 +1332,33 @@ const DEFAULT_PRODUCTS = [
 
 // Product Store with LocalStorage Persistence
 const ProductStore = {
-  STORAGE_VERSION: 'v5.2',
+  STORAGE_VERSION: 'v5.3',
   STORAGE_KEY: 'abp_products_catalog_v5',
+  DELETED_KEY: 'abp_deleted_products_v1',
+
+  getDeletedIds: function() {
+    try {
+      const stored = localStorage.getItem(this.DELETED_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed.map(String);
+      }
+    } catch(e) {}
+    return [];
+  },
 
   getAll: function() {
     try {
+      const deletedIds = this.getDeletedIds();
       const stored = localStorage.getItem(this.STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge default products with stored customizations (preserve user uploads, prices, custom images, gallery)
-          const merged = DEFAULT_PRODUCTS.map(defP => {
+          // Merge default products (excluding any deleted ones) with stored customizations
+          const activeDefaults = DEFAULT_PRODUCTS.filter(defP => 
+            !deletedIds.includes(String(defP.id))
+          );
+          const merged = activeDefaults.map(defP => {
             const saved = parsed.find(s => s.id === defP.id || String(s.id) === String(defP.id));
             if (!saved) return defP;
             return {
@@ -1353,8 +1369,11 @@ const ProductStore = {
             };
           });
 
-          // Also keep any newly created user products not present in DEFAULT_PRODUCTS
-          const customUserProducts = parsed.filter(p => !DEFAULT_PRODUCTS.some(d => d.id === p.id || String(d.id) === String(p.id)));
+          // Also keep any newly created user products not present in DEFAULT_PRODUCTS and not deleted
+          const customUserProducts = parsed.filter(p => 
+            !deletedIds.includes(String(p.id)) &&
+            !DEFAULT_PRODUCTS.some(d => d.id === p.id || String(d.id) === String(p.id))
+          );
           const finalList = [...merged, ...customUserProducts];
 
           // Re-hydrate images & gallery from IndexedDB cache
@@ -1393,11 +1412,13 @@ const ProductStore = {
     } catch(e) {
       console.warn('Could not read product storage, using defaults', e);
     }
-    this.save(DEFAULT_PRODUCTS);
+    const deletedIds = this.getDeletedIds();
+    const activeDefaults = DEFAULT_PRODUCTS.filter(defP => !deletedIds.includes(String(defP.id)));
+    this.save(activeDefaults);
     try {
       localStorage.setItem('abp_catalog_version', this.STORAGE_VERSION);
     } catch(e) {}
-    return DEFAULT_PRODUCTS;
+    return activeDefaults;
   },
 
   getFeatured: function() {
@@ -1484,10 +1505,16 @@ const ProductStore = {
   },
 
   add: function(product) {
-    const products = this.getAll();
     if (!product.id) {
       product.id = 'prod-' + Date.now();
     }
+    // If this ID was previously deleted, un-delete it
+    try {
+      const deleted = this.getDeletedIds().filter(d => d !== String(product.id));
+      localStorage.setItem(this.DELETED_KEY, JSON.stringify(deleted));
+    } catch(e) {}
+
+    const products = this.getAll();
     if (product.image && product.image.startsWith('data:') && typeof ABPStorage !== 'undefined') {
       ABPStorage.setImage('prod_img_' + product.id, product.image);
     }
@@ -1525,8 +1552,20 @@ const ProductStore = {
   },
 
   remove: function(id) {
+    const strId = String(id);
+    // Track deleted product ID persistently so default products can also be deleted
+    try {
+      const deleted = this.getDeletedIds();
+      if (!deleted.includes(strId)) {
+        deleted.push(strId);
+        localStorage.setItem(this.DELETED_KEY, JSON.stringify(deleted));
+      }
+    } catch(e) {
+      console.warn('Could not persist deleted product ID', e);
+    }
+
     let products = this.getAll();
-    products = products.filter(p => p.id !== id && String(p.id) !== String(id));
+    products = products.filter(p => p.id !== id && String(p.id) !== strId);
     this.save(products);
     return products;
   },
@@ -1549,6 +1588,9 @@ const ProductStore = {
   },
 
   resetDefaults: function() {
+    try {
+      localStorage.removeItem(this.DELETED_KEY);
+    } catch(e) {}
     this.save(DEFAULT_PRODUCTS);
     return DEFAULT_PRODUCTS;
   }
