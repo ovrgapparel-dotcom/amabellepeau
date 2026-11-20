@@ -70,6 +70,7 @@
 
     @media(max-width:768px) { .sidebar { display:none; } .influencer-grid { grid-template-columns: 1fr; } .form-grid-2 { grid-template-columns: 1fr; } }
   </style>
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
@@ -350,21 +351,49 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-  // ── Mock Data (replace with Supabase calls) ──
-  let influencers = [
+  // ── Offline-First Persistent Storage ──
+  const INF_STORAGE_KEY = 'abp_admin_influencers_v2';
+  const SALES_STORAGE_KEY = 'abp_admin_influencer_sales_v2';
+
+  const DEFAULT_INFS = [
     { id:'inf-1', name:'Aminata Koné',    phone:'+225 07 12 34 56 78', social_handle:'@aminata_beauty', platform:'instagram', promo_code:'AMINA15',  commission_rate_bps:1500, discount_bps:500,  status:'active',   total_sales_xof:485000, total_commission_xof:72750, total_paid_xof:50000, notes:'Influenceuse beauté top Abidjan' },
     { id:'inf-2', name:'Fatoumata Bah',   phone:'+225 05 98 76 54 32', social_handle:'@fati_glow',     platform:'tiktok',    promo_code:'FATIGLOW',  commission_rate_bps:1000, discount_bps:1000, status:'active',   total_sales_xof:312000, total_commission_xof:31200, total_paid_xof:20000, notes:'TikTokeuse, très bonne audience' },
     { id:'inf-3', name:'Mariame Coulibaly',phone:'+225 01 23 45 67 89', social_handle:'@mariame_ci',    platform:'facebook',  promo_code:'MARIAME10', commission_rate_bps:1000, discount_bps:0,    status:'active',   total_sales_xof:198000, total_commission_xof:19800, total_paid_xof:19800, notes:'' },
     { id:'inf-4', name:'Adja Traoré',     phone:'+225 07 55 44 33 22', social_handle:'@adja_natura',   platform:'whatsapp',  promo_code:'ADJA20',    commission_rate_bps:2000, discount_bps:500,  status:'inactive', total_sales_xof:45000,  total_commission_xof:9000,  total_paid_xof:9000,  notes:'Pause temporaire' },
   ];
 
-  let salesHistory = [
+  const DEFAULT_SALES = [
     { date:'2026-10-25', code:'AMINA15',  influencer:'Aminata Koné',     buyer_name:'Soro Awa',        buyer_phone:'+225 07 11 22 33 44', order:'ABP-X1Y2Z3', order_total_xof:18500, discount_xof:925,  commission_xof:2636 },
     { date:'2026-10-24', code:'FATIGLOW', influencer:'Fatoumata Bah',    buyer_name:'Touré Khadija',   buyer_phone:'+225 05 88 77 66 55', order:'ABP-A1B2C3', order_total_xof:12000, discount_xof:1200, commission_xof:1080 },
     { date:'2026-10-23', code:'AMINA15',  influencer:'Aminata Koné',     buyer_name:'Coulibaly Mariam',buyer_phone:'+225 01 23 45 67 89', order:'ABP-D4E5F6', order_total_xof:35000, discount_xof:1750, commission_xof:4988 },
     { date:'2026-10-22', code:'MARIAME10',influencer:'Mariame Coulibaly',buyer_name:'Diallo Assitan',  buyer_phone:'+225 07 99 88 77 66', order:'ABP-G7H8I9', order_total_xof:8500,  discount_xof:0,    commission_xof:850  },
     { date:'2026-10-21', code:'FATIGLOW', influencer:'Fatoumata Bah',    buyer_name:'Bamba Rokiatou',  buyer_phone:'+225 05 55 44 33 22', order:'ABP-J1K2L3', order_total_xof:22000, discount_xof:2200, commission_xof:1980 },
   ];
+
+  let influencers = (() => {
+    try {
+      const stored = localStorage.getItem(INF_STORAGE_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch(e){}
+    return DEFAULT_INFS;
+  })();
+
+  let salesHistory = (() => {
+    try {
+      const stored = localStorage.getItem(SALES_STORAGE_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch(e){}
+    return DEFAULT_SALES;
+  })();
+
+  function persistData() {
+    try {
+      localStorage.setItem(INF_STORAGE_KEY, JSON.stringify(influencers));
+      localStorage.setItem(SALES_STORAGE_KEY, JSON.stringify(salesHistory));
+    } catch(e) {
+      console.warn('Could not persist to localStorage', e);
+    }
+  }
 
   let currentFilter = 'all';
   let editingId = null;
@@ -463,6 +492,7 @@
             <div style="display:flex;gap:var(--space-2);">
               <button class="btn btn-ghost btn-sm" onclick="openDetail('${inf.id}')" title="Détail">👁</button>
               <button class="btn btn-ghost btn-sm" onclick="openEditModal('${inf.id}')" title="Modifier">✏️</button>
+              <button class="btn btn-ghost btn-sm" onclick="deleteInfluencer('${inf.id}')" title="Supprimer" style="color:var(--color-error);">🗑️</button>
               ${balance > 0 ? `<button class="btn btn-primary btn-sm" onclick="openPayoutModal('${inf.id}')">💸 Payer</button>` : ''}
             </div>
           </div>
@@ -527,6 +557,16 @@
     document.getElementById('infNotes').value               = inf.notes || '';
     updatePreview();
     document.getElementById('influencerModal').classList.add('active');
+  }
+
+  function deleteInfluencer(id) {
+    if (confirm('Voulez-vous vraiment supprimer cet influenceur ?')) {
+      influencers = influencers.filter(i => i.id !== id);
+      persistData();
+      renderGrid();
+      updateSummary();
+      showToast('Influenceur supprimé.');
+    }
   }
 
   function closeModal() { document.getElementById('influencerModal').classList.remove('active'); }
@@ -594,6 +634,7 @@
       showToast('Influenceur créé avec succès !');
     }
 
+    persistData();
     closeModal();
     renderGrid();
     updateSummary();
@@ -629,6 +670,7 @@
       showToast(`💸 Paiement de ${formatXOF(amount)} enregistré pour ${inf.name}`);
     }
 
+    persistData();
     closePayoutModal();
     renderGrid();
     updateSummary();
@@ -719,5 +761,15 @@
     });
   });
 </script>
+  <!-- Offline Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('ABP Service Worker registered:', reg.scope))
+          .catch(err => console.warn('ABP Service Worker registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>

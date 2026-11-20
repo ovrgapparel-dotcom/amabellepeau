@@ -1756,6 +1756,7 @@
     }
   </style>
   <link rel="stylesheet" href="css/social-share.css">
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
@@ -3133,6 +3134,16 @@
     window.addEventListener('abp_products_updated', () => {
       renderStorefrontProducts();
     });
+  </script>
+  <!-- Offline Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('ABP Service Worker registered:', reg.scope))
+          .catch(err => console.warn('ABP Service Worker registration failed:', err));
+      });
+    }
   </script>
 </body>
 </html>

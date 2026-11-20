@@ -204,6 +204,7 @@
       .back-link { justify-content: center; }
     }
   </style>
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
@@ -539,5 +540,15 @@
 </script>
   <!-- Commission Agreement Float Button -->
   <a href="commission-agreement.html" target="_blank" title="Contrat Ambassadeur" style="position:fixed;bottom:80px;right:16px;background:#C9A84C;color:#0D1A0D;border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:900;" class="no-print">📄</a>
+  <!-- Offline Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('ABP Service Worker registered:', reg.scope))
+          .catch(err => console.warn('ABP Service Worker registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>

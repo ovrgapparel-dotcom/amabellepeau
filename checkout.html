@@ -761,6 +761,7 @@
       }
     }
   </style>
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
@@ -2009,5 +2010,15 @@
     });
   </script>
 
+  <!-- Offline Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('ABP Service Worker registered:', reg.scope))
+          .catch(err => console.warn('ABP Service Worker registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>
