@@ -1336,6 +1336,160 @@ const ProductStore = {
   STORAGE_KEY: 'abp_products_catalog_v5',
   DELETED_KEY: 'abp_deleted_products_v1',
 
+  // ── Cloud Synchronization (Supabase) ──
+  SUPABASE_URL: 'https://uwtbmntwujtcybusxsen.supabase.co',
+  SUPABASE_ANON: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3dGJtbnR3dWp0Y3lidXN4c2VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwMzI3MjIsImV4cCI6MjEwODYwODcyMn0.3WaCiwJKpSk1QE4dYnBGxZemqJktsSmzQwICPaV5xao',
+  TABLE_NAME: 'app_catalog',
+  _syncInProgress: false,
+
+  // Fetch latest products from Supabase and hydrate local storage
+  syncFromCloud: async function() {
+    if (this._syncInProgress || typeof fetch === 'undefined') return;
+    this._syncInProgress = true;
+    try {
+      const url = `${this.SUPABASE_URL}/rest/v1/${this.TABLE_NAME}?select=*`;
+      const res = await fetch(url, {
+        headers: {
+          'apikey': this.SUPABASE_ANON,
+          'Authorization': `Bearer ${this.SUPABASE_ANON}`
+        }
+      });
+      if (!res.ok) {
+        this._syncInProgress = false;
+        return;
+      }
+      const records = await res.json();
+      if (!Array.isArray(records) || records.length === 0) {
+        this._syncInProgress = false;
+        return;
+      }
+
+      // Handle deleted records list from cloud
+      const delRecord = records.find(r => r.id === '_deleted_products');
+      if (delRecord && Array.isArray(delRecord.data)) {
+        const localDeleted = this.getDeletedIds();
+        const combinedDeleted = Array.from(new Set([...localDeleted, ...delRecord.data.map(String)]));
+        try {
+          localStorage.setItem(this.DELETED_KEY, JSON.stringify(combinedDeleted));
+        } catch(e) {}
+      }
+
+      // Extract products from cloud
+      const cloudProducts = records.filter(r => r.id !== '_deleted_products' && r.data).map(r => r.data);
+      if (cloudProducts.length > 0) {
+        // Update local storage
+        this.save(cloudProducts, true);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('abp_products_updated', { detail: cloudProducts }));
+          window.dispatchEvent(new CustomEvent('abp_cloud_sync_success', { detail: { count: cloudProducts.length } }));
+        }
+        console.log(`[CloudSync] Synchronisé avec succès: ${cloudProducts.length} produits reçus du Cloud.`);
+      }
+    } catch(err) {
+      console.warn('[CloudSync] Erreur lors de la synchronisation:', err);
+    } finally {
+      this._syncInProgress = false;
+    }
+  },
+
+  // Save/upsert a single product to Supabase cloud
+  syncToCloud: async function(product) {
+    if (!product || !product.id || typeof fetch === 'undefined') return;
+    try {
+      const url = `${this.SUPABASE_URL}/rest/v1/${this.TABLE_NAME}`;
+      const payload = {
+        id: String(product.id),
+        data: product,
+        updated_at: new Date().toISOString()
+      };
+      await fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': this.SUPABASE_ANON,
+          'Authorization': `Bearer ${this.SUPABASE_ANON}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch(err) {
+      console.warn('[CloudSync] Impossible de sauvegarder le produit dans le Cloud:', product.id, err);
+    }
+  },
+
+  // Delete a product from Supabase cloud
+  deleteFromCloud: async function(id) {
+    if (!id || typeof fetch === 'undefined') return;
+    try {
+      const url = `${this.SUPABASE_URL}/rest/v1/${this.TABLE_NAME}?id=eq.${encodeURIComponent(String(id))}`;
+      await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'apikey': this.SUPABASE_ANON,
+          'Authorization': `Bearer ${this.SUPABASE_ANON}`
+        }
+      });
+
+      const deletedIds = this.getDeletedIds();
+      const delUrl = `${this.SUPABASE_URL}/rest/v1/${this.TABLE_NAME}`;
+      await fetch(delUrl, {
+        method: 'POST',
+        headers: {
+          'apikey': this.SUPABASE_ANON,
+          'Authorization': `Bearer ${this.SUPABASE_ANON}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
+          id: '_deleted_products',
+          data: deletedIds,
+          updated_at: new Date().toISOString()
+        })
+      });
+    } catch(err) {
+      console.warn('[CloudSync] Impossible de supprimer le produit du Cloud:', id, err);
+    }
+  },
+
+  // Push all local products to Supabase cloud
+  pushAllToCloud: async function() {
+    const products = this.getAll();
+    if (!Array.isArray(products) || typeof fetch === 'undefined') return { success: false, error: 'Aucun produit' };
+    try {
+      const rows = products.map(p => ({
+        id: String(p.id),
+        data: p,
+        updated_at: new Date().toISOString()
+      }));
+
+      const deletedIds = this.getDeletedIds();
+      rows.push({
+        id: '_deleted_products',
+        data: deletedIds,
+        updated_at: new Date().toISOString()
+      });
+
+      const url = `${this.SUPABASE_URL}/rest/v1/${this.TABLE_NAME}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': this.SUPABASE_ANON,
+          'Authorization': `Bearer ${this.SUPABASE_ANON}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify(rows)
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        return { success: false, error: text, status: res.status };
+      }
+      return { success: true, count: products.length };
+    } catch(err) {
+      return { success: false, error: err.message };
+    }
+  },
+
   getDeletedIds: function() {
     try {
       const stored = localStorage.getItem(this.DELETED_KEY);
@@ -1527,6 +1681,7 @@ const ProductStore = {
     }
     products.unshift(product);
     this.save(products);
+    this.syncToCloud(product);
     return product;
   },
 
@@ -1546,6 +1701,7 @@ const ProductStore = {
       }
       products[idx] = { ...products[idx], ...data };
       this.save(products);
+      this.syncToCloud(products[idx]);
       return products[idx];
     }
     return null;
@@ -1567,6 +1723,7 @@ const ProductStore = {
     let products = this.getAll();
     products = products.filter(p => p.id !== id && String(p.id) !== strId);
     this.save(products);
+    this.deleteFromCloud(id);
     return products;
   },
 
@@ -1592,6 +1749,7 @@ const ProductStore = {
       localStorage.removeItem(this.DELETED_KEY);
     } catch(e) {}
     this.save(DEFAULT_PRODUCTS);
+    this.pushAllToCloud();
     return DEFAULT_PRODUCTS;
   }
 };
@@ -1600,4 +1758,13 @@ const ProductStore = {
 if (typeof window !== 'undefined') {
   window.ProductStore = ProductStore;
   window.DEFAULT_PRODUCTS = DEFAULT_PRODUCTS;
+
+  // Background Cloud Sync on page load (runs on all browsers)
+  try {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => ProductStore.syncFromCloud(), { timeout: 2000 });
+    } else {
+      setTimeout(() => ProductStore.syncFromCloud(), 500);
+    }
+  } catch(e) {}
 }

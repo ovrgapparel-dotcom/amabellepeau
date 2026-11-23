@@ -809,10 +809,19 @@
             <h1>Catalogue & Maintenance Produits</h1>
             <p>Gérez les stocks, prix, compositions et visuels officiels (ETS Marie Andrea, AMABELLEBARBE, AMAFLEURDEPEAU).</p>
           </div>
-          <div style="display:flex;gap:var(--space-2);">
+          <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" id="btnSyncCloud" onclick="triggerManualCloudSync()" title="Recevoir les derniers produits depuis Supabase">☁️ Récupérer du Cloud</button>
             <button class="btn btn-outline btn-sm" onclick="resetProductDefaults()">🔄 Réinitialiser Données Initiales</button>
             <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">+ Ajouter un Produit</button>
           </div>
+        </div>
+
+        <div id="cloudSyncBanner" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-md);padding:10px 16px;margin-bottom:var(--space-4);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#166534;">
+            <span id="cloudSyncStatusDot" style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;"></span>
+            <span id="cloudSyncStatusText"><strong>Synchronisation Cloud automatique active</strong> : Vos modifications sont partagées avec tous les appareils via Supabase.</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="triggerPushAllToCloud()" style="font-size:12px;color:#166534;border:1px solid #86efac;background:#fff;white-space:nowrap;padding:4px 10px;">🚀 Envoyer tout le catalogue au Cloud</button>
         </div>
 
         <div class="admin-card">
@@ -2119,6 +2128,43 @@
         renderOverview();
       }
     }
+
+    async function triggerManualCloudSync() {
+      const btn = document.getElementById('btnSyncCloud');
+      if (btn) btn.innerHTML = '⏳ Synchro...';
+      showAdminToast('Connexion à Supabase Cloud en cours...');
+      try {
+        await ProductStore.syncFromCloud();
+        renderAdminProducts();
+        renderOverview();
+        showAdminToast('✓ Synchronisation Cloud réussie !');
+      } catch(e) {
+        showAdminToast('Erreur de synchronisation Cloud: ' + e.message, false);
+      } finally {
+        if (btn) btn.innerHTML = '☁️ Récupérer du Cloud';
+      }
+    }
+
+    async function triggerPushAllToCloud() {
+      if (!confirm('Envoyer l\'intégralité du catalogue actuel vers Supabase pour que tous les appareils et navigateurs soient synchronisés ?')) return;
+      showAdminToast('Envoi du catalogue vers Supabase en cours...');
+      const res = await ProductStore.pushAllToCloud();
+      if (res && res.success) {
+        showAdminToast(`✓ ${res.count} produits synchronisés avec succès sur le Cloud !`);
+      } else {
+        const errMsg = (res && res.error) ? res.error : 'Table app_catalog manquante ou permission RLS';
+        showAdminToast('⚠️ ' + errMsg, false);
+      }
+    }
+
+    window.addEventListener('abp_cloud_sync_success', (e) => {
+      const dot = document.getElementById('cloudSyncStatusDot');
+      const text = document.getElementById('cloudSyncStatusText');
+      if (dot) dot.style.background = '#22c55e';
+      if (text && e.detail && e.detail.count) {
+        text.innerHTML = `<strong>Cloud Supabase synchronisé</strong> (${e.detail.count} produits à jour sur tous les navigateurs).`;
+      }
+    });
 
     function resetProductDefaults() {
       if (confirm('Réinitialiser le catalogue avec les 15 produits officiels ETS Marie Andrea & AMABELLEBARBE ?')) {
