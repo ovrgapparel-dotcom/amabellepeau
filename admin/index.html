@@ -526,11 +526,17 @@
       padding: 16px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease-in-out;
+      user-select: none;
     }
     .upload-box:hover {
       border-color: var(--color-gold);
       background: rgba(201, 168, 76, 0.08);
+    }
+    .upload-box.dragover {
+      border-color: var(--color-green) !important;
+      background: rgba(39, 174, 96, 0.15) !important;
+      transform: scale(1.01);
     }
     .upload-preview-wrap {
       display: flex;
@@ -1279,7 +1285,7 @@
                     <div class="form-group">
             <label class="form-label">Photo du Produit * (Téléversement ou Sélection)</label>
             <div class="upload-box" onclick="document.getElementById('prodUploadInput').click()">
-              <input type="file" id="prodUploadInput" accept="image/*" style="display:none;" onchange="handleProductImageUpload(this)">
+              <input type="file" id="prodUploadInput" accept="image/*" style="display:none;" onclick="event.stopPropagation()" onchange="handleProductImageUpload(this)">
               <div style="font-size:24px;margin-bottom:4px;">📷</div>
               <div style="font-size:12px;font-weight:700;color:var(--color-green);">Téléverser une photo (depuis l'appareil ou la caméra)</div>
               <div style="font-size:11px;color:var(--color-text-muted);">Cliquez pour parcourir vos fichiers (PNG, JPG, WEBP)</div>
@@ -1389,7 +1395,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                 <label class="form-label" style="margin:0;font-size:13px;font-weight:700;color:var(--color-text-main);">📸 Galerie Photos Multiples (Vues secondaires du soin)</label>
                 <button type="button" class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 10px;" onclick="document.getElementById('prodGalleryInput').click()">+ Ajouter des photos</button>
-                <input type="file" id="prodGalleryInput" accept="image/*" multiple style="display:none;" onchange="handleProductGalleryUpload(this)">
+                <input type="file" id="prodGalleryInput" accept="image/*" multiple style="display:none;" onclick="event.stopPropagation()" onchange="handleProductGalleryUpload(this)">
               </div>
               <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:10px;">
                 Ajoutez des visuels complémentaires (texture, ingrédients, dos du flacon, rituel d'application) pour enrichir la fiche produit.
@@ -1450,7 +1456,7 @@
             <div class="form-group">
               <label class="form-label">Logo de la Boutique (Icône carrée/ronde)</label>
               <div class="upload-box" onclick="document.getElementById('merchLogoInput').click()">
-                <input type="file" id="merchLogoInput" accept="image/*" style="display:none;" onchange="handleMerchantLogoUpload(this)">
+                <input type="file" id="merchLogoInput" accept="image/*" style="display:none;" onclick="event.stopPropagation()" onchange="handleMerchantLogoUpload(this)">
                 <div style="font-size:20px;">🏢</div>
                 <div style="font-size:11px;font-weight:700;color:var(--color-green);">Téléverser le Logo</div>
               </div>
@@ -1462,7 +1468,7 @@
             <div class="form-group">
               <label class="form-label">Bannière de Couverture (Hero Page)</label>
               <div class="upload-box" onclick="document.getElementById('merchBannerInput').click()">
-                <input type="file" id="merchBannerInput" accept="image/*" style="display:none;" onchange="handleMerchantBannerUpload(this)">
+                <input type="file" id="merchBannerInput" accept="image/*" style="display:none;" onclick="event.stopPropagation()" onchange="handleMerchantBannerUpload(this)">
                 <div style="font-size:20px;">🖼️</div>
                 <div style="font-size:11px;font-weight:700;color:var(--color-green);">Téléverser la Bannière</div>
               </div>
@@ -1606,7 +1612,7 @@
           <div class="form-group" id="promoImageSection">
             <label class="form-label">Image de la Bannière / Affiche Vidéo *</label>
             <div class="upload-box" onclick="document.getElementById('promoMediaUpload').click()">
-              <input type="file" id="promoMediaUpload" accept="image/*" style="display:none;" onchange="handlePromoMediaUpload(this)">
+              <input type="file" id="promoMediaUpload" accept="image/*" style="display:none;" onclick="event.stopPropagation()" onchange="handlePromoMediaUpload(this)">
               <div style="font-size:22px;">🖼️</div>
               <div style="font-size:12px;font-weight:700;color:var(--color-green);">Téléverser l'image (PNG, JPG, WEBP)</div>
             </div>
@@ -1620,7 +1626,7 @@
           <div class="form-group" id="promoVideoSection" style="display:none;">
             <label class="form-label">Fichier Vidéo (MP4, WEBM) ou Lien Vidéo Direct</label>
             <div class="upload-box" onclick="document.getElementById('promoVideoUpload').click()">
-              <input type="file" id="promoVideoUpload" accept="video/mp4,video/webm" style="display:none;" onchange="handlePromoVideoUpload(this)">
+              <input type="file" id="promoVideoUpload" accept="video/mp4,video/webm" style="display:none;" onclick="event.stopPropagation()" onchange="handlePromoVideoUpload(this)">
               <div style="font-size:22px;">🎬</div>
               <div style="font-size:12px;font-weight:700;color:var(--color-green);">Téléverser un court spot vidéo (max 20MB)</div>
             </div>
@@ -1748,19 +1754,23 @@
     // Helper: Safely format image URL in admin (handles base64, http, and relative ../ paths)
     function getAdminImgSrc(src) {
       if (!src) return '../assets/icons/brand-logo.png';
+      if (typeof src !== 'string') return '../assets/icons/brand-logo.png';
 
-      // 1. Check for data:image anywhere in string (cleans accidental leading slash or ../)
-      if (typeof src === 'string' && src.includes('data:image')) {
-        const idx = src.indexOf('data:image');
+      // 1. Check for data:image or data:video anywhere in string
+      if (src.includes('data:image') || src.includes('data:video')) {
+        const idx = Math.max(src.indexOf('data:image'), src.indexOf('data:video'));
         return src.substring(idx);
       }
 
       // 2. Resolve idb: key from ABPStorage
-      if (typeof src === 'string' && src.startsWith('idb:')) {
+      if (src.startsWith('idb:')) {
+        const key = src.replace('idb:', '');
         if (typeof ABPStorage !== 'undefined') {
-          const cached = ABPStorage.getImage(src.replace('idb:', ''));
+          const cached = ABPStorage.getImage(key);
           if (cached) return cached;
         }
+        // Fallback for promotional banners or products
+        if (key.includes('promo')) return '../assets/images/products/ets-marie-andrea-catalogue.jpg';
         return '../assets/icons/brand-logo.png';
       }
 
@@ -1965,8 +1975,8 @@
     // ── Product Picture Upload State & Handlers ──
     let uploadedProductImageBase64 = null;
 
-    async function handleProductImageUpload(input) {
-      const file = input.files[0];
+    async function handleProductImageUpload(inputOrFile) {
+      const file = (inputOrFile && inputOrFile.files) ? inputOrFile.files[0] : inputOrFile;
       if (!file) return;
 
       const previewWrap = document.getElementById('prodImagePreviewWrap');
@@ -1984,6 +1994,7 @@
         previewImg.src = compressed;
         fileNameEl.textContent = `${file.name} (Prête & optimisée)`;
         showAdminToast('Photo personnalisée chargée & optimisée ✓');
+        if (inputOrFile && inputOrFile.value !== undefined) inputOrFile.value = '';
       } catch(err) {
         console.error('Image compression error', err);
         const reader = new FileReader();
@@ -2318,8 +2329,8 @@
     let uploadedMerchantLogoBase64 = null;
     let uploadedMerchantBannerBase64 = null;
 
-    async function handleMerchantLogoUpload(input) {
-      const file = input.files[0];
+    async function handleMerchantLogoUpload(inputOrFile) {
+      const file = (inputOrFile && inputOrFile.files) ? inputOrFile.files[0] : inputOrFile;
       if (!file) return;
       try {
         const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
@@ -2349,8 +2360,8 @@
       if (wrap) wrap.style.display = 'none';
     }
 
-    async function handleMerchantBannerUpload(input) {
-      const file = input.files[0];
+    async function handleMerchantBannerUpload(inputOrFile) {
+      const file = (inputOrFile && inputOrFile.files) ? inputOrFile.files[0] : inputOrFile;
       if (!file) return;
       try {
         const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
@@ -2590,7 +2601,78 @@
       renderAdminOrders();
     }
 
+    // ── Universal Drag & Drop Dropzones Initializer ──
+    function setupUploadDropzones() {
+      const mappings = [
+        { box: document.querySelector('#promoImageSection .upload-box'), handler: handlePromoMediaUpload },
+        { box: document.querySelector('#promoVideoSection .upload-box'), handler: handlePromoVideoUpload },
+        { box: document.querySelector('#view-products .upload-box'), handler: handleProductImageUpload },
+        { box: document.querySelector('#merchLogoPreviewWrap')?.previousElementSibling, handler: handleMerchantLogoUpload },
+        { box: document.querySelector('#merchBannerPreviewWrap')?.previousElementSibling, handler: handleMerchantBannerUpload }
+      ];
+
+      document.querySelectorAll('.upload-box').forEach(box => {
+        ['dragenter', 'dragover'].forEach(eventName => {
+          box.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            box.classList.add('dragover');
+          }, false);
+        });
+
+        ['dragleave', 'dragend'].forEach(eventName => {
+          box.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            box.classList.remove('dragover');
+          }, false);
+        });
+
+        box.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          box.classList.remove('dragover');
+
+          const files = e.dataTransfer ? e.dataTransfer.files : null;
+          if (!files || !files.length) return;
+
+          const file = files[0];
+          // Find the input inside this box
+          const input = box.querySelector('input[type="file"]');
+          if (input) {
+            if (input.id === 'promoMediaUpload') handlePromoMediaUpload(file);
+            else if (input.id === 'promoVideoUpload') handlePromoVideoUpload(file);
+            else if (input.id === 'prodUploadInput') handleProductImageUpload(file);
+            else if (input.id === 'prodGalleryInput') handleProductGalleryUpload({ files: files });
+            else if (input.id === 'merchLogoInput') handleMerchantLogoUpload(file);
+            else if (input.id === 'merchBannerInput') handleMerchantBannerUpload(file);
+          }
+        }, false);
+      });
+    }
+
+    // Storage Ready & Event Listeners across all tabs
+    window.addEventListener('abp_storage_ready', () => {
+      console.log('[Admin] Storage DB ready, re-hydrating views...');
+      renderOverview();
+      renderAdminProducts();
+      renderAdminPromotions();
+      renderAdminMerchants();
+    });
+
+    window.addEventListener('abp_promotions_updated', () => renderAdminPromotions());
+    window.addEventListener('abp_products_updated', () => renderAdminProducts());
+    window.addEventListener('abp_merchants_updated', () => renderAdminMerchants());
+
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById('view-' + hash)) {
+        switchAdminTab('view-' + hash);
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
+      setupUploadDropzones();
       const hash = window.location.hash.replace('#', '');
       if (hash && document.getElementById('view-' + hash)) {
         switchAdminTab('view-' + hash);
@@ -2611,27 +2693,33 @@
       }
     }
 
-    async function handlePromoMediaUpload(input) {
-      const file = input.files[0];
+    async function handlePromoMediaUpload(inputOrFile) {
+      const file = (inputOrFile && inputOrFile.files) ? inputOrFile.files[0] : inputOrFile;
       if (!file) return;
+
+      const previewWrap = document.getElementById('promoMediaPreviewWrap');
+      const previewImg = document.getElementById('promoMediaPreview');
+      previewWrap.style.display = 'flex';
+
       try {
         const compressed = (typeof ABPStorage !== 'undefined' && ABPStorage.compressImage) ?
-          await ABPStorage.compressImage(file, 800, 420, 0.72) :
-          await compressImage(file, 800, 420, 0.72);
+          await ABPStorage.compressImage(file, 900, 500, 0.75) :
+          await compressImage(file, 900, 500, 0.75);
         uploadedPromoMediaBase64 = compressed;
-        document.getElementById('promoMediaPreview').src = compressed;
-        document.getElementById('promoMediaPreviewWrap').style.display = 'flex';
+        previewImg.src = compressed;
         showAdminToast('Visuel de campagne chargé & optimisé ✓');
       } catch(err) {
-        console.warn('Promo upload compression error', err);
+        console.warn('Promo upload compression fallback', err);
         const reader = new FileReader();
         reader.onload = function(e) {
           uploadedPromoMediaBase64 = e.target.result;
-          document.getElementById('promoMediaPreview').src = uploadedPromoMediaBase64;
-          document.getElementById('promoMediaPreviewWrap').style.display = 'flex';
+          previewImg.src = uploadedPromoMediaBase64;
           showAdminToast('Visuel de campagne chargé ✓');
         };
         reader.readAsDataURL(file);
+      }
+      if (inputOrFile && inputOrFile.value !== undefined) {
+        inputOrFile.value = '';
       }
     }
 
@@ -2641,10 +2729,12 @@
       if (inp) inp.value = '';
       const wrap = document.getElementById('promoMediaPreviewWrap');
       if (wrap) wrap.style.display = 'none';
+      const previewImg = document.getElementById('promoMediaPreview');
+      if (previewImg) previewImg.src = '';
     }
 
-    function handlePromoVideoUpload(input) {
-      const file = input.files[0];
+    function handlePromoVideoUpload(inputOrFile) {
+      const file = (inputOrFile && inputOrFile.files) ? inputOrFile.files[0] : inputOrFile;
       if (!file) return;
       if (file.size > 25 * 1024 * 1024) {
         alert("La vidéo dépasse la taille maximale recommandée de 25MB.");
@@ -2659,6 +2749,9 @@
         showAdminToast('Spot vidéo prêt pour diffusion ✓');
       };
       reader.readAsDataURL(file);
+      if (inputOrFile && inputOrFile.value !== undefined) {
+        inputOrFile.value = '';
+      }
     }
 
     function removePromoVideo() {
@@ -2691,23 +2784,35 @@
       document.getElementById('promoInputBadge').value = p.badge || '';
       document.getElementById('promoInputTarget').value = p.targetUrl || '';
       if (document.getElementById('promoInputVideoUrl')) {
-        document.getElementById('promoInputVideoUrl').value = p.videoUrl || '';
+        document.getElementById('promoInputVideoUrl').value = (p.videoUrl && !p.videoUrl.startsWith('data:') && !p.videoUrl.startsWith('idb:')) ? p.videoUrl : '';
       }
 
       handlePromoTypeChange(p.type || 'banner');
 
-      if (p.mediaUrl) {
-        uploadedPromoMediaBase64 = p.mediaUrl;
-        document.getElementById('promoMediaPreview').src = getAdminImgSrc(p.mediaUrl);
+      // Resolve actual image (from IndexedDB cache if idb: pointer)
+      let resolvedMedia = p.mediaUrl;
+      if (resolvedMedia && resolvedMedia.startsWith('idb:') && typeof ABPStorage !== 'undefined') {
+        const cached = ABPStorage.getImage(resolvedMedia.replace('idb:', ''));
+        if (cached) resolvedMedia = cached;
+      }
+
+      if (resolvedMedia) {
+        uploadedPromoMediaBase64 = resolvedMedia;
+        document.getElementById('promoMediaPreview').src = getAdminImgSrc(resolvedMedia);
         document.getElementById('promoMediaPreviewWrap').style.display = 'flex';
       } else {
         removePromoMedia();
       }
 
       if (p.type === 'video' && p.videoUrl) {
-        uploadedPromoVideoBase64 = p.videoUrl.startsWith('data:') ? p.videoUrl : null;
+        let resolvedVid = p.videoUrl;
+        if (resolvedVid.startsWith('idb:') && typeof ABPStorage !== 'undefined') {
+          const cachedV = ABPStorage.getImage(resolvedVid.replace('idb:', ''));
+          if (cachedV) resolvedVid = cachedV;
+        }
+        uploadedPromoVideoBase64 = resolvedVid.startsWith('data:') ? resolvedVid : null;
         const v = document.getElementById('promoVideoPreview');
-        v.src = p.videoUrl;
+        v.src = resolvedVid;
         document.getElementById('promoVideoPreviewWrap').style.display = 'block';
       } else {
         removePromoVideo();
@@ -2726,31 +2831,42 @@
       const editId = document.getElementById('editPromoId').value;
       const type = document.getElementById('promoInputType').value;
       const currentPromo = editId ? AdminStore.getPromotions().find(x => x.id === editId) : null;
+      const promoId = editId || ('promo-' + Date.now());
+
+      let finalMediaUrl = uploadedPromoMediaBase64 || (currentPromo ? currentPromo.mediaUrl : 'assets/images/products/ets-marie-andrea-catalogue.jpg');
+      let finalVideoUrl = uploadedPromoVideoBase64 || document.getElementById('promoInputVideoUrl')?.value.trim() || (currentPromo ? (currentPromo.videoUrl || '') : '');
+
+      // Store large data URLs directly in IndexedDB for 100% quota safety
+      if (finalMediaUrl && finalMediaUrl.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+        ABPStorage.setImage('promo_img_' + promoId, finalMediaUrl);
+        finalMediaUrl = 'idb:promo_img_' + promoId;
+      }
+      if (finalVideoUrl && finalVideoUrl.startsWith('data:') && typeof ABPStorage !== 'undefined') {
+        ABPStorage.setImage('promo_vid_' + promoId, finalVideoUrl);
+        finalVideoUrl = 'idb:promo_vid_' + promoId;
+      }
 
       const promo = {
+        id: promoId,
         title: document.getElementById('promoInputTitle').value.trim(),
         subtitle: document.getElementById('promoInputSubtitle').value.trim(),
         type: type,
         badge: document.getElementById('promoInputBadge').value.trim() || 'Promotion',
-        mediaUrl: uploadedPromoMediaBase64 || (currentPromo ? currentPromo.mediaUrl : 'assets/images/products/ets-marie-andrea-catalogue.jpg'),
-        videoUrl: uploadedPromoVideoBase64 || document.getElementById('promoInputVideoUrl').value.trim() || (currentPromo ? (currentPromo.videoUrl || '') : ''),
+        mediaUrl: finalMediaUrl,
+        videoUrl: finalVideoUrl,
         targetUrl: document.getElementById('promoInputTarget').value.trim() || 'catalogue.html',
         active: currentPromo ? (currentPromo.active !== false) : true,
         startDate: currentPromo ? (currentPromo.startDate || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0]
       };
+
       if (editId) {
-        if (promo.mediaUrl && promo.mediaUrl.startsWith('data:') && typeof ABPStorage !== 'undefined') {
-          ABPStorage.setImage('promo_img_' + editId, promo.mediaUrl);
-        }
         AdminStore.updatePromotion(editId, promo);
         showAdminToast('Campagne mise à jour avec succès ✓');
       } else {
-        const newPromo = AdminStore.addPromotion(promo);
-        if (promo.mediaUrl && promo.mediaUrl.startsWith('data:') && typeof ABPStorage !== 'undefined' && newPromo && newPromo.id) {
-          ABPStorage.setImage('promo_img_' + newPromo.id, promo.mediaUrl);
-        }
+        AdminStore.addPromotion(promo);
         showAdminToast('Nouvelle campagne publiée sur la boutique !');
       }
+
       closePromoModal();
       renderAdminPromotions();
       renderOverview();
