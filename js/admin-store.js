@@ -158,119 +158,203 @@ const DEFAULT_MERCHANTS = [
   }
 ];
 
-const DEFAULT_REPRESENTATIVES = [
+const DEFAULT_PARTNERS = [
   {
     id: 'rep-1',
+    code: 'KOUAME15',
     name: 'Jean-Marc Kouamé',
+    role: 'representative',
+    roleLabel: 'Représentant Mandaté',
     zone: 'Abidjan — Cocody & Bingerville',
     phone: '+225 07 89 45 12 00',
-    salesCount: 148,
-    salesVolume: 3250000,
+    handle: '@jeanmarc_ci',
     rate: 15,
+    commissionPercent: 15,
+    discountPercent: 5,
+    salesCount: 148,
+    usesCount: 148,
+    salesVolume: 3250000,
+    salesGenerated: 3250000,
     commissionDue: 487500,
+    commissionEarned: 487500,
     paidAmount: 350000,
+    paidCommission: 350000,
     pendingBalance: 137500,
-    status: 'active'
+    status: 'active',
+    joinedDate: '15 Jan 2026'
   },
   {
     id: 'rep-2',
+    code: 'ESTELLE15',
     name: 'Estelle Bamba',
+    role: 'representative',
+    roleLabel: 'Représentante Mandatée',
     zone: 'Abidjan — Plateau & Marcory',
     phone: '+225 05 12 34 56 78',
-    salesCount: 112,
-    salesVolume: 2450000,
+    handle: '@estelle_beaute',
     rate: 15,
+    commissionPercent: 15,
+    discountPercent: 5,
+    salesCount: 112,
+    usesCount: 112,
+    salesVolume: 2450000,
+    salesGenerated: 2450000,
     commissionDue: 367500,
+    commissionEarned: 367500,
     paidAmount: 300000,
+    paidCommission: 300000,
     pendingBalance: 67500,
-    status: 'active'
+    status: 'active',
+    joinedDate: '01 Fév 2026'
   },
   {
     id: 'rep-3',
+    code: 'IBRAHIM15',
     name: 'Ibrahim Cissé',
+    role: 'reseller',
+    roleLabel: 'Revendeur Mandaté',
     zone: 'Abidjan — Yopougon & Attécoubé',
     phone: '+225 01 98 76 54 32',
-    salesCount: 84,
-    salesVolume: 1680000,
+    handle: '@ibrahim_savonnerie',
     rate: 15,
+    commissionPercent: 15,
+    discountPercent: 5,
+    salesCount: 84,
+    usesCount: 84,
+    salesVolume: 1680000,
+    salesGenerated: 1680000,
     commissionDue: 252000,
+    commissionEarned: 252000,
     paidAmount: 200000,
+    paidCommission: 200000,
     pendingBalance: 52000,
-    status: 'active'
+    status: 'active',
+    joinedDate: '10 Fév 2026'
   },
   {
     id: 'rep-4',
+    code: 'CLARISSE15',
     name: 'Clarisse N’Goran',
+    role: 'representative',
+    roleLabel: 'Représentante Intérieur',
     zone: 'Intérieur — San Pedro & Littoral',
     phone: '+225 07 33 44 55 66',
-    salesCount: 65,
-    salesVolume: 1320000,
+    handle: '@clarisse_naturelle',
     rate: 15,
+    commissionPercent: 15,
+    discountPercent: 5,
+    salesCount: 65,
+    usesCount: 65,
+    salesVolume: 1320000,
+    salesGenerated: 1320000,
     commissionDue: 198000,
+    commissionEarned: 198000,
     paidAmount: 150000,
+    paidCommission: 150000,
     pendingBalance: 48000,
-    status: 'active'
-  }
-];
-
-const DEFAULT_INFLUENCERS = [
+    status: 'active',
+    joinedDate: '20 Fév 2026'
+  },
   {
     id: 'inf-1',
     code: 'AMABELLE10',
-    name: 'Aminata K. (Lifestyle Abidjan)',
+    name: 'Aminata Koné',
+    role: 'influencer',
+    roleLabel: 'Ambassadrice Lifestyle',
+    zone: 'Abidjan — Cocody Deux Plateaux',
+    phone: '+225 07 12 34 56 78',
     handle: '@aminata_naturelle',
+    rate: 15,
+    commissionPercent: 15,
     discountPercent: 10,
-    commissionPercent: 5,
+    salesCount: 184,
     usesCount: 184,
+    salesVolume: 2760000,
     salesGenerated: 2760000,
-    commissionEarned: 138000,
-    paidCommission: 100000,
+    commissionDue: 414000,
+    commissionEarned: 414000,
+    paidAmount: 300000,
+    paidCommission: 300000,
+    pendingBalance: 114000,
     status: 'active',
-    expiresAt: '31 Déc 2026'
+    joinedDate: '05 Jan 2026'
   },
   {
     id: 'inf-2',
     code: 'BEARD2026',
     name: 'Moussa Barbe Pro',
+    role: 'influencer',
+    roleLabel: 'Ambassadeur Homme & Barbe',
+    zone: 'Abidjan — Treichville',
+    phone: '+225 05 98 76 54 32',
     handle: '@moussa_barber',
+    rate: 15,
+    commissionPercent: 15,
     discountPercent: 10,
-    commissionPercent: 8,
+    salesCount: 96,
     usesCount: 96,
+    salesVolume: 1440000,
     salesGenerated: 1440000,
-    commissionEarned: 115200,
-    paidCommission: 80000,
+    commissionDue: 216000,
+    commissionEarned: 216000,
+    paidAmount: 150000,
+    paidCommission: 150000,
+    pendingBalance: 66000,
     status: 'active',
-    expiresAt: '31 Déc 2026'
+    joinedDate: '12 Jan 2026'
   },
   {
     id: 'inf-3',
-    code: 'ANDREA15',
+    code: 'FATOU15',
     name: 'Fatou Beauté CI',
+    role: 'affiliate',
+    roleLabel: 'Affiliée & Créatrice Beauté',
+    zone: 'Abidjan — Marcory Zone 4',
+    phone: '+225 01 23 45 67 89',
     handle: '@fatou_beaute',
-    discountPercent: 15,
-    commissionPercent: 6,
+    rate: 15,
+    commissionPercent: 15,
+    discountPercent: 10,
+    salesCount: 142,
     usesCount: 142,
+    salesVolume: 1980000,
     salesGenerated: 1980000,
-    commissionEarned: 118800,
-    paidCommission: 90000,
+    commissionDue: 297000,
+    commissionEarned: 297000,
+    paidAmount: 200000,
+    paidCommission: 200000,
+    pendingBalance: 97000,
     status: 'active',
-    expiresAt: '31 Déc 2026'
+    joinedDate: '18 Jan 2026'
   },
   {
     id: 'inf-4',
     code: 'FLEUR20',
     name: 'Aïcha Rituels',
+    role: 'influencer',
+    roleLabel: 'Ambassadrice Bien-Être',
+    zone: 'Abidjan — Koumassi',
+    phone: '+225 07 44 55 66 77',
     handle: '@aicha_glow',
+    rate: 15,
+    commissionPercent: 15,
     discountPercent: 10,
-    commissionPercent: 5,
+    salesCount: 68,
     usesCount: 68,
+    salesVolume: 1020000,
     salesGenerated: 1020000,
-    commissionEarned: 51000,
-    paidCommission: 51000,
+    commissionDue: 153000,
+    commissionEarned: 153000,
+    paidAmount: 153000,
+    paidCommission: 153000,
+    pendingBalance: 0,
     status: 'active',
-    expiresAt: '15 Nov 2026'
+    joinedDate: '25 Jan 2026'
   }
 ];
+
+const DEFAULT_REPRESENTATIVES = DEFAULT_PARTNERS;
+const DEFAULT_INFLUENCERS = DEFAULT_PARTNERS;
 
 const DEFAULT_ORDERS = [
   {
@@ -482,72 +566,133 @@ const AdminStore = {
     return list;
   },
 
-  // ── Representatives & Commissions ──
-  getRepresentatives: function() {
+  // ── Unified Partners Network (Representatives, Influencers, Resellers, Affiliates) ──
+  PARTNERS_KEY: 'abp_admin_partners_v2',
+
+  getPartners: function() {
+    let list = null;
     try {
-      const s = localStorage.getItem('abp_admin_representatives');
-      if (s) return JSON.parse(s);
+      const s = localStorage.getItem(this.PARTNERS_KEY);
+      if (s) list = JSON.parse(s);
     } catch(e){}
-    localStorage.setItem('abp_admin_representatives', JSON.stringify(DEFAULT_REPRESENTATIVES));
-    return DEFAULT_REPRESENTATIVES;
+
+    if (!Array.isArray(list) || list.length === 0) {
+      list = DEFAULT_PARTNERS;
+      this.savePartners(list);
+    }
+    return list;
   },
-  saveRepresentatives: function(data) {
-    localStorage.setItem('abp_admin_representatives', JSON.stringify(data));
+
+  savePartners: function(data) {
+    try {
+      localStorage.setItem(this.PARTNERS_KEY, JSON.stringify(data));
+      // Keep legacy keys in sync so any other script continues to work seamlessly
+      localStorage.setItem('abp_admin_representatives', JSON.stringify(data));
+      localStorage.setItem('abp_admin_influencers', JSON.stringify(data));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('abp_partners_updated', { detail: data }));
+      }
+    } catch(e) {
+      console.warn('savePartners error:', e);
+    }
   },
-  addRepresentative: function(r) {
-    const list = this.getRepresentatives();
-    r.id = 'rep-' + Date.now();
-    r.salesCount = 0;
-    r.salesVolume = 0;
-    r.commissionDue = 0;
-    r.paidAmount = 0;
-    r.pendingBalance = 0;
-    r.status = 'active';
-    list.unshift(r);
-    this.saveRepresentatives(list);
-    return r;
+
+  addPartner: function(p) {
+    const list = this.getPartners();
+    const idPrefix = p.role === 'influencer' ? 'inf-' : (p.role === 'reseller' ? 'res-' : 'rep-');
+    if (!p.id) p.id = idPrefix + Date.now();
+
+    // Generate clean tracking/promo code if missing
+    if (!p.code) {
+      const base = (p.name || 'PART').replace(/[^a-zA-Z]/g, '').substring(0, 6).toUpperCase();
+      p.code = base + '15';
+    } else {
+      p.code = p.code.trim().toUpperCase();
+    }
+
+    const rate = Number(p.rate || p.commissionPercent || 15);
+    p.rate = rate;
+    p.commissionPercent = rate;
+    p.discountPercent = Number(p.discountPercent || 5);
+    p.salesCount = Number(p.salesCount || 0);
+    p.usesCount = p.salesCount;
+    p.salesVolume = Number(p.salesVolume || 0);
+    p.salesGenerated = p.salesVolume;
+    p.commissionDue = Math.round(p.salesVolume * (rate / 100));
+    p.commissionEarned = p.commissionDue;
+    p.paidAmount = Number(p.paidAmount || 0);
+    p.paidCommission = p.paidAmount;
+    p.pendingBalance = Math.max(0, p.commissionDue - p.paidAmount);
+    p.status = p.status || 'active';
+    p.joinedDate = p.joinedDate || new Date().toISOString().split('T')[0];
+
+    // Assign appropriate roleLabel
+    if (!p.roleLabel) {
+      if (p.role === 'influencer') p.roleLabel = 'Ambassadeur / Influenceur';
+      else if (p.role === 'reseller') p.roleLabel = 'Revendeur Mandaté';
+      else if (p.role === 'affiliate') p.roleLabel = 'Affilié / Prescripteur';
+      else p.roleLabel = 'Représentant Mandaté';
+    }
+
+    list.unshift(p);
+    this.savePartners(list);
+    return p;
   },
-  recordPayout: function(repId, amount) {
-    const list = this.getRepresentatives();
-    const rep = list.find(r => r.id === repId);
-    if (rep) {
-      rep.paidAmount = (rep.paidAmount || 0) + Number(amount);
-      rep.pendingBalance = Math.max(0, (rep.commissionDue || 0) - rep.paidAmount);
-      this.saveRepresentatives(list);
-      return rep;
+
+  updatePartner: function(id, data) {
+    const list = this.getPartners();
+    const idx = list.findIndex(p => p.id === id);
+    if (idx !== -1) {
+      list[idx] = Object.assign({}, list[idx], data);
+      const p = list[idx];
+      const rate = Number(p.rate || p.commissionPercent || 15);
+      p.rate = rate;
+      p.commissionPercent = rate;
+      p.salesVolume = Number(p.salesVolume || p.salesGenerated || 0);
+      p.salesGenerated = p.salesVolume;
+      p.salesCount = Number(p.salesCount || p.usesCount || 0);
+      p.usesCount = p.salesCount;
+      p.commissionDue = Math.round(p.salesVolume * (rate / 100));
+      p.commissionEarned = p.commissionDue;
+      p.paidAmount = Number(p.paidAmount || p.paidCommission || 0);
+      p.paidCommission = p.paidAmount;
+      p.pendingBalance = Math.max(0, p.commissionDue - p.paidAmount);
+      this.savePartners(list);
+      return p;
     }
     return null;
   },
 
-  // ── Influencers ──
-  getInfluencers: function() {
-    try {
-      const s = localStorage.getItem('abp_admin_influencers');
-      if (s) return JSON.parse(s);
-    } catch(e){}
-    localStorage.setItem('abp_admin_influencers', JSON.stringify(DEFAULT_INFLUENCERS));
-    return DEFAULT_INFLUENCERS;
-  },
-  saveInfluencers: function(data) {
-    localStorage.setItem('abp_admin_influencers', JSON.stringify(data));
-  },
-  addInfluencer: function(inf) {
-    const list = this.getInfluencers();
-    inf.id = 'inf-' + Date.now();
-    inf.usesCount = 0;
-    inf.salesGenerated = 0;
-    inf.commissionEarned = 0;
-    inf.paidCommission = 0;
-    inf.status = 'active';
-    list.unshift(inf);
-    this.saveInfluencers(list);
-    return inf;
-  },
-  deleteInfluencer: function(id) {
-    let list = this.getInfluencers().filter(i => i.id !== id);
-    this.saveInfluencers(list);
+  deletePartner: function(id) {
+    let list = this.getPartners().filter(p => p.id !== id);
+    this.savePartners(list);
     return list;
   },
+
+  recordPayout: function(partnerId, amount, provider = 'wave', reference = '') {
+    const list = this.getPartners();
+    const p = list.find(r => r.id === partnerId);
+    if (p) {
+      p.paidAmount = (p.paidAmount || 0) + Number(amount);
+      p.paidCommission = p.paidAmount;
+      p.pendingBalance = Math.max(0, (p.commissionDue || 0) - p.paidAmount);
+      p.lastPayoutDate = new Date().toISOString().split('T')[0];
+      p.lastPayoutProvider = provider;
+      p.lastPayoutRef = reference;
+      this.savePartners(list);
+      return p;
+    }
+    return null;
+  },
+
+  // Proxies for 100% unified backward compatibility
+  getRepresentatives: function() { return this.getPartners(); },
+  saveRepresentatives: function(data) { return this.savePartners(data); },
+  addRepresentative: function(r) { return this.addPartner({ ...r, role: r.role || 'representative' }); },
+  getInfluencers: function() { return this.getPartners(); },
+  saveInfluencers: function(data) { return this.savePartners(data); },
+  addInfluencer: function(i) { return this.addPartner({ ...i, role: i.role || 'influencer' }); },
+  deleteInfluencer: function(id) { return this.deletePartner(id); },
 
   // ── Orders ──
   getOrders: function() {

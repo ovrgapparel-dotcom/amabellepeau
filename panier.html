@@ -1447,13 +1447,32 @@
         return;
       }
 
-      if (VALID_PROMOS[code]) {
-        currentPromo = { code, ...VALID_PROMOS[code] };
+      // Dynamic check across all partner & representative codes
+      let matchedPromo = VALID_PROMOS[code] || null;
+      if (!matchedPromo) {
+        try {
+          const partners = JSON.parse(localStorage.getItem('abp_admin_partners_v2') || localStorage.getItem('abp_admin_influencers') || '[]');
+          const match = partners.find(p => p.code && p.code.trim().toUpperCase() === code && p.status !== 'inactive');
+          if (match) {
+            const disc = match.discountPercent || 5;
+            matchedPromo = {
+              discountPercent: disc,
+              commissionPercent: match.rate || match.commissionPercent || 15,
+              partnerName: match.name,
+              partnerId: match.id,
+              label: `-${disc}% (Partenaire: ${match.name})`
+            };
+          }
+        } catch(e) {}
+      }
+
+      if (matchedPromo) {
+        currentPromo = { code, ...matchedPromo };
         localStorage.setItem(PROMO_KEY, JSON.stringify(currentPromo));
-        feedback.textContent = `Code "${code}" appliqué avec succès (${VALID_PROMOS[code].label}) !`;
+        feedback.textContent = `Code "${code}" appliqué avec succès (${matchedPromo.label}) !`;
         feedback.className = 'promo-feedback success';
         calculateSummary();
-        showToast(`Remise appliquée : ${VALID_PROMOS[code].label}`, 'success');
+        showToast(`Remise appliquée : ${matchedPromo.label}`, 'success');
       } else {
         feedback.textContent = `Le code "${code}" n'est pas valide ou est expiré.`;
         feedback.className = 'promo-feedback error';

@@ -936,7 +936,7 @@
             <h1>Réseau Commercial & Suivi des Commissions</h1>
             <p>Gestion des représentants par commune, ventilation du chiffre d'affaires et reversements Wave / Orange Money.</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddRepModal()">+ Nouveau Représentant</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddRepModal()">+ Nouveau Partenaire & Code</button>
         </div>
 
         <div class="stats-grid-6">
@@ -970,12 +970,12 @@
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Nom du Représentant</th>
-                  <th>Zone / Commune</th>
-                  <th>Téléphone</th>
+                  <th>Partenaire & Rôle</th>
+                  <th>Code Tracking</th>
+                  <th>Zone & Contact</th>
                   <th>Nb Ventes</th>
                   <th>Volume Ventes</th>
-                  <th>Commission Due (15%)</th>
+                  <th>Taux Comm.</th>
                   <th>Déjà Versé</th>
                   <th>Solde Dû</th>
                   <th>Actions</th>
@@ -1006,13 +1006,14 @@
               <thead>
                 <tr>
                   <th>Code Promo</th>
-                  <th>Influenceur / Créateur</th>
-                  <th>Réseaux Sociaux</th>
+                  <th>Partenaire & Rôle</th>
+                  <th>Réseaux & Zone</th>
                   <th>Remise Client</th>
                   <th>Commission</th>
-                  <th>Utilisations</th>
-                  <th>Ventes Générées</th>
+                  <th>Ventes / Util.</th>
+                  <th>CA Généré</th>
                   <th>Gains Cumulés</th>
+                  <th>Solde Dû</th>
                   <th>Statut</th>
                   <th>Actions</th>
                 </tr>
@@ -1532,43 +1533,73 @@
     </div>
   </div>
 
-  <!-- Modal Influencer -->
-  <div class="admin-modal-overlay" id="modalInfluencerOverlay">
+  <!-- Modal Partenaire Commercial, Mandataire & Ambassadeur -->
+  <div class="admin-modal-overlay" id="modalPartnerOverlay">
     <div class="admin-modal">
       <div class="admin-modal-header">
-        <h3 class="admin-modal-title">Créer un Code Promo Influenceur</h3>
-        <button class="admin-modal-close" onclick="closeInfluencerModal()">&times;</button>
+        <h3 class="admin-modal-title" id="modalPartnerTitle">Nouveau Partenaire & Code Tracking</h3>
+        <button class="admin-modal-close" onclick="closePartnerModal()">&times;</button>
       </div>
-      <form id="influencerForm" onsubmit="handleInfluencerFormSubmit(event)">
+      <form id="partnerForm" onsubmit="handlePartnerFormSubmit(event)">
         <div class="admin-modal-body">
-          <div class="form-group">
-            <label class="form-label">Code Promo Souhaité *</label>
-            <input type="text" id="infInputCode" class="form-input" placeholder="ex: GLOW2026" style="text-transform:uppercase;font-family:monospace;font-weight:700;" required>
-          </div>
+          <input type="hidden" id="editPartnerId">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">Nom de l'Influenceur / Ambassadeur *</label>
-              <input type="text" id="infInputName" class="form-input" placeholder="ex: Sarah K." required>
+              <label class="form-label">Nom Complet du Partenaire *</label>
+              <input type="text" id="partnerInputName" class="form-input" placeholder="ex: Jean-Marc Kouamé" required oninput="autoSuggestPartnerCode()">
             </div>
             <div class="form-group">
-              <label class="form-label">Identifiant Social (Instagram/TikTok)</label>
-              <input type="text" id="infInputHandle" class="form-input" placeholder="@sarah_glow">
+              <label class="form-label">Rôle / Statut Commercial *</label>
+              <select id="partnerInputRole" class="form-select" required onchange="handlePartnerRoleChange(this.value)">
+                <option value="representative">Représentant Mandaté (Réseau Local 15%)</option>
+                <option value="influencer">Ambassadeur / Influenceur (Médias & Web)</option>
+                <option value="reseller">Revendeur Agréé / Dépôt-Vente</option>
+                <option value="affiliate">Affilié / Prescripteur</option>
+              </select>
             </div>
           </div>
+
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
             <div class="form-group">
-              <label class="form-label">Remise Client (%) *</label>
-              <input type="number" id="infInputDiscount" class="form-input" value="10" min="5" max="30" required>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <label class="form-label" style="margin:0;">Code Promo / Tracking *</label>
+                <button type="button" class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 6px;" onclick="generateRandomPartnerCode()">⚡ Générer</button>
+              </div>
+              <input type="text" id="partnerInputCode" class="form-input" placeholder="ex: KOUAME15" style="text-transform:uppercase;font-family:monospace;font-weight:700;" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Commission Influenceur (%) *</label>
-              <input type="number" id="infInputComm" class="form-input" value="5" min="2" max="15" required>
+              <label class="form-label">Téléphone / Wave / Orange Money *</label>
+              <input type="text" id="partnerInputPhone" class="form-input" placeholder="+225 07 00 00 00 00" required>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Zone / Commune Principale</label>
+              <input type="text" id="partnerInputZone" class="form-input" placeholder="ex: Cocody & Bingerville">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Identifiant Social ou Boutique</label>
+              <input type="text" id="partnerInputHandle" class="form-input" placeholder="ex: @jeanmarc_ci">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Taux de Commission Partenaire (%) *</label>
+              <input type="number" id="partnerInputRate" class="form-input" value="15" min="2" max="30" required>
+              <span style="font-size:10px;color:var(--color-text-muted);">Barème AMABELLEPEAU standard : 15%</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Remise Offerte au Client (%) *</label>
+              <input type="number" id="partnerInputDiscount" class="form-input" value="5" min="0" max="25" required>
+              <span style="font-size:10px;color:var(--color-text-muted);">Réduction appliquée avec son code (ex: 5% ou 10%)</span>
             </div>
           </div>
         </div>
         <div class="admin-modal-header" style="justify-content:flex-end;gap:var(--space-3);background:var(--color-surface-alt);">
-          <button type="button" class="btn btn-ghost btn-sm" onclick="closeInfluencerModal()">Annuler</button>
-          <button type="submit" class="btn btn-primary btn-sm">Activer le Code</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="closePartnerModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary btn-sm" id="btnSubmitPartner">Enregistrer le Partenaire</button>
         </div>
       </form>
     </div>
@@ -2439,12 +2470,14 @@
       renderOverview();
     }
 
+    // ── SYNCHRONIZED PARTNERS, COMMISSIONS & INFLUENCERS LOGIC ──
+
     function renderAdminRepresentatives() {
-      const reps = AdminStore.getRepresentatives();
-      const totalSales = reps.reduce((a, r) => a + (r.salesVolume || 0), 0);
-      const totalDue = reps.reduce((a, r) => a + (r.commissionDue || 0), 0);
-      const totalPaid = reps.reduce((a, r) => a + (r.paidAmount || 0), 0);
-      const totalPending = reps.reduce((a, r) => a + (r.pendingBalance || 0), 0);
+      const partners = AdminStore.getPartners();
+      const totalSales = partners.reduce((a, r) => a + (r.salesVolume || 0), 0);
+      const totalDue = partners.reduce((a, r) => a + (r.commissionDue || 0), 0);
+      const totalPaid = partners.reduce((a, r) => a + (r.paidAmount || 0), 0);
+      const totalPending = partners.reduce((a, r) => a + (r.pendingBalance || 0), 0);
 
       document.getElementById('statRepTotalSales').textContent = new Intl.NumberFormat('fr-FR').format(totalSales) + ' XOF';
       document.getElementById('statRepTotalDue').textContent = new Intl.NumberFormat('fr-FR').format(totalDue) + ' XOF';
@@ -2452,94 +2485,232 @@
       document.getElementById('statRepTotalPending').textContent = new Intl.NumberFormat('fr-FR').format(totalPending) + ' XOF';
 
       const body = document.getElementById('representativesTableBody');
-      body.innerHTML = reps.map(r => `
-        <tr>
-          <td><strong>${r.name}</strong></td>
-          <td>${r.zone}</td>
-          <td>${r.phone}</td>
-          <td>${r.salesCount} ventes</td>
-          <td><strong>${new Intl.NumberFormat('fr-FR').format(r.salesVolume)} XOF</strong></td>
-          <td><span class="status-badge approved">${r.rate}%</span></td>
-          <td style="color:#27AE60;font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.paidAmount)} XOF</td>
-          <td style="color:${r.pendingBalance > 0 ? '#E74C3C' : '#27AE60'};font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.pendingBalance)} XOF</td>
-          <td>
-            <button class="btn-action btn-action-primary" onclick="openPayoutModal('${r.id}', '${r.name}', ${r.pendingBalance})">💳 Verser</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function openPayoutModal(id, name, due) {
-      document.getElementById('payoutRepId').value = id;
-      document.getElementById('payoutRepName').value = name + ' (Solde dû: ' + new Intl.NumberFormat('fr-FR').format(due) + ' XOF)';
-      document.getElementById('payoutAmountInput').value = due > 0 ? due : 50000;
-      document.getElementById('modalPayoutOverlay').classList.add('active');
-    }
-    function closePayoutModal() {
-      document.getElementById('modalPayoutOverlay').classList.remove('active');
-    }
-    function handlePayoutFormSubmit(e) {
-      e.preventDefault();
-      const id = document.getElementById('payoutRepId').value;
-      const amt = document.getElementById('payoutAmountInput').value;
-      AdminStore.recordPayout(id, amt);
-      showAdminToast('Versement de ' + new Intl.NumberFormat('fr-FR').format(amt) + ' XOF enregistré !');
-      closePayoutModal();
-      renderAdminRepresentatives();
+      if (!body) return;
+      body.innerHTML = partners.map(r => {
+        const roleIcon = r.role === 'influencer' ? '🌟' : (r.role === 'reseller' ? '🏪' : '👔');
+        return `
+          <tr>
+            <td>
+              <strong>${r.name}</strong><br>
+              <span style="font-size:11px;color:var(--color-forest);font-weight:600;">${roleIcon} ${r.roleLabel || 'Partenaire'}</span>
+            </td>
+            <td>
+              <span style="font-family:monospace;font-weight:700;background:rgba(201,168,76,0.15);padding:3px 8px;border-radius:4px;border:1px dashed var(--color-gold);color:var(--color-gold);cursor:pointer;" title="Cliquer pour copier" onclick="navigator.clipboard.writeText('${r.code}');showAdminToast('Code ${r.code} copié !');">
+                ${r.code} 📋
+              </span>
+            </td>
+            <td>
+              <div style="font-size:12px;font-weight:600;">${r.zone || 'Abidjan'}</div>
+              <div style="font-size:11px;color:var(--color-text-muted);">${r.phone || ''}</div>
+            </td>
+            <td>${r.salesCount || 0} ventes</td>
+            <td><strong>${new Intl.NumberFormat('fr-FR').format(r.salesVolume || 0)} XOF</strong></td>
+            <td><span class="status-badge approved">${r.rate || 15}%</span></td>
+            <td style="color:#27AE60;font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.paidAmount || 0)} XOF</td>
+            <td style="color:${(r.pendingBalance || 0) > 0 ? '#E74C3C' : '#27AE60'};font-weight:700;">${new Intl.NumberFormat('fr-FR').format(r.pendingBalance || 0)} XOF</td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <button class="btn-action btn-action-primary" onclick="openPayoutModal('${r.id}', '${r.name}', ${r.pendingBalance || 0}, '${r.code}')">💳 Verser</button>
+                <a href="../commission-agreement.html" target="_blank" class="btn-action" title="Contrat de Partenariat Commercial">📄</a>
+                <button class="btn-action" onclick="openEditPartnerModal('${r.id}')" title="Modifier">✏️</button>
+                <button class="btn-action btn-action-danger" onclick="deletePartnerItem('${r.id}')" title="Supprimer">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function renderAdminInfluencers() {
-      const influencers = AdminStore.getInfluencers();
-      document.getElementById('badgeInfCount').textContent = influencers.length;
+      const partners = AdminStore.getPartners();
+      const badge = document.getElementById('badgeInfCount');
+      if (badge) badge.textContent = partners.length;
 
       const body = document.getElementById('influencersTableBody');
-      body.innerHTML = influencers.map(inf => `
-        <tr>
-          <td>
-            <span style="font-family:monospace;font-weight:700;background:rgba(201,168,76,0.15);padding:4px 8px;border-radius:4px;border:1px dashed var(--color-gold);color:var(--color-gold);">${inf.code}</span>
-          </td>
-          <td><strong>${inf.name}</strong></td>
-          <td><span style="color:var(--color-forest);">${inf.handle}</span></td>
-          <td><span class="status-badge approved">-${inf.discountPercent}%</span></td>
-          <td><span class="status-badge approved">${inf.commissionPercent}%</span></td>
-          <td><strong>${inf.usesCount}</strong> utilisations</td>
-          <td>${new Intl.NumberFormat('fr-FR').format(inf.salesGenerated)} XOF</td>
-          <td style="color:var(--color-gold);font-weight:700;">${new Intl.NumberFormat('fr-FR').format(inf.commissionEarned)} XOF</td>
-          <td><span class="status-badge approved">${inf.status}</span></td>
-          <td>
-            <button class="btn-action btn-action-danger" onclick="deleteInfluencer('${inf.id}')">✕ Retirer</button>
-          </td>
-        </tr>
-      `).join('');
+      if (!body) return;
+      body.innerHTML = partners.map(inf => {
+        const roleIcon = inf.role === 'influencer' ? '🌟' : (inf.role === 'reseller' ? '🏪' : '👔');
+        return `
+          <tr>
+            <td>
+              <span style="font-family:monospace;font-weight:700;background:rgba(201,168,76,0.15);padding:4px 8px;border-radius:4px;border:1px dashed var(--color-gold);color:var(--color-gold);cursor:pointer;" title="Cliquer pour copier" onclick="navigator.clipboard.writeText('${inf.code}');showAdminToast('Code ${inf.code} copié !');">
+                ${inf.code} 📋
+              </span>
+            </td>
+            <td>
+              <strong>${inf.name}</strong><br>
+              <span style="font-size:11px;color:var(--color-forest);">${roleIcon} ${inf.roleLabel || 'Partenaire'}</span>
+            </td>
+            <td>
+              <span style="color:var(--color-forest);font-size:12px;">${inf.handle || '@abidjan'}</span><br>
+              <span style="font-size:11px;color:var(--color-text-muted);">${inf.zone || inf.phone || ''}</span>
+            </td>
+            <td><span class="status-badge approved">-${inf.discountPercent || 5}%</span></td>
+            <td><span class="status-badge approved">${inf.rate || inf.commissionPercent || 15}%</span></td>
+            <td><strong>${inf.salesCount || inf.usesCount || 0}</strong> utilisations</td>
+            <td><strong>${new Intl.NumberFormat('fr-FR').format(inf.salesVolume || inf.salesGenerated || 0)} XOF</strong></td>
+            <td style="color:var(--color-gold);font-weight:700;">${new Intl.NumberFormat('fr-FR').format(inf.commissionDue || inf.commissionEarned || 0)} XOF</td>
+            <td style="color:${(inf.pendingBalance || 0) > 0 ? '#E74C3C' : '#27AE60'};font-weight:700;">${new Intl.NumberFormat('fr-FR').format(inf.pendingBalance || 0)} XOF</td>
+            <td><span class="status-badge approved">${inf.status || 'active'}</span></td>
+            <td>
+              <div style="display:flex;gap:4px;">
+                <button class="btn-action btn-action-primary" onclick="openPayoutModal('${inf.id}', '${inf.name}', ${inf.pendingBalance || 0}, '${inf.code}')">💳 Verser</button>
+                <button class="btn-action" onclick="openEditPartnerModal('${inf.id}')" title="Modifier">✏️</button>
+                <button class="btn-action btn-action-danger" onclick="deletePartnerItem('${inf.id}')" title="Retirer">✕</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openAddRepModal() {
+      openAddPartnerModal('representative');
     }
 
     function openAddInfluencerModal() {
-      document.getElementById('influencerForm').reset();
-      document.getElementById('modalInfluencerOverlay').classList.add('active');
+      openAddPartnerModal('influencer');
     }
-    function closeInfluencerModal() {
-      document.getElementById('modalInfluencerOverlay').classList.remove('active');
+
+    function openAddPartnerModal(defaultRole = 'representative') {
+      document.getElementById('partnerForm').reset();
+      document.getElementById('editPartnerId').value = '';
+      document.getElementById('modalPartnerTitle').textContent = defaultRole === 'influencer'
+        ? 'Créer un Code Promo & Ambassadeur'
+        : 'Nouveau Représentant / Mandataire Commercial';
+      document.getElementById('partnerInputRole').value = defaultRole;
+      document.getElementById('partnerInputRate').value = 15;
+      document.getElementById('partnerInputDiscount').value = defaultRole === 'influencer' ? 10 : 5;
+      document.getElementById('modalPartnerOverlay').classList.add('active');
     }
-    function handleInfluencerFormSubmit(e) {
-      e.preventDefault();
-      const inf = {
-        code: document.getElementById('infInputCode').value.toUpperCase(),
-        name: document.getElementById('infInputName').value,
-        handle: document.getElementById('infInputHandle').value || '@abidjan',
-        discountPercent: Number(document.getElementById('infInputDiscount').value),
-        commissionPercent: Number(document.getElementById('infInputComm').value)
-      };
-      AdminStore.addInfluencer(inf);
-      showAdminToast('Code promo ' + inf.code + ' activé avec succès');
-      closeInfluencerModal();
-      renderAdminInfluencers();
+
+    function openEditPartnerModal(id) {
+      const partners = AdminStore.getPartners();
+      const p = partners.find(x => x.id === id);
+      if (!p) return;
+
+      document.getElementById('editPartnerId').value = p.id;
+      document.getElementById('modalPartnerTitle').textContent = 'Modifier le Partenaire : ' + p.name;
+      document.getElementById('partnerInputName').value = p.name || '';
+      document.getElementById('partnerInputRole').value = p.role || 'representative';
+      document.getElementById('partnerInputCode').value = p.code || '';
+      document.getElementById('partnerInputPhone').value = p.phone || '';
+      document.getElementById('partnerInputZone').value = p.zone || '';
+      document.getElementById('partnerInputHandle').value = p.handle || '';
+      document.getElementById('partnerInputRate').value = p.rate || p.commissionPercent || 15;
+      document.getElementById('partnerInputDiscount').value = p.discountPercent || 5;
+
+      document.getElementById('modalPartnerOverlay').classList.add('active');
     }
-    function deleteInfluencer(id) {
-      if (confirm('Voulez-vous supprimer ce code promo ?')) {
-        AdminStore.deleteInfluencer(id);
-        showAdminToast('Code supprimé');
-        renderAdminInfluencers();
+
+    function closePartnerModal() {
+      document.getElementById('modalPartnerOverlay').classList.remove('active');
+    }
+
+    function autoSuggestPartnerCode() {
+      const editId = document.getElementById('editPartnerId').value;
+      if (editId) return; // do not overwrite code when editing
+      const name = document.getElementById('partnerInputName').value.trim();
+      const rate = document.getElementById('partnerInputRate').value || '15';
+      if (name.length >= 3) {
+        const clean = name.replace(/[^a-zA-Z]/g, '').substring(0, 6).toUpperCase();
+        document.getElementById('partnerInputCode').value = clean + rate;
       }
+    }
+
+    function generateRandomPartnerCode() {
+      const name = document.getElementById('partnerInputName').value.trim();
+      const base = name ? name.replace(/[^a-zA-Z]/g, '').substring(0, 5).toUpperCase() : 'ABP';
+      const rand = Math.floor(10 + Math.random() * 90);
+      document.getElementById('partnerInputCode').value = base + rand;
+    }
+
+    function handlePartnerRoleChange(role) {
+      const rateInput = document.getElementById('partnerInputRate');
+      const discountInput = document.getElementById('partnerInputDiscount');
+      if (role === 'representative' || role === 'reseller') {
+        rateInput.value = 15;
+        discountInput.value = 5;
+      } else if (role === 'influencer') {
+        rateInput.value = 15;
+        discountInput.value = 10;
+      }
+    }
+
+    function handlePartnerFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editPartnerId').value;
+      const role = document.getElementById('partnerInputRole').value;
+      const roleLabels = {
+        representative: 'Représentant Mandaté',
+        influencer: 'Ambassadeur / Influenceur',
+        reseller: 'Revendeur Mandaté',
+        affiliate: 'Affilié / Prescripteur'
+      };
+
+      const payload = {
+        name: document.getElementById('partnerInputName').value.trim(),
+        role: role,
+        roleLabel: roleLabels[role] || 'Partenaire',
+        code: document.getElementById('partnerInputCode').value.trim().toUpperCase(),
+        phone: document.getElementById('partnerInputPhone').value.trim(),
+        zone: document.getElementById('partnerInputZone').value.trim() || 'Abidjan',
+        handle: document.getElementById('partnerInputHandle').value.trim() || '@abidjan',
+        rate: Number(document.getElementById('partnerInputRate').value) || 15,
+        commissionPercent: Number(document.getElementById('partnerInputRate').value) || 15,
+        discountPercent: Number(document.getElementById('partnerInputDiscount').value) || 5
+      };
+
+      if (editId) {
+        AdminStore.updatePartner(editId, payload);
+        showAdminToast('Partenaire ' + payload.name + ' mis à jour avec succès ✓');
+      } else {
+        AdminStore.addPartner(payload);
+        showAdminToast('Partenaire ' + payload.name + ' (Code: ' + payload.code + ') activé avec succès ✓');
+      }
+
+      closePartnerModal();
+      renderAdminRepresentatives();
+      renderAdminInfluencers();
+      renderOverview();
+    }
+
+    function deletePartnerItem(id) {
+      if (confirm('Voulez-vous supprimer ce partenaire et désactiver son code tracking / affiliation ?')) {
+        AdminStore.deletePartner(id);
+        showAdminToast('Partenaire supprimé avec succès');
+        renderAdminRepresentatives();
+        renderAdminInfluencers();
+        renderOverview();
+      }
+    }
+
+    // Modal Payout
+    function openPayoutModal(id, name, due, code = '') {
+      document.getElementById('payoutRepId').value = id;
+      const codeInfo = code ? ' [Code: ' + code + ']' : '';
+      document.getElementById('payoutRepName').value = name + codeInfo + ' (Solde dû: ' + new Intl.NumberFormat('fr-FR').format(due) + ' XOF)';
+      document.getElementById('payoutAmountInput').value = due > 0 ? due : 25000;
+      document.getElementById('modalPayoutOverlay').classList.add('active');
+    }
+
+    function closePayoutModal() {
+      document.getElementById('modalPayoutOverlay').classList.remove('active');
+    }
+
+    function handlePayoutFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('payoutRepId').value;
+      const amt = Number(document.getElementById('payoutAmountInput').value) || 0;
+      const provider = document.getElementById('payoutProviderSelect').value;
+      const ref = document.getElementById('payoutRefInput').value || ('PAY-' + Date.now());
+
+      AdminStore.recordPayout(id, amt, provider, ref);
+      showAdminToast(`Versement Wave/OM de ${new Intl.NumberFormat('fr-FR').format(amt)} XOF enregistré avec succès ✓`);
+      closePayoutModal();
+      renderAdminRepresentatives();
+      renderAdminInfluencers();
+      renderOverview();
     }
 
     function renderAdminOrders() {
@@ -2660,6 +2831,7 @@
       renderAdminMerchants();
     });
 
+    window.addEventListener('abp_partners_updated', () => { renderAdminRepresentatives(); renderAdminInfluencers(); });
     window.addEventListener('abp_promotions_updated', () => renderAdminPromotions());
     window.addEventListener('abp_products_updated', () => renderAdminProducts());
     window.addEventListener('abp_merchants_updated', () => renderAdminMerchants());
